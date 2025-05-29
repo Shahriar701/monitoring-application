@@ -99,7 +99,6 @@ export class MonitoringStack extends cdk.Stack {
 
     // S3 Bucket for logs
     const logsBucket = new s3.Bucket(this, 'LogsBucket', {
-      bucketName: `monitoring-logs-${environment}-${this.account}-${this.region}`,
       versioned: true,
       encryption: s3.BucketEncryption.S3_MANAGED,
       blockPublicAccess: s3.BlockPublicAccess.BLOCK_ALL,
@@ -155,12 +154,10 @@ export class MonitoringStack extends cdk.Stack {
         DLQ_URL: dlq.queueUrl
       },
       timeout: cdk.Duration.seconds(30),
-      reservedConcurrentExecutions: environment === 'prod' ? 50 : 10,
       vpc: this.vpc,
       vpcSubnets: {
         subnetType: ec2.SubnetType.PRIVATE_WITH_EGRESS
-      },
-      logRetention: logs.RetentionDays.ONE_MONTH
+      }
     });
 
     // API Lambda with circuit breaker
@@ -175,12 +172,10 @@ export class MonitoringStack extends cdk.Stack {
         ENVIRONMENT: environment
       },
       timeout: cdk.Duration.seconds(30),
-      reservedConcurrentExecutions: environment === 'prod' ? 100 : 20,
       vpc: this.vpc,
       vpcSubnets: {
         subnetType: ec2.SubnetType.PRIVATE_WITH_EGRESS
-      },
-      logRetention: logs.RetentionDays.ONE_MONTH
+      }
     });
 
     // Health Monitor Lambda
@@ -191,11 +186,22 @@ export class MonitoringStack extends cdk.Stack {
       code: lambda.Code.fromAsset('../src/lambda/health-monitor'),
       environment: {
         TABLE_NAME: this.table.tableName,
-        API_URL: '', // Will be updated after API creation
         ENVIRONMENT: environment
       },
-      timeout: cdk.Duration.minutes(5),
-      logRetention: logs.RetentionDays.ONE_MONTH
+      timeout: cdk.Duration.minutes(5)
+    });
+
+    // AI Analysis Lambda for intelligent monitoring
+    const aiAnalysis = new lambda.Function(this, 'AiAnalysis', {
+      functionName: `monitoring-ai-analysis-${environment}`,
+      runtime: lambda.Runtime.PYTHON_3_9,
+      handler: 'lambda_function.lambda_handler',
+      code: lambda.Code.fromAsset('../src/lambda/ai-analysis'),
+      environment: {
+        TABLE_NAME: this.table.tableName,
+        ENVIRONMENT: environment
+      },
+      timeout: cdk.Duration.minutes(15) // AI analysis can take longer
     });
 
     // ===========================================
@@ -206,6 +212,7 @@ export class MonitoringStack extends cdk.Stack {
     this.table.grantReadWriteData(apiLambda);
     this.table.grantWriteData(logProcessor);
     this.table.grantReadData(healthMonitor);
+    this.table.grantReadWriteData(aiAnalysis); // AI needs to read metrics and write analysis
 
     // S3 permissions
     logsBucket.grantRead(logProcessor);
@@ -225,9 +232,33 @@ export class MonitoringStack extends cdk.Stack {
       resources: ['*']
     });
 
+    // Bedrock permissions for AI analysis
+    const bedrockPolicy = new iam.PolicyStatement({
+      actions: [
+        'bedrock:InvokeModel'
+      ],
+      resources: [
+        `arn:aws:bedrock:${this.region}::foundation-model/anthropic.claude-3-sonnet-20240229-v1:0`
+      ]
+    });
+
+    // CloudWatch Logs permissions for AI analysis
+    const logsPolicy = new iam.PolicyStatement({
+      actions: [
+        'logs:StartQuery',
+        'logs:GetQueryResults',
+        'logs:DescribeLogGroups',
+        'logs:DescribeLogStreams'
+      ],
+      resources: ['*']
+    });
+
     apiLambda.addToRolePolicy(cloudwatchPolicy);
     logProcessor.addToRolePolicy(cloudwatchPolicy);
     healthMonitor.addToRolePolicy(cloudwatchPolicy);
+    aiAnalysis.addToRolePolicy(cloudwatchPolicy);
+    aiAnalysis.addToRolePolicy(bedrockPolicy);
+    aiAnalysis.addToRolePolicy(logsPolicy);
 
     // ===========================================
     // API LAYER (Day 1-3: API Gateway)
@@ -367,6 +398,17 @@ export class MonitoringStack extends cdk.Stack {
     });
 
     healthCheckRule.addTarget(new eventsTargets.LambdaFunction(healthMonitor));
+
+    // Scheduled AI analysis
+    const aiAnalysisRule = new events.Rule(this, 'AiAnalysisSchedule', {
+      schedule: events.Schedule.rate(cdk.Duration.hours(1)),
+      description: 'Run AI analysis every hour'
+    });
+
+    aiAnalysisRule.addTarget(new eventsTargets.LambdaFunction(aiAnalysis));
+
+    // Update health monitor with API URL after API is created
+    healthMonitor.addEnvironment('API_URL', this.api.url);
 
     // ===========================================
     // OUTPUTS

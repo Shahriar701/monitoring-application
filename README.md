@@ -1,172 +1,149 @@
-# Serverless Monitoring Infrastructure
+# 🔍 Monitoring Infrastructure
 
-A complete serverless monitoring solution built with AWS CDK that includes:
-- Metrics collection and storage in DynamoDB
-- Log processing with Lambda functions
-- API endpoints for accessing metrics
-- Comprehensive alerting with runbooks
-- Automated incident response
+A comprehensive AWS-based monitoring solution built with CDK, featuring real-time metrics collection, AI-powered analysis, and automated CI/CD pipeline.
 
-## Architecture
+## 🏗️ Architecture
 
-![Architecture](docs/architecture.png)
+This monitoring infrastructure includes:
 
-This solution includes the following components:
-- **DynamoDB**: Stores application metrics
-- **S3 Bucket**: Stores application logs
-- **Lambda Functions**:
-  - `LogProcessor`: Processes logs from S3 and extracts metrics
-  - `ApiLambda`: Provides REST API access to metrics
-  - `RunbookExecutor`: Performs automated incident response
-- **API Gateway**: Exposes metrics API endpoints
-- **CloudWatch Alarms**: Monitors for issues and triggers alerts
-- **SNS Topic**: Delivers notifications
-- **SSM Parameter Store**: Stores runbook links
+- **API Gateway** - RESTful API for metrics collection and health checks
+- **Lambda Functions** - Serverless processing for API, log processing, health monitoring, and AI analysis
+- **DynamoDB** - Scalable metrics storage with GSI for efficient querying
+- **CloudWatch** - Dashboards, alarms, and custom metrics
+- **SQS** - Reliable message queuing with dead letter queues
+- **S3** - Log storage with intelligent lifecycle management
+- **SNS** - Multi-channel alerting and notifications
+- **EventBridge** - Event-driven automation and scheduling
+- **CI/CD Pipeline** - Automated testing, building, and deployment
 
-## Getting Started
+## 🚀 Quick Start
 
 ### Prerequisites
 
-- AWS CDK v2 installed
-- Node.js 14+ and npm
-- AWS CLI configured with appropriate credentials
+- Node.js 18+ 
+- Python 3.9+
+- AWS CLI configured
+- CDK v2 installed (`npm install -g aws-cdk`)
 
-### Installation
+### Deploy Monitoring Infrastructure
 
-1. Clone this repository
-2. Install dependencies:
 ```bash
-cd monitoring-infrastructure
+cd infrastructure
 npm install
+cdk bootstrap
+cdk deploy MonitoringStack
 ```
 
-3. Configure email for alerts:
-   - Open `lib/monitoring-stack.ts`
-   - Replace `your-email@example.com` with your actual email
+### Deploy CI/CD Pipeline
 
-4. Deploy the stack:
 ```bash
-cdk deploy
+cdk deploy PipelineStack
 ```
 
-5. Confirm the SNS subscription in your email.
+## 📊 API Endpoints
 
-## Usage
+**Base URL**: `https://YOUR_API_GATEWAY_URL/dev/`
 
-### Sending Logs
+### Health Check
+```bash
+GET /health
+```
+Returns service health status and circuit breaker state.
 
-Upload log files to the S3 bucket created by the stack. The logs should be in JSON format with the following structure:
+### Submit Metrics
+```bash
+POST /metrics
+Content-Type: application/json
 
-```json
 {
-  "service": "service-name",
-  "timestamp": "2023-07-26T15:30:00Z",
-  "metrics": {
-    "cpu": 42,
-    "memory": 512,
-    "requests": 100
+  "service_name": "my-service",
+  "metric_type": "response_time", 
+  "value": 150,
+  "metadata": {
+    "additional": "data"
   }
 }
 ```
 
-### Accessing Metrics
-
-The API provides the following endpoints:
-
-- `GET /metrics` - Get all metrics (supports query params: service, timeRange)
-- `POST /metrics` - Create custom metrics
-- `GET /health` - Health check endpoint
-
-Example usage:
+### Get Metrics
 ```bash
-# Get metrics for a specific service in the last hour
-curl "https://<api-url>/metrics?service=my-service&timeRange=1h"
+GET /metrics
+```
+Returns stored metrics with pagination support.
 
-# Create custom metrics
-curl -X POST "https://<api-url>/metrics" \
+## 🧪 Testing
+
+The infrastructure includes comprehensive testing:
+
+```bash
+# API Integration Tests
+python test/test_api_integration.py
+
+# Circuit Breaker Tests  
+python test/test_circuit_breaker.py
+
+# Health Check Tests
+python test/test_health_checks.py
+```
+
+## 🔄 CI/CD Pipeline
+
+The pipeline automatically:
+
+1. **Source** - Pulls code from GitHub
+2. **Test** - Runs unit and integration tests
+3. **Build** - Packages Lambda functions
+4. **Deploy Dev** - Deploys to development environment
+5. **Integration Test** - Validates deployment
+6. **Manual Approval** - Human gate for production
+7. **Deploy Prod** - Production deployment
+8. **Smoke Test** - Final validation
+
+## 📈 Monitoring Features
+
+- **Circuit Breaker Pattern** - Automatic failure handling
+- **Custom CloudWatch Metrics** - Application-specific monitoring
+- **Automated Alerting** - SNS notifications for critical events
+- **Log Aggregation** - Centralized logging with S3 storage
+- **AI-Powered Analysis** - Intelligent insights on metrics patterns
+- **Multi-Environment Support** - Dev/Prod environment separation
+
+## 🛠️ Development
+
+### Local Testing
+```bash
+# Test API endpoints
+curl https://YOUR_API_URL/dev/health
+
+# Submit test metrics
+curl -X POST https://YOUR_API_URL/dev/metrics \
   -H "Content-Type: application/json" \
-  -d '{"service":"my-service","metrics":{"cpu":50,"memory":1024}}'
+  -d '{"service_name": "test", "metric_type": "latency", "value": 100}'
 ```
 
-## Runbooks
+### Monitoring Dashboard
 
-The system includes automated and manual runbooks for incident response:
+Access CloudWatch dashboards through the AWS Console to view:
+- API request metrics
+- Lambda execution metrics  
+- DynamoDB performance
+- Custom application metrics
 
-### Automated Runbooks
+## 📋 Configuration
 
-The `RunbookExecutor` Lambda automatically performs initial investigation when alerts trigger:
+Key environment variables:
+- `ENVIRONMENT` - Target deployment environment (dev/prod)
+- `TABLE_NAME` - DynamoDB table name
+- `PROCESSING_QUEUE_URL` - SQS queue for async processing
 
-1. **High Error Rate Runbook**:
-   - Queries recent error logs
-   - Checks current error rate
-   - Initiates automated investigation
+## 🔒 Security
 
-2. **High Latency Runbook**:
-   - Monitors API latency metrics
-   - Investigates potential performance issues
+- API throttling and caching
+- CORS configuration
+- IAM least-privilege access
+- VPC isolation for sensitive components
+- Encryption at rest and in transit
 
-3. **Lambda Error Runbook**:
-   - Analyzes Lambda function failures
-   - Checks throttling and timeouts
+## 📝 License
 
-4. **DynamoDB Throttling Runbook**:
-   - Monitors table capacity
-   - Checks for hot partitions
-
-### Manual Runbooks
-
-Manual runbook links are provided in alarm notifications and stored in SSM Parameter Store:
-- `/runbooks/high-error-rate` - High API error rate runbook
-
-## Customization
-
-### Adding New Alarms
-
-Add new alarms to the `lib/monitoring-stack.ts` file following the existing pattern:
-
-```typescript
-const newAlarm = new cloudwatch.Alarm(this, 'NewAlarm', {
-  metric: new cloudwatch.Metric({
-    namespace: 'YourNamespace',
-    metricName: 'YourMetric',
-    statistic: 'Sum',
-    period: cdk.Duration.minutes(5)
-  }),
-  threshold: 5,
-  evaluationPeriods: 2,
-  datapointsToAlarm: 2,
-  treatMissingData: cloudwatch.TreatMissingData.NOT_BREACHING,
-  alarmDescription: 'Detailed alarm description with runbook link',
-  comparisonOperator: cloudwatch.ComparisonOperator.GREATER_THAN_THRESHOLD
-});
-
-// Connect to SNS
-newAlarm.addAlarmAction(new cloudwatchActions.SnsAction(alertTopic));
-```
-
-### Adding New Runbooks
-
-1. Add a new function to `lambda/runbook-executor/lambda_function.py`:
-
-```python
-def execute_new_runbook():
-    """
-    Executes automated steps for your new alarm type
-    """
-    # Your automation code here
-    return {
-        'statusCode': 200,
-        'body': json.dumps('Automated runbook steps initiated')
-    }
-```
-
-2. Update the main handler to call your new function:
-
-```python
-if alarm_name == 'NewAlarm':
-    return execute_new_runbook()
-```
-
-## License
-
-This project is licensed under the MIT License - see the LICENSE file for details.
+MIT License - see LICENSE file for details.

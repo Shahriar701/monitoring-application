@@ -90,22 +90,22 @@ def analyze_with_ai(metrics_data, error_logs):
     
     # Prepare context for AI analysis
     context = f"""
-        System Metrics Analysis Request:
+System Metrics Analysis Request:
 
-        Recent Metrics Data:
-        {json.dumps(metrics_data[:10], indent=2, default=str)}
+Recent Metrics Data:
+{json.dumps(metrics_data[:10], indent=2, default=str)}
 
-        Recent Error Logs:
-        {chr(10).join(error_logs[:10])}
+Recent Error Logs:
+{chr(10).join(error_logs[:10])}
 
-        Please analyze this data and provide:
-        1. Key insights about system health
-        2. Potential issues or patterns
-        3. Recommended actions for improvement
-        4. Risk assessment
+Please analyze this data and provide:
+1. Key insights about system health
+2. Potential issues or patterns
+3. Recommended actions for improvement
+4. Risk assessment
 
-        Format your response as JSON with keys: insights, issues, recommendations, risk_level
-        """
+Format your response as JSON with keys: insights, issues, recommendations, risk_level
+"""
 
     try:
         # Use Claude model for analysis
