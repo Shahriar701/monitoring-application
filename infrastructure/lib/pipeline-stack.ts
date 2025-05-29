@@ -22,7 +22,7 @@ export class PipelineStack extends cdk.Stack {
         // GitHub repository configuration
         const githubOwner = 'Shahriar701'; // Replace with your GitHub username
         const githubRepo = 'monitoring-application';
-        const githubBranch = 'main';
+        const githubBranch = 'master';
 
         // You'll need to create a GitHub connection in AWS Console first
         // Go to: CodePipeline -> Settings -> Connections -> Create connection
@@ -33,7 +33,6 @@ export class PipelineStack extends cdk.Stack {
         // ===========================================
 
         const artifactsBucket = new s3.Bucket(this, 'PipelineArtifacts', {
-            bucketName: `monitoring-pipeline-artifacts-${this.account}-${this.region}`,
             encryption: s3.BucketEncryption.S3_MANAGED,
             blockPublicAccess: s3.BlockPublicAccess.BLOCK_ALL,
             lifecycleRules: [{
