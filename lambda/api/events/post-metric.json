@@ -1,0 +1,47 @@
+{
+  "resource": "/metrics",
+  "path": "/metrics",
+  "httpMethod": "POST",
+  "headers": {
+    "Accept": "application/json",
+    "Content-Type": "application/json",
+    "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/80.0.3987.132 Safari/537.36"
+  },
+  "multiValueHeaders": {},
+  "queryStringParameters": null,
+  "multiValueQueryStringParameters": null,
+  "pathParameters": null,
+  "stageVariables": null,
+  "requestContext": {
+    "resourceId": "abc123",
+    "resourcePath": "/metrics",
+    "httpMethod": "POST",
+    "extendedRequestId": "request-id",
+    "requestTime": "27/Jul/2023:15:30:00 +0000",
+    "path": "/metrics",
+    "accountId": "123456789012",
+    "protocol": "HTTP/1.1",
+    "stage": "prod",
+    "domainPrefix": "api",
+    "requestTimeEpoch": 1690467000000,
+    "requestId": "c6af9ac6-7b61-11e6-9a41-93e8deadbeef",
+    "identity": {
+      "cognitoIdentityPoolId": null,
+      "accountId": null,
+      "cognitoIdentityId": null,
+      "caller": null,
+      "sourceIp": "127.0.0.1",
+      "principalOrgId": null,
+      "accessKey": null,
+      "cognitoAuthenticationType": null,
+      "cognitoAuthenticationProvider": null,
+      "userArn": null,
+      "userAgent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/80.0.3987.132 Safari/537.36",
+      "user": null
+    },
+    "domainName": "api.example.com",
+    "apiId": "api-id"
+  },
+  "body": "{\"service\":\"payment-service\",\"timestamp\":\"2023-07-27T15:30:00Z\",\"metrics\":{\"cpu\":45,\"memory\":512,\"requests\":230}}",
+  "isBase64Encoded": false
+} 

@@ -1,0 +1,22 @@
+{
+  "Records": [
+    {
+      "EventSource": "aws:sns",
+      "EventVersion": "1.0",
+      "EventSubscriptionArn": "arn:aws:sns:us-east-1:123456789012:monitoring-alerts:abcd1234-efgh-5678-ijkl-9012mnop3456",
+      "Sns": {
+        "Type": "Notification",
+        "MessageId": "12345678-1234-5678-9012-123456789012",
+        "TopicArn": "arn:aws:sns:us-east-1:123456789012:monitoring-alerts",
+        "Subject": "ALARM: \"HighErrorRateAlarm\" in US East (N. Virginia)",
+        "Message": "{\"AlarmName\":\"HighErrorRateAlarm\",\"AlarmDescription\":\"API error rate is too high - investigate immediately\",\"AWSAccountId\":\"123456789012\",\"NewStateValue\":\"ALARM\",\"NewStateReason\":\"Threshold Crossed: 5 out of the last 5 datapoints were greater than the threshold (5.0).\",\"StateChangeTime\":\"2023-07-27T15:30:00.000+0000\",\"Region\":\"US East (N. Virginia)\",\"AlarmArn\":\"arn:aws:cloudwatch:us-east-1:123456789012:alarm:HighErrorRateAlarm\",\"OldStateValue\":\"OK\",\"Trigger\":{\"MetricName\":\"ApiError\",\"Namespace\":\"MonitoringAPI\",\"StatisticType\":\"Statistic\",\"Statistic\":\"SUM\",\"Unit\":null,\"Dimensions\":[],\"Period\":300,\"EvaluationPeriods\":2,\"ComparisonOperator\":\"GreaterThanThreshold\",\"Threshold\":5.0,\"TreatMissingData\":\"notBreaching\",\"EvaluateLowSampleCountPercentile\":\"\"}}",
+        "Timestamp": "2023-07-27T15:30:00.000Z",
+        "SignatureVersion": "1",
+        "Signature": "example-signature",
+        "SigningCertUrl": "https://sns.us-east-1.amazonaws.com/SimpleNotificationService-12345.pem",
+        "UnsubscribeUrl": "https://sns.us-east-1.amazonaws.com/?Action=Unsubscribe&SubscriptionArn=arn:aws:sns:us-east-1:123456789012:monitoring-alerts:abcd1234-efgh-5678-ijkl-9012mnop3456",
+        "MessageAttributes": {}
+      }
+    }
+  ]
+} 
