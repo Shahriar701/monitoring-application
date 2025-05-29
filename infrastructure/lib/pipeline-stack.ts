@@ -63,13 +63,13 @@ export class PipelineStack extends cdk.Stack {
                     install: {
                         'runtime-versions': {
                             python: '3.9',
-                            nodejs: '18'
+                            nodejs: '22'
                         },
                         commands: [
                             'echo "Installing dependencies..."',
                             'pip install --upgrade pip',
                             'pip install pytest boto3 moto requests',
-                            'npm install -g aws-cdk@latest'
+                            'npm install -g aws-cdk@2.70.0'
                         ]
                     },
                     pre_build: {
@@ -83,12 +83,12 @@ export class PipelineStack extends cdk.Stack {
                     build: {
                         commands: [
                             'echo "Running unit tests..."',
-                            'cd test && python -m pytest test_circuit_breaker.py -v',
-                            'cd test && python -m pytest test_health_checks.py -v',
+                            'python -m pytest test/test_circuit_breaker.py -v',
+                            'python -m pytest test/test_health_checks.py -v',
+                            'python -m pytest test/test_lambda_functions.py -v',
+                            'python -m pytest test/test_api_integration.py -v',
                             'echo "Validating CDK syntax..."',
-                            'cd infrastructure && npm install && cdk synth --context environment=dev',
-                            'echo "Running Lambda function tests..."',
-                            'cd test && python -m pytest test_lambda_functions.py -v'
+                            'cd infrastructure && npm install && cdk synth --context environment=dev'
                         ]
                     },
                     post_build: {
@@ -133,7 +133,7 @@ export class PipelineStack extends cdk.Stack {
                             'echo "Running integration tests..."',
                             'export API_URL=$(aws cloudformation describe-stacks --stack-name MonitoringStack-dev --query "Stacks[0].Outputs[?OutputKey==\'ApiUrl\'].OutputValue" --output text)',
                             'echo "Testing API at: $API_URL"',
-                            'cd test && python -m pytest test_api_integration.py -v --api-url=$API_URL'
+                            'python -m pytest test/test_api_integration.py -v --api-url=$API_URL'
                         ]
                     }
                 }
@@ -157,10 +157,10 @@ export class PipelineStack extends cdk.Stack {
                     install: {
                         'runtime-versions': {
                             python: '3.9',
-                            nodejs: '18'
+                            nodejs: '22'
                         },
                         commands: [
-                            'npm install -g aws-cdk@latest'
+                            'npm install -g aws-cdk@2.70.0'
                         ]
                     },
                     build: {
