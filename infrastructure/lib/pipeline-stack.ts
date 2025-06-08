@@ -363,8 +363,30 @@ export class PipelineStack extends cdk.Stack {
                                 }),
                                 environment: {
                                     buildImage: codebuild.LinuxBuildImage.STANDARD_5_0,
-                                    computeType: codebuild.ComputeType.SMALL
+                                    computeType: codebuild.ComputeType.SMALL,
+                                    environmentVariables: {
+                                        'PROD_API_URL': {
+                                            value: 'https://jczqvn5k31.execute-api.us-east-1.amazonaws.com/prod/'
+                                        }
+                                    }
                                 },
+                                role: new iam.Role(this, 'SmokeTestRole', {
+                                    assumedBy: new iam.ServicePrincipal('codebuild.amazonaws.com'),
+                                    inlinePolicies: {
+                                        SmokeTestPolicy: new iam.PolicyDocument({
+                                            statements: [
+                                                new iam.PolicyStatement({
+                                                    actions: [
+                                                        'logs:CreateLogGroup',
+                                                        'logs:CreateLogStream',
+                                                        'logs:PutLogEvents'
+                                                    ],
+                                                    resources: ['*']
+                                                })
+                                            ]
+                                        })
+                                    }
+                                }),
                                 buildSpec: codebuild.BuildSpec.fromObject({
                                     version: '0.2',
                                     phases: {
@@ -374,16 +396,34 @@ export class PipelineStack extends cdk.Stack {
                                         },
                                         build: {
                                             commands: [
-                                                'echo "Retrieving production API URL..."',
-                                                'export API_URL=$(aws cloudformation describe-stacks --stack-name monitoring-app-prod --query "Stacks[0].Outputs[?OutputKey==\'ApiUrl\'].OutputValue" --output text 2>/dev/null || echo "")',
+                                                'echo "🧪 Running smoke test against production API..."',
+                                                'export API_URL=$PROD_API_URL',
                                                 'echo "Production API URL: $API_URL"',
-                                                'if [ -z "$API_URL" ] || [ "$API_URL" = "None" ]; then echo "Production API URL not found, skipping smoke test"; exit 0; fi',
-                                                'echo "Running smoke test against production API..."',
-                                                'echo "Testing health endpoint: $API_URL/health"',
-                                                'response=$(curl -s -w "%{http_code}" "$API_URL/health" || echo "000")',
-                                                'http_code=${response: -3}',
-                                                'echo "HTTP response code: $http_code"',
-                                                'if [ "$http_code" = "200" ]; then echo "✅ Production health check passed"; else echo "❌ Production health check failed with code: $http_code"; curl -v "$API_URL/health" || true; exit 1; fi'
+                                                'if [ -z "$API_URL" ]; then echo "❌ Production API URL not found, failing smoke test"; exit 1; fi',
+                                                'echo ""',
+                                                'echo "Testing health endpoint: ${API_URL}health"',
+                                                'echo ""',
+                                                'http_code=$(curl -s -o /tmp/response.json -w "%{http_code}" "${API_URL}health")',
+                                                'echo "HTTP Status Code: $http_code"',
+                                                'echo "Response Body:"',
+                                                'cat /tmp/response.json || echo "No response body"',
+                                                'echo ""',
+                                                'if [ "$http_code" = "200" ]; then',
+                                                '  echo "✅ Production health check PASSED - API is responding correctly"',
+                                                '  if grep -q "healthy" /tmp/response.json && grep -q "circuit_breaker" /tmp/response.json; then',
+                                                '    echo "✅ Response content validation PASSED"',
+                                                '  else',
+                                                '    echo "⚠️  Response content validation FAILED - missing expected fields"',
+                                                '    exit 1',
+                                                '  fi',
+                                                'else',
+                                                '  echo "❌ Production health check FAILED with HTTP code: $http_code"',
+                                                '  echo "Debug: Full curl response:"',
+                                                '  curl -v "${API_URL}health" || true',
+                                                '  exit 1',
+                                                'fi',
+                                                'echo ""',
+                                                'echo "🎉 All smoke tests PASSED! Production deployment is healthy."'
                                             ]
                                         }
                                     }
