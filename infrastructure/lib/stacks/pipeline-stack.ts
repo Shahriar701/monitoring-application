@@ -54,7 +54,7 @@ export class PipelineStack extends cdk.Stack {
                 repo: githubRepo
             }),
             environment: {
-                buildImage: codebuild.LinuxBuildImage.STANDARD_5_0,
+                buildImage: codebuild.LinuxBuildImage.STANDARD_7_0,
                 computeType: codebuild.ComputeType.SMALL
             },
             buildSpec: codebuild.BuildSpec.fromObject({
@@ -69,7 +69,7 @@ export class PipelineStack extends cdk.Stack {
                             'echo "Installing dependencies..."',
                             'pip install --upgrade pip',
                             'pip install pytest boto3 moto requests',
-                            'npm install -g aws-cdk@2.70.0'
+                            'npm install -g aws-cdk@2.200.1'
                         ]
                     },
                     pre_build: {
@@ -114,7 +114,7 @@ export class PipelineStack extends cdk.Stack {
                 repo: githubRepo
             }),
             environment: {
-                buildImage: codebuild.LinuxBuildImage.STANDARD_5_0,
+                buildImage: codebuild.LinuxBuildImage.STANDARD_7_0,
                 computeType: codebuild.ComputeType.SMALL
             },
             buildSpec: codebuild.BuildSpec.fromObject({
@@ -148,7 +148,7 @@ export class PipelineStack extends cdk.Stack {
                 repo: githubRepo
             }),
             environment: {
-                buildImage: codebuild.LinuxBuildImage.STANDARD_5_0,
+                buildImage: codebuild.LinuxBuildImage.STANDARD_7_0,
                 computeType: codebuild.ComputeType.SMALL
             },
             buildSpec: codebuild.BuildSpec.fromObject({
@@ -160,7 +160,7 @@ export class PipelineStack extends cdk.Stack {
                             nodejs: '22'
                         },
                         commands: [
-                            'npm install -g aws-cdk@2.70.0'
+                            'npm install -g aws-cdk@2.200.1'
                         ]
                     },
                     build: {
@@ -174,7 +174,7 @@ export class PipelineStack extends cdk.Stack {
                             'echo "Directory contents:"',
                             'ls -la',
                             'echo "Looking for Lambda files..."',
-                            'if [ -d "src/lambda" ]; then find src/lambda -name "*.py" -exec python -m py_compile {} \\; && echo "Lambda validation successful"; else echo "No src/lambda directory found"; fi'
+                            'if [ -d "src/lambda" ]; then find src/lambda -name "*.py" -exec python3 -m py_compile {} \\; && echo "Lambda validation successful"; else echo "No src/lambda directory found"; fi'
                         ]
                     }
                 },
@@ -362,11 +362,11 @@ export class PipelineStack extends cdk.Stack {
                                     repo: githubRepo
                                 }),
                                 environment: {
-                                    buildImage: codebuild.LinuxBuildImage.STANDARD_5_0,
+                                    buildImage: codebuild.LinuxBuildImage.STANDARD_7_0,
                                     computeType: codebuild.ComputeType.SMALL,
                                     environmentVariables: {
                                         'PROD_API_URL': {
-                                            value: 'https://jczqvn5k31.execute-api.us-east-1.amazonaws.com/prod/'
+                                            value: 'https://78wqeoyd79.execute-api.us-east-1.amazonaws.com/prod/'
                                         }
                                     }
                                 },
@@ -379,7 +379,8 @@ export class PipelineStack extends cdk.Stack {
                                                     actions: [
                                                         'logs:CreateLogGroup',
                                                         'logs:CreateLogStream',
-                                                        'logs:PutLogEvents'
+                                                        'logs:PutLogEvents',
+                                                        'cloudformation:DescribeStacks'
                                                     ],
                                                     resources: ['*']
                                                 })
@@ -397,32 +398,18 @@ export class PipelineStack extends cdk.Stack {
                                         build: {
                                             commands: [
                                                 'echo "🧪 Running smoke test against production API..."',
-                                                'export API_URL=$PROD_API_URL',
+                                                'API_URL=$(aws cloudformation describe-stacks --stack-name monitoring-app-api-prod --query "Stacks[0].Outputs[?OutputKey==`ApiUrl`].OutputValue" --output text 2>/dev/null || echo "$PROD_API_URL")',
                                                 'echo "Production API URL: $API_URL"',
-                                                'if [ -z "$API_URL" ]; then echo "❌ Production API URL not found, failing smoke test"; exit 1; fi',
-                                                'echo ""',
+                                                'if [ -z "$API_URL" ] || [ "$API_URL" = "None" ]; then echo "❌ Production API URL not found"; exit 1; fi',
                                                 'echo "Testing health endpoint: ${API_URL}health"',
-                                                'echo ""',
                                                 'http_code=$(curl -s -o /tmp/response.json -w "%{http_code}" "${API_URL}health")',
                                                 'echo "HTTP Status Code: $http_code"',
-                                                'echo "Response Body:"',
                                                 'cat /tmp/response.json || echo "No response body"',
-                                                'echo ""',
-                                                'if [ "$http_code" = "200" ]; then',
-                                                '  echo "✅ Production health check PASSED - API is responding correctly"',
-                                                '  if grep -q "healthy" /tmp/response.json && grep -q "circuit_breaker" /tmp/response.json; then',
-                                                '    echo "✅ Response content validation PASSED"',
-                                                '  else',
-                                                '    echo "⚠️  Response content validation FAILED - missing expected fields"',
-                                                '    exit 1',
-                                                '  fi',
-                                                'else',
-                                                '  echo "❌ Production health check FAILED with HTTP code: $http_code"',
-                                                '  echo "Debug: Full curl response:"',
-                                                '  curl -v "${API_URL}health" || true',
-                                                '  exit 1',
-                                                'fi',
-                                                'echo ""',
+                                                'if [ "$http_code" != "200" ]; then echo "❌ Health check failed with code: $http_code"; exit 1; fi',
+                                                'echo "✅ Production health check PASSED"',
+                                                'if ! grep -q "healthy" /tmp/response.json; then echo "❌ Missing healthy status"; exit 1; fi',
+                                                'if ! grep -q "circuit_breaker" /tmp/response.json; then echo "❌ Missing circuit_breaker status"; exit 1; fi',
+                                                'echo "✅ Response content validation PASSED"',
                                                 'echo "🎉 All smoke tests PASSED! Production deployment is healthy."'
                                             ]
                                         }

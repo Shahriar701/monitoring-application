@@ -1,0 +1,1625 @@
+{
+  "version": "31.0.0",
+  "artifacts": {
+    "monitoring-app-Networking-prod.assets": {
+      "type": "cdk:asset-manifest",
+      "properties": {
+        "file": "monitoring-app-Networking-prod.assets.json",
+        "requiresBootstrapStackVersion": 6,
+        "bootstrapStackVersionSsmParameter": "/cdk-bootstrap/hnb659fds/version"
+      }
+    },
+    "monitoring-app-Networking-prod": {
+      "type": "aws:cloudformation:stack",
+      "environment": "aws://084828566306/us-east-1",
+      "properties": {
+        "templateFile": "monitoring-app-Networking-prod.template.json",
+        "tags": {
+          "Environment": "prod",
+          "Project": "monitoring-app",
+          "StackType": "Networking"
+        },
+        "validateOnSynth": false,
+        "assumeRoleArn": "arn:${AWS::Partition}:iam::084828566306:role/cdk-hnb659fds-deploy-role-084828566306-us-east-1",
+        "cloudFormationExecutionRoleArn": "arn:${AWS::Partition}:iam::084828566306:role/cdk-hnb659fds-cfn-exec-role-084828566306-us-east-1",
+        "stackTemplateAssetObjectUrl": "s3://cdk-hnb659fds-assets-084828566306-us-east-1/0b37fda66b50db032e1d742c29f308fafb7703adbfc9880146bd5f9ac60348c2.json",
+        "requiresBootstrapStackVersion": 6,
+        "bootstrapStackVersionSsmParameter": "/cdk-bootstrap/hnb659fds/version",
+        "additionalDependencies": [
+          "monitoring-app-Networking-prod.assets"
+        ],
+        "lookupRole": {
+          "arn": "arn:${AWS::Partition}:iam::084828566306:role/cdk-hnb659fds-lookup-role-084828566306-us-east-1",
+          "requiresBootstrapStackVersion": 8,
+          "bootstrapStackVersionSsmParameter": "/cdk-bootstrap/hnb659fds/version"
+        },
+        "stackName": "monitoring-app-networking-prod"
+      },
+      "dependencies": [
+        "monitoring-app-Networking-prod.assets"
+      ],
+      "metadata": {
+        "/monitoring-app-Networking-prod": [
+          {
+            "type": "aws:cdk:stack-tags",
+            "data": [
+              {
+                "Key": "Environment",
+                "Value": "prod"
+              },
+              {
+                "Key": "Project",
+                "Value": "monitoring-app"
+              },
+              {
+                "Key": "StackType",
+                "Value": "Networking"
+              }
+            ]
+          }
+        ],
+        "/monitoring-app-Networking-prod/MonitoringVPC/Resource": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "MonitoringVPC8FAA53D9"
+          }
+        ],
+        "/monitoring-app-Networking-prod/MonitoringVPC/PublicSubnet1/Subnet": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "MonitoringVPCPublicSubnet1Subnet58600EDB"
+          }
+        ],
+        "/monitoring-app-Networking-prod/MonitoringVPC/PublicSubnet1/RouteTable": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "MonitoringVPCPublicSubnet1RouteTable9316060E"
+          }
+        ],
+        "/monitoring-app-Networking-prod/MonitoringVPC/PublicSubnet1/RouteTableAssociation": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "MonitoringVPCPublicSubnet1RouteTableAssociationA44F66F2"
+          }
+        ],
+        "/monitoring-app-Networking-prod/MonitoringVPC/PublicSubnet1/DefaultRoute": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "MonitoringVPCPublicSubnet1DefaultRoute1BEEDEC3"
+          }
+        ],
+        "/monitoring-app-Networking-prod/MonitoringVPC/PublicSubnet2/Subnet": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "MonitoringVPCPublicSubnet2Subnet4F5FB28C"
+          }
+        ],
+        "/monitoring-app-Networking-prod/MonitoringVPC/PublicSubnet2/RouteTable": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "MonitoringVPCPublicSubnet2RouteTable70F6B716"
+          }
+        ],
+        "/monitoring-app-Networking-prod/MonitoringVPC/PublicSubnet2/RouteTableAssociation": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "MonitoringVPCPublicSubnet2RouteTableAssociationB288D7DF"
+          }
+        ],
+        "/monitoring-app-Networking-prod/MonitoringVPC/PublicSubnet2/DefaultRoute": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "MonitoringVPCPublicSubnet2DefaultRouteD78CFB6A"
+          }
+        ],
+        "/monitoring-app-Networking-prod/MonitoringVPC/PublicSubnet3/Subnet": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "MonitoringVPCPublicSubnet3Subnet2BB0045A"
+          }
+        ],
+        "/monitoring-app-Networking-prod/MonitoringVPC/PublicSubnet3/RouteTable": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "MonitoringVPCPublicSubnet3RouteTableE9CFB34C"
+          }
+        ],
+        "/monitoring-app-Networking-prod/MonitoringVPC/PublicSubnet3/RouteTableAssociation": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "MonitoringVPCPublicSubnet3RouteTableAssociation7B0B0464"
+          }
+        ],
+        "/monitoring-app-Networking-prod/MonitoringVPC/PublicSubnet3/DefaultRoute": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "MonitoringVPCPublicSubnet3DefaultRouteB2199A8C"
+          }
+        ],
+        "/monitoring-app-Networking-prod/MonitoringVPC/PrivateSubnet1/Subnet": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "MonitoringVPCPrivateSubnet1SubnetC43E6062"
+          }
+        ],
+        "/monitoring-app-Networking-prod/MonitoringVPC/PrivateSubnet1/RouteTable": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "MonitoringVPCPrivateSubnet1RouteTable7090090B"
+          }
+        ],
+        "/monitoring-app-Networking-prod/MonitoringVPC/PrivateSubnet1/RouteTableAssociation": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "MonitoringVPCPrivateSubnet1RouteTableAssociation4BCCB130"
+          }
+        ],
+        "/monitoring-app-Networking-prod/MonitoringVPC/PrivateSubnet2/Subnet": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "MonitoringVPCPrivateSubnet2SubnetEF8EC316"
+          }
+        ],
+        "/monitoring-app-Networking-prod/MonitoringVPC/PrivateSubnet2/RouteTable": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "MonitoringVPCPrivateSubnet2RouteTable1A68EDEE"
+          }
+        ],
+        "/monitoring-app-Networking-prod/MonitoringVPC/PrivateSubnet2/RouteTableAssociation": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "MonitoringVPCPrivateSubnet2RouteTableAssociationE679B013"
+          }
+        ],
+        "/monitoring-app-Networking-prod/MonitoringVPC/PrivateSubnet3/Subnet": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "MonitoringVPCPrivateSubnet3SubnetEDC84B0C"
+          }
+        ],
+        "/monitoring-app-Networking-prod/MonitoringVPC/PrivateSubnet3/RouteTable": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "MonitoringVPCPrivateSubnet3RouteTable3254D138"
+          }
+        ],
+        "/monitoring-app-Networking-prod/MonitoringVPC/PrivateSubnet3/RouteTableAssociation": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "MonitoringVPCPrivateSubnet3RouteTableAssociation7B1B7101"
+          }
+        ],
+        "/monitoring-app-Networking-prod/MonitoringVPC/IsolatedSubnet1/Subnet": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "MonitoringVPCIsolatedSubnet1SubnetB36CE161"
+          }
+        ],
+        "/monitoring-app-Networking-prod/MonitoringVPC/IsolatedSubnet1/RouteTable": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "MonitoringVPCIsolatedSubnet1RouteTable21EDCF97"
+          }
+        ],
+        "/monitoring-app-Networking-prod/MonitoringVPC/IsolatedSubnet1/RouteTableAssociation": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "MonitoringVPCIsolatedSubnet1RouteTableAssociation36A4C832"
+          }
+        ],
+        "/monitoring-app-Networking-prod/MonitoringVPC/IsolatedSubnet2/Subnet": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "MonitoringVPCIsolatedSubnet2Subnet5CBA1CFD"
+          }
+        ],
+        "/monitoring-app-Networking-prod/MonitoringVPC/IsolatedSubnet2/RouteTable": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "MonitoringVPCIsolatedSubnet2RouteTable1303EC78"
+          }
+        ],
+        "/monitoring-app-Networking-prod/MonitoringVPC/IsolatedSubnet2/RouteTableAssociation": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "MonitoringVPCIsolatedSubnet2RouteTableAssociation7C5D3BC3"
+          }
+        ],
+        "/monitoring-app-Networking-prod/MonitoringVPC/IsolatedSubnet3/Subnet": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "MonitoringVPCIsolatedSubnet3Subnet53DDA484"
+          }
+        ],
+        "/monitoring-app-Networking-prod/MonitoringVPC/IsolatedSubnet3/RouteTable": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "MonitoringVPCIsolatedSubnet3RouteTable6BCE6CA3"
+          }
+        ],
+        "/monitoring-app-Networking-prod/MonitoringVPC/IsolatedSubnet3/RouteTableAssociation": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "MonitoringVPCIsolatedSubnet3RouteTableAssociation37F78D5E"
+          }
+        ],
+        "/monitoring-app-Networking-prod/MonitoringVPC/IGW": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "MonitoringVPCIGW1B780536"
+          }
+        ],
+        "/monitoring-app-Networking-prod/MonitoringVPC/VPCGW": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "MonitoringVPCVPCGW2108EF91"
+          }
+        ],
+        "/monitoring-app-Networking-prod/MonitoringVPC/DynamoDBEndpoint/Resource": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "MonitoringVPCDynamoDBEndpointD83C1CAD"
+          }
+        ],
+        "/monitoring-app-Networking-prod/MonitoringVPC/S3Endpoint/Resource": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "MonitoringVPCS3EndpointB7FEDF88"
+          }
+        ],
+        "/monitoring-app-Networking-prod/MonitoringVPC/LambdaEndpoint/SecurityGroup/Resource": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "MonitoringVPCLambdaEndpointSecurityGroup2FF24E84"
+          }
+        ],
+        "/monitoring-app-Networking-prod/MonitoringVPC/LambdaEndpoint/Resource": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "MonitoringVPCLambdaEndpointBB7713A9"
+          }
+        ],
+        "/monitoring-app-Networking-prod/MonitoringVPC/CloudWatchLogsEndpoint/SecurityGroup/Resource": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "MonitoringVPCCloudWatchLogsEndpointSecurityGroup4E25DC8A"
+          }
+        ],
+        "/monitoring-app-Networking-prod/MonitoringVPC/CloudWatchLogsEndpoint/Resource": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "MonitoringVPCCloudWatchLogsEndpointC8F125CC"
+          }
+        ],
+        "/monitoring-app-Networking-prod/MonitoringVPC/SQSEndpoint/SecurityGroup/Resource": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "MonitoringVPCSQSEndpointSecurityGroup1A088515"
+          }
+        ],
+        "/monitoring-app-Networking-prod/MonitoringVPC/SQSEndpoint/Resource": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "MonitoringVPCSQSEndpointCE463EB1"
+          }
+        ],
+        "/monitoring-app-Networking-prod/MonitoringVPC/SNSEndpoint/SecurityGroup/Resource": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "MonitoringVPCSNSEndpointSecurityGroup14F6F0E5"
+          }
+        ],
+        "/monitoring-app-Networking-prod/MonitoringVPC/SNSEndpoint/Resource": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "MonitoringVPCSNSEndpoint8E9AE1AB"
+          }
+        ],
+        "/monitoring-app-Networking-prod/LambdaSecurityGroup/Resource": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "LambdaSecurityGroup0BD9FC99"
+          }
+        ],
+        "/monitoring-app-Networking-prod/VpcId": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "VpcId"
+          }
+        ],
+        "/monitoring-app-Networking-prod/PrivateSubnetIds": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "PrivateSubnetIds"
+          }
+        ],
+        "/monitoring-app-Networking-prod/CDKMetadata/Default": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "CDKMetadata"
+          }
+        ],
+        "/monitoring-app-Networking-prod/Exports/Output{\"Ref\":\"MonitoringVPC8FAA53D9\"}": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "ExportsOutputRefMonitoringVPC8FAA53D96DCBBE0C"
+          }
+        ],
+        "/monitoring-app-Networking-prod/Exports/Output{\"Ref\":\"MonitoringVPCPrivateSubnet1SubnetC43E6062\"}": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "ExportsOutputRefMonitoringVPCPrivateSubnet1SubnetC43E6062AEB93B2C"
+          }
+        ],
+        "/monitoring-app-Networking-prod/Exports/Output{\"Ref\":\"MonitoringVPCPrivateSubnet2SubnetEF8EC316\"}": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "ExportsOutputRefMonitoringVPCPrivateSubnet2SubnetEF8EC316501526F0"
+          }
+        ],
+        "/monitoring-app-Networking-prod/Exports/Output{\"Ref\":\"MonitoringVPCPrivateSubnet3SubnetEDC84B0C\"}": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "ExportsOutputRefMonitoringVPCPrivateSubnet3SubnetEDC84B0CFDBE5EA3"
+          }
+        ],
+        "/monitoring-app-Networking-prod/BootstrapVersion": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "BootstrapVersion"
+          }
+        ],
+        "/monitoring-app-Networking-prod/CheckBootstrapVersion": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "CheckBootstrapVersion"
+          }
+        ]
+      },
+      "displayName": "monitoring-app-Networking-prod"
+    },
+    "monitoring-app-Security-prod.assets": {
+      "type": "cdk:asset-manifest",
+      "properties": {
+        "file": "monitoring-app-Security-prod.assets.json",
+        "requiresBootstrapStackVersion": 6,
+        "bootstrapStackVersionSsmParameter": "/cdk-bootstrap/hnb659fds/version"
+      }
+    },
+    "monitoring-app-Security-prod": {
+      "type": "aws:cloudformation:stack",
+      "environment": "aws://084828566306/us-east-1",
+      "properties": {
+        "templateFile": "monitoring-app-Security-prod.template.json",
+        "tags": {
+          "Environment": "prod",
+          "Project": "monitoring-app",
+          "StackType": "Security"
+        },
+        "validateOnSynth": false,
+        "assumeRoleArn": "arn:${AWS::Partition}:iam::084828566306:role/cdk-hnb659fds-deploy-role-084828566306-us-east-1",
+        "cloudFormationExecutionRoleArn": "arn:${AWS::Partition}:iam::084828566306:role/cdk-hnb659fds-cfn-exec-role-084828566306-us-east-1",
+        "stackTemplateAssetObjectUrl": "s3://cdk-hnb659fds-assets-084828566306-us-east-1/79015e57d75be084ec167b4c68caf748afacaa2c4c955af9de302c94e05cdffc.json",
+        "requiresBootstrapStackVersion": 6,
+        "bootstrapStackVersionSsmParameter": "/cdk-bootstrap/hnb659fds/version",
+        "additionalDependencies": [
+          "monitoring-app-Security-prod.assets"
+        ],
+        "lookupRole": {
+          "arn": "arn:${AWS::Partition}:iam::084828566306:role/cdk-hnb659fds-lookup-role-084828566306-us-east-1",
+          "requiresBootstrapStackVersion": 8,
+          "bootstrapStackVersionSsmParameter": "/cdk-bootstrap/hnb659fds/version"
+        },
+        "stackName": "monitoring-app-security-prod"
+      },
+      "dependencies": [
+        "monitoring-app-Storage-prod",
+        "monitoring-app-Messaging-prod",
+        "monitoring-app-Security-prod.assets"
+      ],
+      "metadata": {
+        "/monitoring-app-Security-prod": [
+          {
+            "type": "aws:cdk:stack-tags",
+            "data": [
+              {
+                "Key": "Environment",
+                "Value": "prod"
+              },
+              {
+                "Key": "Project",
+                "Value": "monitoring-app"
+              },
+              {
+                "Key": "StackType",
+                "Value": "Security"
+              }
+            ]
+          }
+        ],
+        "/monitoring-app-Security-prod/EncryptionKey/Resource": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "EncryptionKey1B843E66"
+          }
+        ],
+        "/monitoring-app-Security-prod/LambdaExecutionRole/Resource": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "LambdaExecutionRoleD5C26073"
+          }
+        ],
+        "/monitoring-app-Security-prod/LambdaExecutionRole/DefaultPolicy/Resource": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "LambdaExecutionRoleDefaultPolicy6D69732F"
+          }
+        ],
+        "/monitoring-app-Security-prod/ApiLambdaRole/Resource": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "ApiLambdaRole66D0B4CD"
+          }
+        ],
+        "/monitoring-app-Security-prod/ApiLambdaRole/DefaultPolicy/Resource": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "ApiLambdaRoleDefaultPolicy84E47AF4"
+          }
+        ],
+        "/monitoring-app-Security-prod/LambdaExecutionRoleArn": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "LambdaExecutionRoleArn"
+          }
+        ],
+        "/monitoring-app-Security-prod/EncryptionKeyId": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "EncryptionKeyId"
+          }
+        ],
+        "/monitoring-app-Security-prod/CDKMetadata/Default": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "CDKMetadata"
+          }
+        ],
+        "/monitoring-app-Security-prod/Exports/Output{\"Fn::GetAtt\":[\"ApiLambdaRole66D0B4CD\",\"Arn\"]}": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "ExportsOutputFnGetAttApiLambdaRole66D0B4CDArn3CBE2556"
+          }
+        ],
+        "/monitoring-app-Security-prod/Exports/Output{\"Fn::GetAtt\":[\"LambdaExecutionRoleD5C26073\",\"Arn\"]}": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "ExportsOutputFnGetAttLambdaExecutionRoleD5C26073ArnADAF6607"
+          }
+        ],
+        "/monitoring-app-Security-prod/BootstrapVersion": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "BootstrapVersion"
+          }
+        ],
+        "/monitoring-app-Security-prod/CheckBootstrapVersion": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "CheckBootstrapVersion"
+          }
+        ]
+      },
+      "displayName": "monitoring-app-Security-prod"
+    },
+    "monitoring-app-Storage-prod.assets": {
+      "type": "cdk:asset-manifest",
+      "properties": {
+        "file": "monitoring-app-Storage-prod.assets.json",
+        "requiresBootstrapStackVersion": 6,
+        "bootstrapStackVersionSsmParameter": "/cdk-bootstrap/hnb659fds/version"
+      }
+    },
+    "monitoring-app-Storage-prod": {
+      "type": "aws:cloudformation:stack",
+      "environment": "aws://084828566306/us-east-1",
+      "properties": {
+        "templateFile": "monitoring-app-Storage-prod.template.json",
+        "tags": {
+          "Environment": "prod",
+          "Project": "monitoring-app",
+          "StackType": "Storage"
+        },
+        "validateOnSynth": false,
+        "assumeRoleArn": "arn:${AWS::Partition}:iam::084828566306:role/cdk-hnb659fds-deploy-role-084828566306-us-east-1",
+        "cloudFormationExecutionRoleArn": "arn:${AWS::Partition}:iam::084828566306:role/cdk-hnb659fds-cfn-exec-role-084828566306-us-east-1",
+        "stackTemplateAssetObjectUrl": "s3://cdk-hnb659fds-assets-084828566306-us-east-1/70feb44e41a97b5dc53a37c0296407992acb9b9ca3e18e64fd566231f47f3895.json",
+        "requiresBootstrapStackVersion": 6,
+        "bootstrapStackVersionSsmParameter": "/cdk-bootstrap/hnb659fds/version",
+        "additionalDependencies": [
+          "monitoring-app-Storage-prod.assets"
+        ],
+        "lookupRole": {
+          "arn": "arn:${AWS::Partition}:iam::084828566306:role/cdk-hnb659fds-lookup-role-084828566306-us-east-1",
+          "requiresBootstrapStackVersion": 8,
+          "bootstrapStackVersionSsmParameter": "/cdk-bootstrap/hnb659fds/version"
+        },
+        "stackName": "monitoring-app-storage-prod"
+      },
+      "dependencies": [
+        "monitoring-app-Storage-prod.assets"
+      ],
+      "metadata": {
+        "/monitoring-app-Storage-prod": [
+          {
+            "type": "aws:cdk:stack-tags",
+            "data": [
+              {
+                "Key": "Environment",
+                "Value": "prod"
+              },
+              {
+                "Key": "Project",
+                "Value": "monitoring-app"
+              },
+              {
+                "Key": "StackType",
+                "Value": "Storage"
+              }
+            ]
+          }
+        ],
+        "/monitoring-app-Storage-prod/ApplicationMetrics": [
+          {
+            "type": "aws:cdk:hasPhysicalName",
+            "data": {
+              "Ref": "ApplicationMetrics0C795B92"
+            }
+          }
+        ],
+        "/monitoring-app-Storage-prod/ApplicationMetrics/Resource": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "ApplicationMetrics0C795B92"
+          }
+        ],
+        "/monitoring-app-Storage-prod/LogsBucket/Resource": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "LogsBucket9C4D8843"
+          }
+        ],
+        "/monitoring-app-Storage-prod/BackupBucket/Resource": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "BackupBucket26B8E51C"
+          }
+        ],
+        "/monitoring-app-Storage-prod/TableName": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "TableName"
+          }
+        ],
+        "/monitoring-app-Storage-prod/TableArn": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "TableArn"
+          }
+        ],
+        "/monitoring-app-Storage-prod/LogsBucketName": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "LogsBucketName"
+          }
+        ],
+        "/monitoring-app-Storage-prod/CDKMetadata/Default": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "CDKMetadata"
+          }
+        ],
+        "/monitoring-app-Storage-prod/Exports/Output{\"Fn::GetAtt\":[\"ApplicationMetrics0C795B92\",\"Arn\"]}": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "ExportsOutputFnGetAttApplicationMetrics0C795B92ArnF1FBE358"
+          }
+        ],
+        "/monitoring-app-Storage-prod/Exports/Output{\"Fn::GetAtt\":[\"LogsBucket9C4D8843\",\"Arn\"]}": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "ExportsOutputFnGetAttLogsBucket9C4D8843Arn695CF659"
+          }
+        ],
+        "/monitoring-app-Storage-prod/Exports/Output{\"Ref\":\"ApplicationMetrics0C795B92\"}": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "ExportsOutputRefApplicationMetrics0C795B9259D38ED5"
+          }
+        ],
+        "/monitoring-app-Storage-prod/Exports/Output{\"Ref\":\"LogsBucket9C4D8843\"}": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "ExportsOutputRefLogsBucket9C4D88434A6140BD"
+          }
+        ],
+        "/monitoring-app-Storage-prod/BootstrapVersion": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "BootstrapVersion"
+          }
+        ],
+        "/monitoring-app-Storage-prod/CheckBootstrapVersion": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "CheckBootstrapVersion"
+          }
+        ]
+      },
+      "displayName": "monitoring-app-Storage-prod"
+    },
+    "monitoring-app-Messaging-prod.assets": {
+      "type": "cdk:asset-manifest",
+      "properties": {
+        "file": "monitoring-app-Messaging-prod.assets.json",
+        "requiresBootstrapStackVersion": 6,
+        "bootstrapStackVersionSsmParameter": "/cdk-bootstrap/hnb659fds/version"
+      }
+    },
+    "monitoring-app-Messaging-prod": {
+      "type": "aws:cloudformation:stack",
+      "environment": "aws://084828566306/us-east-1",
+      "properties": {
+        "templateFile": "monitoring-app-Messaging-prod.template.json",
+        "tags": {
+          "Environment": "prod",
+          "Project": "monitoring-app",
+          "StackType": "Messaging"
+        },
+        "validateOnSynth": false,
+        "assumeRoleArn": "arn:${AWS::Partition}:iam::084828566306:role/cdk-hnb659fds-deploy-role-084828566306-us-east-1",
+        "cloudFormationExecutionRoleArn": "arn:${AWS::Partition}:iam::084828566306:role/cdk-hnb659fds-cfn-exec-role-084828566306-us-east-1",
+        "stackTemplateAssetObjectUrl": "s3://cdk-hnb659fds-assets-084828566306-us-east-1/049616d171b10b858a051e499b012c9d98ecbf36f0cd14c1e4214cf070e0e7f6.json",
+        "requiresBootstrapStackVersion": 6,
+        "bootstrapStackVersionSsmParameter": "/cdk-bootstrap/hnb659fds/version",
+        "additionalDependencies": [
+          "monitoring-app-Messaging-prod.assets"
+        ],
+        "lookupRole": {
+          "arn": "arn:${AWS::Partition}:iam::084828566306:role/cdk-hnb659fds-lookup-role-084828566306-us-east-1",
+          "requiresBootstrapStackVersion": 8,
+          "bootstrapStackVersionSsmParameter": "/cdk-bootstrap/hnb659fds/version"
+        },
+        "stackName": "monitoring-app-messaging-prod"
+      },
+      "dependencies": [
+        "monitoring-app-Messaging-prod.assets"
+      ],
+      "metadata": {
+        "/monitoring-app-Messaging-prod": [
+          {
+            "type": "aws:cdk:stack-tags",
+            "data": [
+              {
+                "Key": "Environment",
+                "Value": "prod"
+              },
+              {
+                "Key": "Project",
+                "Value": "monitoring-app"
+              },
+              {
+                "Key": "StackType",
+                "Value": "Messaging"
+              }
+            ]
+          }
+        ],
+        "/monitoring-app-Messaging-prod/DLQ/Resource": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "DLQ581697C4"
+          }
+        ],
+        "/monitoring-app-Messaging-prod/ProcessingQueue/Resource": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "ProcessingQueue6DC600C3"
+          }
+        ],
+        "/monitoring-app-Messaging-prod/AlertTopic/Resource": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "AlertTopic2720D535"
+          }
+        ],
+        "/monitoring-app-Messaging-prod/AlertTopic/your-email@example.com/Resource": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "AlertTopicyouremailexamplecom4BAFBCC6"
+          }
+        ],
+        "/monitoring-app-Messaging-prod/ProcessingQueueUrl": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "ProcessingQueueUrl"
+          }
+        ],
+        "/monitoring-app-Messaging-prod/AlertTopicArn": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "AlertTopicArn"
+          }
+        ],
+        "/monitoring-app-Messaging-prod/CDKMetadata/Default": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "CDKMetadata"
+          }
+        ],
+        "/monitoring-app-Messaging-prod/Exports/Output{\"Fn::GetAtt\":[\"ProcessingQueue6DC600C3\",\"Arn\"]}": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "ExportsOutputFnGetAttProcessingQueue6DC600C3ArnEF236E7B"
+          }
+        ],
+        "/monitoring-app-Messaging-prod/Exports/Output{\"Ref\":\"ProcessingQueue6DC600C3\"}": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "ExportsOutputRefProcessingQueue6DC600C3BF6B2149"
+          }
+        ],
+        "/monitoring-app-Messaging-prod/Exports/Output{\"Ref\":\"DLQ581697C4\"}": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "ExportsOutputRefDLQ581697C4C2809D62"
+          }
+        ],
+        "/monitoring-app-Messaging-prod/Exports/Output{\"Ref\":\"AlertTopic2720D535\"}": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "ExportsOutputRefAlertTopic2720D5359ADB6D3E"
+          }
+        ],
+        "/monitoring-app-Messaging-prod/BootstrapVersion": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "BootstrapVersion"
+          }
+        ],
+        "/monitoring-app-Messaging-prod/CheckBootstrapVersion": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "CheckBootstrapVersion"
+          }
+        ]
+      },
+      "displayName": "monitoring-app-Messaging-prod"
+    },
+    "monitoring-app-Compute-prod.assets": {
+      "type": "cdk:asset-manifest",
+      "properties": {
+        "file": "monitoring-app-Compute-prod.assets.json",
+        "requiresBootstrapStackVersion": 6,
+        "bootstrapStackVersionSsmParameter": "/cdk-bootstrap/hnb659fds/version"
+      }
+    },
+    "monitoring-app-Compute-prod": {
+      "type": "aws:cloudformation:stack",
+      "environment": "aws://084828566306/us-east-1",
+      "properties": {
+        "templateFile": "monitoring-app-Compute-prod.template.json",
+        "tags": {
+          "Environment": "prod",
+          "Project": "monitoring-app",
+          "StackType": "Compute"
+        },
+        "validateOnSynth": false,
+        "assumeRoleArn": "arn:${AWS::Partition}:iam::084828566306:role/cdk-hnb659fds-deploy-role-084828566306-us-east-1",
+        "cloudFormationExecutionRoleArn": "arn:${AWS::Partition}:iam::084828566306:role/cdk-hnb659fds-cfn-exec-role-084828566306-us-east-1",
+        "stackTemplateAssetObjectUrl": "s3://cdk-hnb659fds-assets-084828566306-us-east-1/8588278ce057fdcc1d34eba2ce9ca88ddadb75fabe592eeb0461f7fd8b74a2d4.json",
+        "requiresBootstrapStackVersion": 6,
+        "bootstrapStackVersionSsmParameter": "/cdk-bootstrap/hnb659fds/version",
+        "additionalDependencies": [
+          "monitoring-app-Compute-prod.assets"
+        ],
+        "lookupRole": {
+          "arn": "arn:${AWS::Partition}:iam::084828566306:role/cdk-hnb659fds-lookup-role-084828566306-us-east-1",
+          "requiresBootstrapStackVersion": 8,
+          "bootstrapStackVersionSsmParameter": "/cdk-bootstrap/hnb659fds/version"
+        },
+        "stackName": "monitoring-app-compute-prod"
+      },
+      "dependencies": [
+        "monitoring-app-Security-prod",
+        "monitoring-app-Networking-prod",
+        "monitoring-app-Storage-prod",
+        "monitoring-app-Messaging-prod",
+        "monitoring-app-Compute-prod.assets"
+      ],
+      "metadata": {
+        "/monitoring-app-Compute-prod": [
+          {
+            "type": "aws:cdk:stack-tags",
+            "data": [
+              {
+                "Key": "Environment",
+                "Value": "prod"
+              },
+              {
+                "Key": "Project",
+                "Value": "monitoring-app"
+              },
+              {
+                "Key": "StackType",
+                "Value": "Compute"
+              }
+            ]
+          }
+        ],
+        "/monitoring-app-Compute-prod/ApiLambda/SecurityGroup/Resource": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "ApiLambdaSecurityGroup421E87DA"
+          }
+        ],
+        "/monitoring-app-Compute-prod/ApiLambda/Resource": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "ApiLambda91D2282D"
+          }
+        ],
+        "/monitoring-app-Compute-prod/LogProcessor/SecurityGroup/Resource": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "LogProcessorSecurityGroup0C45647E"
+          }
+        ],
+        "/monitoring-app-Compute-prod/LogProcessor/Resource": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "LogProcessorDB773CA7"
+          }
+        ],
+        "/monitoring-app-Compute-prod/HealthMonitor/Resource": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "HealthMonitor5F362362"
+          }
+        ],
+        "/monitoring-app-Compute-prod/AiAnalysis/Resource": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "AiAnalysisF7225954"
+          }
+        ],
+        "/monitoring-app-Compute-prod/BackupProcessor/Resource": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "BackupProcessor5101C858"
+          }
+        ],
+        "/monitoring-app-Compute-prod/HealthCheckSchedule/Resource": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "HealthCheckSchedule9843A4E1"
+          }
+        ],
+        "/monitoring-app-Compute-prod/HealthCheckSchedule/AllowEventRulemonitoringappComputeprodHealthMonitor01B35509": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "HealthCheckScheduleAllowEventRulemonitoringappComputeprodHealthMonitor01B35509ACF437B0"
+          }
+        ],
+        "/monitoring-app-Compute-prod/AiAnalysisSchedule/Resource": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "AiAnalysisSchedule8964FC7D"
+          }
+        ],
+        "/monitoring-app-Compute-prod/AiAnalysisSchedule/AllowEventRulemonitoringappComputeprodAiAnalysis0EB6FA30": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "AiAnalysisScheduleAllowEventRulemonitoringappComputeprodAiAnalysis0EB6FA3018ED3A86"
+          }
+        ],
+        "/monitoring-app-Compute-prod/BackupSchedule/Resource": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "BackupSchedule6468EDCB"
+          }
+        ],
+        "/monitoring-app-Compute-prod/BackupSchedule/AllowEventRulemonitoringappComputeprodBackupProcessor2440437D": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "BackupScheduleAllowEventRulemonitoringappComputeprodBackupProcessor2440437DF46D62EE"
+          }
+        ],
+        "/monitoring-app-Compute-prod/ApiLambdaArn": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "ApiLambdaArn"
+          }
+        ],
+        "/monitoring-app-Compute-prod/CDKMetadata/Default": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "CDKMetadata"
+          }
+        ],
+        "/monitoring-app-Compute-prod/Exports/Output{\"Fn::GetAtt\":[\"ApiLambda91D2282D\",\"Arn\"]}": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "ExportsOutputFnGetAttApiLambda91D2282DArn93907623"
+          }
+        ],
+        "/monitoring-app-Compute-prod/Exports/Output{\"Ref\":\"ApiLambda91D2282D\"}": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "ExportsOutputRefApiLambda91D2282D3158688D"
+          }
+        ],
+        "/monitoring-app-Compute-prod/Exports/Output{\"Ref\":\"LogProcessorDB773CA7\"}": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "ExportsOutputRefLogProcessorDB773CA752571FE5"
+          }
+        ],
+        "/monitoring-app-Compute-prod/Exports/Output{\"Ref\":\"HealthMonitor5F362362\"}": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "ExportsOutputRefHealthMonitor5F3623624578B3D6"
+          }
+        ],
+        "/monitoring-app-Compute-prod/Exports/Output{\"Ref\":\"AiAnalysisF7225954\"}": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "ExportsOutputRefAiAnalysisF7225954B6F3A1D8"
+          }
+        ],
+        "/monitoring-app-Compute-prod/Exports/Output{\"Ref\":\"BackupProcessor5101C858\"}": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "ExportsOutputRefBackupProcessor5101C858EF0C2C75"
+          }
+        ],
+        "/monitoring-app-Compute-prod/Exports/Output{\"Fn::GetAtt\":[\"LogProcessorDB773CA7\",\"Arn\"]}": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "ExportsOutputFnGetAttLogProcessorDB773CA7Arn5CC3A96E"
+          }
+        ],
+        "/monitoring-app-Compute-prod/BootstrapVersion": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "BootstrapVersion"
+          }
+        ],
+        "/monitoring-app-Compute-prod/CheckBootstrapVersion": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "CheckBootstrapVersion"
+          }
+        ]
+      },
+      "displayName": "monitoring-app-Compute-prod"
+    },
+    "monitoring-app-Api-prod.assets": {
+      "type": "cdk:asset-manifest",
+      "properties": {
+        "file": "monitoring-app-Api-prod.assets.json",
+        "requiresBootstrapStackVersion": 6,
+        "bootstrapStackVersionSsmParameter": "/cdk-bootstrap/hnb659fds/version"
+      }
+    },
+    "monitoring-app-Api-prod": {
+      "type": "aws:cloudformation:stack",
+      "environment": "aws://084828566306/us-east-1",
+      "properties": {
+        "templateFile": "monitoring-app-Api-prod.template.json",
+        "tags": {
+          "Environment": "prod",
+          "Project": "monitoring-app",
+          "StackType": "Api"
+        },
+        "validateOnSynth": false,
+        "assumeRoleArn": "arn:${AWS::Partition}:iam::084828566306:role/cdk-hnb659fds-deploy-role-084828566306-us-east-1",
+        "cloudFormationExecutionRoleArn": "arn:${AWS::Partition}:iam::084828566306:role/cdk-hnb659fds-cfn-exec-role-084828566306-us-east-1",
+        "stackTemplateAssetObjectUrl": "s3://cdk-hnb659fds-assets-084828566306-us-east-1/3775ebae1d252c0a87482adda52c2e3ed9fd57f3f1261425e5eb6cb9edc8c4ed.json",
+        "requiresBootstrapStackVersion": 6,
+        "bootstrapStackVersionSsmParameter": "/cdk-bootstrap/hnb659fds/version",
+        "additionalDependencies": [
+          "monitoring-app-Api-prod.assets"
+        ],
+        "lookupRole": {
+          "arn": "arn:${AWS::Partition}:iam::084828566306:role/cdk-hnb659fds-lookup-role-084828566306-us-east-1",
+          "requiresBootstrapStackVersion": 8,
+          "bootstrapStackVersionSsmParameter": "/cdk-bootstrap/hnb659fds/version"
+        },
+        "stackName": "monitoring-app-api-prod"
+      },
+      "dependencies": [
+        "monitoring-app-Compute-prod",
+        "monitoring-app-Api-prod.assets"
+      ],
+      "metadata": {
+        "/monitoring-app-Api-prod": [
+          {
+            "type": "aws:cdk:stack-tags",
+            "data": [
+              {
+                "Key": "Environment",
+                "Value": "prod"
+              },
+              {
+                "Key": "Project",
+                "Value": "monitoring-app"
+              },
+              {
+                "Key": "StackType",
+                "Value": "Api"
+              }
+            ]
+          }
+        ],
+        "/monitoring-app-Api-prod/MonitoringApi/Resource": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "MonitoringApi48F708DC"
+          }
+        ],
+        "/monitoring-app-Api-prod/MonitoringApi/CloudWatchRole/Resource": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "MonitoringApiCloudWatchRoleBC6BAF36"
+          }
+        ],
+        "/monitoring-app-Api-prod/MonitoringApi/Account": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "MonitoringApiAccountE2E9E484"
+          }
+        ],
+        "/monitoring-app-Api-prod/MonitoringApi/Deployment/Resource": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "MonitoringApiDeployment3C1F10354a8a7fd9c73f80f5b66f0d38b07818b9"
+          }
+        ],
+        "/monitoring-app-Api-prod/MonitoringApi/DeploymentStage.prod/Resource": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "MonitoringApiDeploymentStageprodAC226CA3"
+          }
+        ],
+        "/monitoring-app-Api-prod/MonitoringApi/Endpoint": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "MonitoringApiEndpointC03AC417"
+          }
+        ],
+        "/monitoring-app-Api-prod/MonitoringApi/Default/OPTIONS/Resource": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "MonitoringApiOPTIONS16296D90"
+          }
+        ],
+        "/monitoring-app-Api-prod/MonitoringApi/Default/metrics/Resource": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "MonitoringApimetrics3A8F00EE"
+          }
+        ],
+        "/monitoring-app-Api-prod/MonitoringApi/Default/metrics/OPTIONS/Resource": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "MonitoringApimetricsOPTIONSBE0CF479"
+          }
+        ],
+        "/monitoring-app-Api-prod/MonitoringApi/Default/metrics/GET/ApiPermission.monitoringappApiprodMonitoringApi36883C15.GET..metrics": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "MonitoringApimetricsGETApiPermissionmonitoringappApiprodMonitoringApi36883C15GETmetrics370D685C"
+          }
+        ],
+        "/monitoring-app-Api-prod/MonitoringApi/Default/metrics/GET/ApiPermission.Test.monitoringappApiprodMonitoringApi36883C15.GET..metrics": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "MonitoringApimetricsGETApiPermissionTestmonitoringappApiprodMonitoringApi36883C15GETmetrics248514EC"
+          }
+        ],
+        "/monitoring-app-Api-prod/MonitoringApi/Default/metrics/GET/Resource": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "MonitoringApimetricsGETD5160828"
+          }
+        ],
+        "/monitoring-app-Api-prod/MonitoringApi/Default/metrics/POST/ApiPermission.monitoringappApiprodMonitoringApi36883C15.POST..metrics": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "MonitoringApimetricsPOSTApiPermissionmonitoringappApiprodMonitoringApi36883C15POSTmetrics246E485A"
+          }
+        ],
+        "/monitoring-app-Api-prod/MonitoringApi/Default/metrics/POST/ApiPermission.Test.monitoringappApiprodMonitoringApi36883C15.POST..metrics": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "MonitoringApimetricsPOSTApiPermissionTestmonitoringappApiprodMonitoringApi36883C15POSTmetricsAAB747D6"
+          }
+        ],
+        "/monitoring-app-Api-prod/MonitoringApi/Default/metrics/POST/Resource": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "MonitoringApimetricsPOST003DA876"
+          }
+        ],
+        "/monitoring-app-Api-prod/MonitoringApi/Default/health/Resource": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "MonitoringApihealthD8B1CBE5"
+          }
+        ],
+        "/monitoring-app-Api-prod/MonitoringApi/Default/health/OPTIONS/Resource": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "MonitoringApihealthOPTIONSF201993A"
+          }
+        ],
+        "/monitoring-app-Api-prod/MonitoringApi/Default/health/GET/ApiPermission.monitoringappApiprodMonitoringApi36883C15.GET..health": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "MonitoringApihealthGETApiPermissionmonitoringappApiprodMonitoringApi36883C15GEThealthB8BA0C57"
+          }
+        ],
+        "/monitoring-app-Api-prod/MonitoringApi/Default/health/GET/ApiPermission.Test.monitoringappApiprodMonitoringApi36883C15.GET..health": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "MonitoringApihealthGETApiPermissionTestmonitoringappApiprodMonitoringApi36883C15GEThealthB63DD09D"
+          }
+        ],
+        "/monitoring-app-Api-prod/MonitoringApi/Default/health/GET/Resource": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "MonitoringApihealthGET93A25031"
+          }
+        ],
+        "/monitoring-app-Api-prod/MonitoringApi/Default/analytics/Resource": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "MonitoringApianalyticsECD263AF"
+          }
+        ],
+        "/monitoring-app-Api-prod/MonitoringApi/Default/analytics/OPTIONS/Resource": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "MonitoringApianalyticsOPTIONS6D9DB2F1"
+          }
+        ],
+        "/monitoring-app-Api-prod/MonitoringApi/Default/analytics/GET/ApiPermission.monitoringappApiprodMonitoringApi36883C15.GET..analytics": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "MonitoringApianalyticsGETApiPermissionmonitoringappApiprodMonitoringApi36883C15GETanalytics04A35C53"
+          }
+        ],
+        "/monitoring-app-Api-prod/MonitoringApi/Default/analytics/GET/ApiPermission.Test.monitoringappApiprodMonitoringApi36883C15.GET..analytics": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "MonitoringApianalyticsGETApiPermissionTestmonitoringappApiprodMonitoringApi36883C15GETanalyticsCBD50EDA"
+          }
+        ],
+        "/monitoring-app-Api-prod/MonitoringApi/Default/analytics/GET/Resource": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "MonitoringApianalyticsGETDA948E2A"
+          }
+        ],
+        "/monitoring-app-Api-prod/ApiUrl": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "ApiUrl"
+          }
+        ],
+        "/monitoring-app-Api-prod/ApiId": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "ApiId"
+          }
+        ],
+        "/monitoring-app-Api-prod/CDKMetadata/Default": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "CDKMetadata"
+          }
+        ],
+        "/monitoring-app-Api-prod/BootstrapVersion": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "BootstrapVersion"
+          }
+        ],
+        "/monitoring-app-Api-prod/CheckBootstrapVersion": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "CheckBootstrapVersion"
+          }
+        ]
+      },
+      "displayName": "monitoring-app-Api-prod"
+    },
+    "monitoring-app-Monitoring-prod.assets": {
+      "type": "cdk:asset-manifest",
+      "properties": {
+        "file": "monitoring-app-Monitoring-prod.assets.json",
+        "requiresBootstrapStackVersion": 6,
+        "bootstrapStackVersionSsmParameter": "/cdk-bootstrap/hnb659fds/version"
+      }
+    },
+    "monitoring-app-Monitoring-prod": {
+      "type": "aws:cloudformation:stack",
+      "environment": "aws://084828566306/us-east-1",
+      "properties": {
+        "templateFile": "monitoring-app-Monitoring-prod.template.json",
+        "tags": {
+          "Environment": "prod",
+          "Project": "monitoring-app",
+          "StackType": "Monitoring"
+        },
+        "validateOnSynth": false,
+        "assumeRoleArn": "arn:${AWS::Partition}:iam::084828566306:role/cdk-hnb659fds-deploy-role-084828566306-us-east-1",
+        "cloudFormationExecutionRoleArn": "arn:${AWS::Partition}:iam::084828566306:role/cdk-hnb659fds-cfn-exec-role-084828566306-us-east-1",
+        "stackTemplateAssetObjectUrl": "s3://cdk-hnb659fds-assets-084828566306-us-east-1/b49027731b7f69dc1e3cb6453f6cd5681a71b1900f5af61e55bb3a09799fc587.json",
+        "requiresBootstrapStackVersion": 6,
+        "bootstrapStackVersionSsmParameter": "/cdk-bootstrap/hnb659fds/version",
+        "additionalDependencies": [
+          "monitoring-app-Monitoring-prod.assets"
+        ],
+        "lookupRole": {
+          "arn": "arn:${AWS::Partition}:iam::084828566306:role/cdk-hnb659fds-lookup-role-084828566306-us-east-1",
+          "requiresBootstrapStackVersion": 8,
+          "bootstrapStackVersionSsmParameter": "/cdk-bootstrap/hnb659fds/version"
+        },
+        "stackName": "monitoring-app-monitoring-prod"
+      },
+      "dependencies": [
+        "monitoring-app-Api-prod",
+        "monitoring-app-Compute-prod",
+        "monitoring-app-Storage-prod",
+        "monitoring-app-Messaging-prod",
+        "monitoring-app-Monitoring-prod.assets"
+      ],
+      "metadata": {
+        "/monitoring-app-Monitoring-prod": [
+          {
+            "type": "aws:cdk:stack-tags",
+            "data": [
+              {
+                "Key": "Environment",
+                "Value": "prod"
+              },
+              {
+                "Key": "Project",
+                "Value": "monitoring-app"
+              },
+              {
+                "Key": "StackType",
+                "Value": "Monitoring"
+              }
+            ]
+          }
+        ],
+        "/monitoring-app-Monitoring-prod/MonitoringDashboard/Resource": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "MonitoringDashboard96464763"
+          }
+        ],
+        "/monitoring-app-Monitoring-prod/ApiHighErrorRate/Resource": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "ApiHighErrorRate310DAC9F"
+          }
+        ],
+        "/monitoring-app-Monitoring-prod/ApiHighDuration/Resource": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "ApiHighDurationD698685F"
+          }
+        ],
+        "/monitoring-app-Monitoring-prod/DynamoThrottling/Resource": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "DynamoThrottling488AA3C1"
+          }
+        ],
+        "/monitoring-app-Monitoring-prod/Api5xxErrors/Resource": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "Api5xxErrors72E4ED50"
+          }
+        ],
+        "/monitoring-app-Monitoring-prod/ApiHighLatency/Resource": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "ApiHighLatencyD725070E"
+          }
+        ],
+        "/monitoring-app-Monitoring-prod/ErrorBudgetAlarm/Resource": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "ErrorBudgetAlarmB0E6444E"
+          }
+        ],
+        "/monitoring-app-Monitoring-prod/DashboardUrl": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "DashboardUrl"
+          }
+        ],
+        "/monitoring-app-Monitoring-prod/DashboardName": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "DashboardName"
+          }
+        ],
+        "/monitoring-app-Monitoring-prod/CDKMetadata/Default": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "CDKMetadata"
+          }
+        ],
+        "/monitoring-app-Monitoring-prod/BootstrapVersion": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "BootstrapVersion"
+          }
+        ],
+        "/monitoring-app-Monitoring-prod/CheckBootstrapVersion": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "CheckBootstrapVersion"
+          }
+        ]
+      },
+      "displayName": "monitoring-app-Monitoring-prod"
+    },
+    "monitoring-app-S3Events-prod.assets": {
+      "type": "cdk:asset-manifest",
+      "properties": {
+        "file": "monitoring-app-S3Events-prod.assets.json",
+        "requiresBootstrapStackVersion": 6,
+        "bootstrapStackVersionSsmParameter": "/cdk-bootstrap/hnb659fds/version"
+      }
+    },
+    "monitoring-app-S3Events-prod": {
+      "type": "aws:cloudformation:stack",
+      "environment": "aws://084828566306/us-east-1",
+      "properties": {
+        "templateFile": "monitoring-app-S3Events-prod.template.json",
+        "tags": {
+          "Environment": "prod",
+          "Project": "monitoring-app",
+          "StackType": "S3Events"
+        },
+        "validateOnSynth": false,
+        "assumeRoleArn": "arn:${AWS::Partition}:iam::084828566306:role/cdk-hnb659fds-deploy-role-084828566306-us-east-1",
+        "cloudFormationExecutionRoleArn": "arn:${AWS::Partition}:iam::084828566306:role/cdk-hnb659fds-cfn-exec-role-084828566306-us-east-1",
+        "stackTemplateAssetObjectUrl": "s3://cdk-hnb659fds-assets-084828566306-us-east-1/9bc9d4cbaeced82480bf862c5f64b5d4f7c1094bdedb82103288d4a76438b3a8.json",
+        "requiresBootstrapStackVersion": 6,
+        "bootstrapStackVersionSsmParameter": "/cdk-bootstrap/hnb659fds/version",
+        "additionalDependencies": [
+          "monitoring-app-S3Events-prod.assets"
+        ],
+        "lookupRole": {
+          "arn": "arn:${AWS::Partition}:iam::084828566306:role/cdk-hnb659fds-lookup-role-084828566306-us-east-1",
+          "requiresBootstrapStackVersion": 8,
+          "bootstrapStackVersionSsmParameter": "/cdk-bootstrap/hnb659fds/version"
+        },
+        "stackName": "monitoring-app-s3events-prod"
+      },
+      "dependencies": [
+        "monitoring-app-Storage-prod",
+        "monitoring-app-Compute-prod",
+        "monitoring-app-S3Events-prod.assets"
+      ],
+      "metadata": {
+        "/monitoring-app-S3Events-prod": [
+          {
+            "type": "aws:cdk:stack-tags",
+            "data": [
+              {
+                "Key": "Environment",
+                "Value": "prod"
+              },
+              {
+                "Key": "Project",
+                "Value": "monitoring-app"
+              },
+              {
+                "Key": "StackType",
+                "Value": "S3Events"
+              }
+            ]
+          }
+        ],
+        "/monitoring-app-S3Events-prod/S3EventNotification/Resource/Default": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "S3EventNotification5F286E70"
+          }
+        ],
+        "/monitoring-app-S3Events-prod/S3EventNotification/CustomResourcePolicy/Resource": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "S3EventNotificationCustomResourcePolicyD0EDCE04"
+          }
+        ],
+        "/monitoring-app-S3Events-prod/AWS679f53fac002430cb0da5b7982bd2287/ServiceRole/Resource": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "AWS679f53fac002430cb0da5b7982bd2287ServiceRoleC1EA0FF2"
+          }
+        ],
+        "/monitoring-app-S3Events-prod/AWS679f53fac002430cb0da5b7982bd2287/Resource": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "AWS679f53fac002430cb0da5b7982bd22872D164C4C"
+          }
+        ],
+        "/monitoring-app-S3Events-prod/LambdaS3Permission/Resource/Default": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "LambdaS3PermissionE7C4C151"
+          }
+        ],
+        "/monitoring-app-S3Events-prod/LambdaS3Permission/CustomResourcePolicy/Resource": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "LambdaS3PermissionCustomResourcePolicy11E35673"
+          }
+        ],
+        "/monitoring-app-S3Events-prod/S3EventConfigured": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "S3EventConfigured"
+          }
+        ],
+        "/monitoring-app-S3Events-prod/CDKMetadata/Default": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "CDKMetadata"
+          }
+        ],
+        "/monitoring-app-S3Events-prod/BootstrapVersion": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "BootstrapVersion"
+          }
+        ],
+        "/monitoring-app-S3Events-prod/CheckBootstrapVersion": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "CheckBootstrapVersion"
+          }
+        ]
+      },
+      "displayName": "monitoring-app-S3Events-prod"
+    },
+    "monitoring-app-PostDeployment-prod.assets": {
+      "type": "cdk:asset-manifest",
+      "properties": {
+        "file": "monitoring-app-PostDeployment-prod.assets.json",
+        "requiresBootstrapStackVersion": 6,
+        "bootstrapStackVersionSsmParameter": "/cdk-bootstrap/hnb659fds/version"
+      }
+    },
+    "monitoring-app-PostDeployment-prod": {
+      "type": "aws:cloudformation:stack",
+      "environment": "aws://084828566306/us-east-1",
+      "properties": {
+        "templateFile": "monitoring-app-PostDeployment-prod.template.json",
+        "tags": {
+          "Environment": "prod",
+          "Project": "monitoring-app",
+          "StackType": "PostDeployment"
+        },
+        "validateOnSynth": false,
+        "assumeRoleArn": "arn:${AWS::Partition}:iam::084828566306:role/cdk-hnb659fds-deploy-role-084828566306-us-east-1",
+        "cloudFormationExecutionRoleArn": "arn:${AWS::Partition}:iam::084828566306:role/cdk-hnb659fds-cfn-exec-role-084828566306-us-east-1",
+        "stackTemplateAssetObjectUrl": "s3://cdk-hnb659fds-assets-084828566306-us-east-1/47ecf63dff41017cc22fe82f1a6e4d3da93a56cb4f57c0656c814d629bea1880.json",
+        "requiresBootstrapStackVersion": 6,
+        "bootstrapStackVersionSsmParameter": "/cdk-bootstrap/hnb659fds/version",
+        "additionalDependencies": [
+          "monitoring-app-PostDeployment-prod.assets"
+        ],
+        "lookupRole": {
+          "arn": "arn:${AWS::Partition}:iam::084828566306:role/cdk-hnb659fds-lookup-role-084828566306-us-east-1",
+          "requiresBootstrapStackVersion": 8,
+          "bootstrapStackVersionSsmParameter": "/cdk-bootstrap/hnb659fds/version"
+        },
+        "stackName": "monitoring-app-post-deployment-prod"
+      },
+      "dependencies": [
+        "monitoring-app-Api-prod",
+        "monitoring-app-Compute-prod",
+        "monitoring-app-Storage-prod",
+        "monitoring-app-PostDeployment-prod.assets"
+      ],
+      "metadata": {
+        "/monitoring-app-PostDeployment-prod": [
+          {
+            "type": "aws:cdk:stack-tags",
+            "data": [
+              {
+                "Key": "Environment",
+                "Value": "prod"
+              },
+              {
+                "Key": "Project",
+                "Value": "monitoring-app"
+              },
+              {
+                "Key": "StackType",
+                "Value": "PostDeployment"
+              }
+            ]
+          }
+        ],
+        "/monitoring-app-PostDeployment-prod/UpdateHealthMonitorApiUrl/Resource/Default": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "UpdateHealthMonitorApiUrl6ED65F18"
+          }
+        ],
+        "/monitoring-app-PostDeployment-prod/UpdateHealthMonitorApiUrl/CustomResourcePolicy/Resource": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "UpdateHealthMonitorApiUrlCustomResourcePolicy8A66F935"
+          }
+        ],
+        "/monitoring-app-PostDeployment-prod/AWS679f53fac002430cb0da5b7982bd2287/ServiceRole/Resource": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "AWS679f53fac002430cb0da5b7982bd2287ServiceRoleC1EA0FF2"
+          }
+        ],
+        "/monitoring-app-PostDeployment-prod/AWS679f53fac002430cb0da5b7982bd2287/Resource": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "AWS679f53fac002430cb0da5b7982bd22872D164C4C"
+          }
+        ],
+        "/monitoring-app-PostDeployment-prod/PostDeploymentComplete": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "PostDeploymentComplete"
+          }
+        ],
+        "/monitoring-app-PostDeployment-prod/CDKMetadata/Default": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "CDKMetadata"
+          }
+        ],
+        "/monitoring-app-PostDeployment-prod/BootstrapVersion": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "BootstrapVersion"
+          }
+        ],
+        "/monitoring-app-PostDeployment-prod/CheckBootstrapVersion": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "CheckBootstrapVersion"
+          }
+        ]
+      },
+      "displayName": "monitoring-app-PostDeployment-prod"
+    },
+    "Tree": {
+      "type": "cdk:tree",
+      "properties": {
+        "file": "tree.json"
+      }
+    }
+  }
+}

@@ -1,0 +1,322 @@
+{
+ "Description": "S3 event notifications for log processing - prod",
+ "Resources": {
+  "S3EventNotification5F286E70": {
+   "Type": "Custom::AWS",
+   "Properties": {
+    "ServiceToken": {
+     "Fn::GetAtt": [
+      "AWS679f53fac002430cb0da5b7982bd22872D164C4C",
+      "Arn"
+     ]
+    },
+    "Create": {
+     "Fn::Join": [
+      "",
+      [
+       "{\"service\":\"S3\",\"action\":\"putBucketNotificationConfiguration\",\"parameters\":{\"Bucket\":\"",
+       {
+        "Fn::ImportValue": "monitoring-app-storage-prod:ExportsOutputRefLogsBucket9C4D88434A6140BD"
+       },
+       "\",\"NotificationConfiguration\":{\"LambdaConfigurations\":[{\"Id\":\"LogProcessorTrigger\",\"LambdaFunctionArn\":\"",
+       {
+        "Fn::ImportValue": "monitoring-app-compute-prod:ExportsOutputFnGetAttLogProcessorDB773CA7Arn5CC3A96E"
+       },
+       "\",\"Events\":[\"s3:ObjectCreated:*\"],\"Filter\":{\"Key\":{\"FilterRules\":[{\"Name\":\"prefix\",\"Value\":\"logs/\"}]}}}]}},\"physicalResourceId\":{\"id\":\"s3-event-",
+       {
+        "Fn::ImportValue": "monitoring-app-storage-prod:ExportsOutputRefLogsBucket9C4D88434A6140BD"
+       },
+       "\"}}"
+      ]
+     ]
+    },
+    "Delete": {
+     "Fn::Join": [
+      "",
+      [
+       "{\"service\":\"S3\",\"action\":\"putBucketNotificationConfiguration\",\"parameters\":{\"Bucket\":\"",
+       {
+        "Fn::ImportValue": "monitoring-app-storage-prod:ExportsOutputRefLogsBucket9C4D88434A6140BD"
+       },
+       "\",\"NotificationConfiguration\":{}}}"
+      ]
+     ]
+    },
+    "InstallLatestAwsSdk": true
+   },
+   "DependsOn": [
+    "LambdaS3PermissionCustomResourcePolicy11E35673",
+    "LambdaS3PermissionE7C4C151",
+    "S3EventNotificationCustomResourcePolicyD0EDCE04"
+   ],
+   "UpdateReplacePolicy": "Delete",
+   "DeletionPolicy": "Delete",
+   "Metadata": {
+    "aws:cdk:path": "monitoring-app-S3Events-prod/S3EventNotification/Resource/Default"
+   }
+  },
+  "S3EventNotificationCustomResourcePolicyD0EDCE04": {
+   "Type": "AWS::IAM::Policy",
+   "Properties": {
+    "PolicyDocument": {
+     "Statement": [
+      {
+       "Action": [
+        "s3:GetBucketNotification",
+        "s3:PutBucketNotification"
+       ],
+       "Effect": "Allow",
+       "Resource": {
+        "Fn::Join": [
+         "",
+         [
+          "arn:aws:s3:::",
+          {
+           "Fn::ImportValue": "monitoring-app-storage-prod:ExportsOutputRefLogsBucket9C4D88434A6140BD"
+          }
+         ]
+        ]
+       }
+      }
+     ],
+     "Version": "2012-10-17"
+    },
+    "PolicyName": "S3EventNotificationCustomResourcePolicyD0EDCE04",
+    "Roles": [
+     {
+      "Ref": "AWS679f53fac002430cb0da5b7982bd2287ServiceRoleC1EA0FF2"
+     }
+    ]
+   },
+   "DependsOn": [
+    "LambdaS3PermissionCustomResourcePolicy11E35673",
+    "LambdaS3PermissionE7C4C151"
+   ],
+   "Metadata": {
+    "aws:cdk:path": "monitoring-app-S3Events-prod/S3EventNotification/CustomResourcePolicy/Resource"
+   }
+  },
+  "AWS679f53fac002430cb0da5b7982bd2287ServiceRoleC1EA0FF2": {
+   "Type": "AWS::IAM::Role",
+   "Properties": {
+    "AssumeRolePolicyDocument": {
+     "Statement": [
+      {
+       "Action": "sts:AssumeRole",
+       "Effect": "Allow",
+       "Principal": {
+        "Service": "lambda.amazonaws.com"
+       }
+      }
+     ],
+     "Version": "2012-10-17"
+    },
+    "ManagedPolicyArns": [
+     {
+      "Fn::Join": [
+       "",
+       [
+        "arn:",
+        {
+         "Ref": "AWS::Partition"
+        },
+        ":iam::aws:policy/service-role/AWSLambdaBasicExecutionRole"
+       ]
+      ]
+     }
+    ],
+    "Tags": [
+     {
+      "Key": "Environment",
+      "Value": "prod"
+     },
+     {
+      "Key": "Project",
+      "Value": "monitoring-app"
+     },
+     {
+      "Key": "StackType",
+      "Value": "S3Events"
+     }
+    ]
+   },
+   "Metadata": {
+    "aws:cdk:path": "monitoring-app-S3Events-prod/AWS679f53fac002430cb0da5b7982bd2287/ServiceRole/Resource"
+   }
+  },
+  "AWS679f53fac002430cb0da5b7982bd22872D164C4C": {
+   "Type": "AWS::Lambda::Function",
+   "Properties": {
+    "Code": {
+     "S3Bucket": "cdk-hnb659fds-assets-084828566306-us-east-1",
+     "S3Key": "456cb0185a2fb74f65509142da5cecc43b25a8d960f32973e0a8f1ef6753606f.zip"
+    },
+    "Role": {
+     "Fn::GetAtt": [
+      "AWS679f53fac002430cb0da5b7982bd2287ServiceRoleC1EA0FF2",
+      "Arn"
+     ]
+    },
+    "Handler": "index.handler",
+    "Runtime": "nodejs14.x",
+    "Tags": [
+     {
+      "Key": "Environment",
+      "Value": "prod"
+     },
+     {
+      "Key": "Project",
+      "Value": "monitoring-app"
+     },
+     {
+      "Key": "StackType",
+      "Value": "S3Events"
+     }
+    ],
+    "Timeout": 120
+   },
+   "DependsOn": [
+    "AWS679f53fac002430cb0da5b7982bd2287ServiceRoleC1EA0FF2"
+   ],
+   "Metadata": {
+    "aws:cdk:path": "monitoring-app-S3Events-prod/AWS679f53fac002430cb0da5b7982bd2287/Resource",
+    "aws:asset:path": "asset.456cb0185a2fb74f65509142da5cecc43b25a8d960f32973e0a8f1ef6753606f",
+    "aws:asset:is-bundled": false,
+    "aws:asset:property": "Code"
+   }
+  },
+  "LambdaS3PermissionE7C4C151": {
+   "Type": "Custom::AWS",
+   "Properties": {
+    "ServiceToken": {
+     "Fn::GetAtt": [
+      "AWS679f53fac002430cb0da5b7982bd22872D164C4C",
+      "Arn"
+     ]
+    },
+    "Create": {
+     "Fn::Join": [
+      "",
+      [
+       "{\"service\":\"Lambda\",\"action\":\"addPermission\",\"parameters\":{\"FunctionName\":\"",
+       {
+        "Fn::ImportValue": "monitoring-app-compute-prod:ExportsOutputFnGetAttLogProcessorDB773CA7Arn5CC3A96E"
+       },
+       "\",\"StatementId\":\"S3InvokePermission\",\"Action\":\"lambda:InvokeFunction\",\"Principal\":\"s3.amazonaws.com\",\"SourceArn\":\"arn:aws:s3:::",
+       {
+        "Fn::ImportValue": "monitoring-app-storage-prod:ExportsOutputRefLogsBucket9C4D88434A6140BD"
+       },
+       "\"},\"physicalResourceId\":{\"id\":\"lambda-permission-",
+       {
+        "Fn::ImportValue": "monitoring-app-compute-prod:ExportsOutputFnGetAttLogProcessorDB773CA7Arn5CC3A96E"
+       },
+       "\"}}"
+      ]
+     ]
+    },
+    "Delete": {
+     "Fn::Join": [
+      "",
+      [
+       "{\"service\":\"Lambda\",\"action\":\"removePermission\",\"parameters\":{\"FunctionName\":\"",
+       {
+        "Fn::ImportValue": "monitoring-app-compute-prod:ExportsOutputFnGetAttLogProcessorDB773CA7Arn5CC3A96E"
+       },
+       "\",\"StatementId\":\"S3InvokePermission\"}}"
+      ]
+     ]
+    },
+    "InstallLatestAwsSdk": true
+   },
+   "DependsOn": [
+    "LambdaS3PermissionCustomResourcePolicy11E35673"
+   ],
+   "UpdateReplacePolicy": "Delete",
+   "DeletionPolicy": "Delete",
+   "Metadata": {
+    "aws:cdk:path": "monitoring-app-S3Events-prod/LambdaS3Permission/Resource/Default"
+   }
+  },
+  "LambdaS3PermissionCustomResourcePolicy11E35673": {
+   "Type": "AWS::IAM::Policy",
+   "Properties": {
+    "PolicyDocument": {
+     "Statement": [
+      {
+       "Action": [
+        "lambda:AddPermission",
+        "lambda:RemovePermission"
+       ],
+       "Effect": "Allow",
+       "Resource": {
+        "Fn::ImportValue": "monitoring-app-compute-prod:ExportsOutputFnGetAttLogProcessorDB773CA7Arn5CC3A96E"
+       }
+      }
+     ],
+     "Version": "2012-10-17"
+    },
+    "PolicyName": "LambdaS3PermissionCustomResourcePolicy11E35673",
+    "Roles": [
+     {
+      "Ref": "AWS679f53fac002430cb0da5b7982bd2287ServiceRoleC1EA0FF2"
+     }
+    ]
+   },
+   "Metadata": {
+    "aws:cdk:path": "monitoring-app-S3Events-prod/LambdaS3Permission/CustomResourcePolicy/Resource"
+   }
+  },
+  "CDKMetadata": {
+   "Type": "AWS::CDK::Metadata",
+   "Properties": {
+    "Analytics": "v2:deflate64:H4sIAAAAAAAA/12Oza6CQAxGn8X9ULm4uG7V5G418ACkDpVUhhlDOxJDePeb8YeFq+/0tF/SAn5zyFc4SmabLnN8hqlStJ2xUTT09UAS4mBJYDfK4enKtzI4Sj057M8NwlSxbx1p8H/RW+XgzQKHyyJnw9jDdAqO7SMt3lQGR2lMORvZ1ChCKrBLYWQD+2g70j0KzebrjVT78ALPYqXYsm/TxTHqLepsfGgIrrK+Fzn8bCFfXYU5G6JX7gnKV/4Dy0nm6xYBAAA="
+   },
+   "Metadata": {
+    "aws:cdk:path": "monitoring-app-S3Events-prod/CDKMetadata/Default"
+   }
+  }
+ },
+ "Outputs": {
+  "S3EventConfigured": {
+   "Description": "S3 event notification configured",
+   "Value": "true",
+   "Export": {
+    "Name": "monitoring-app-s3-events-configured-prod"
+   }
+  }
+ },
+ "Parameters": {
+  "BootstrapVersion": {
+   "Type": "AWS::SSM::Parameter::Value<String>",
+   "Default": "/cdk-bootstrap/hnb659fds/version",
+   "Description": "Version of the CDK Bootstrap resources in this environment, automatically retrieved from SSM Parameter Store. [cdk:skip]"
+  }
+ },
+ "Rules": {
+  "CheckBootstrapVersion": {
+   "Assertions": [
+    {
+     "Assert": {
+      "Fn::Not": [
+       {
+        "Fn::Contains": [
+         [
+          "1",
+          "2",
+          "3",
+          "4",
+          "5"
+         ],
+         {
+          "Ref": "BootstrapVersion"
+         }
+        ]
+       }
+      ]
+     },
+     "AssertDescription": "CDK bootstrap stack version 6 required. Please run 'cdk bootstrap' with a recent version of the CDK CLI."
+    }
+   ]
+  }
+ }
+}

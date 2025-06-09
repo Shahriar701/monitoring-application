@@ -1,0 +1,310 @@
+{
+ "Description": "Data storage layer - prod",
+ "Resources": {
+  "ApplicationMetrics0C795B92": {
+   "Type": "AWS::DynamoDB::Table",
+   "Properties": {
+    "KeySchema": [
+     {
+      "AttributeName": "ServiceName",
+      "KeyType": "HASH"
+     },
+     {
+      "AttributeName": "Timestamp",
+      "KeyType": "RANGE"
+     }
+    ],
+    "AttributeDefinitions": [
+     {
+      "AttributeName": "ServiceName",
+      "AttributeType": "S"
+     },
+     {
+      "AttributeName": "Timestamp",
+      "AttributeType": "S"
+     }
+    ],
+    "BillingMode": "PAY_PER_REQUEST",
+    "GlobalSecondaryIndexes": [
+     {
+      "IndexName": "TimestampIndex",
+      "KeySchema": [
+       {
+        "AttributeName": "Timestamp",
+        "KeyType": "HASH"
+       },
+       {
+        "AttributeName": "ServiceName",
+        "KeyType": "RANGE"
+       }
+      ],
+      "Projection": {
+       "ProjectionType": "ALL"
+      }
+     }
+    ],
+    "PointInTimeRecoverySpecification": {
+     "PointInTimeRecoveryEnabled": true
+    },
+    "SSESpecification": {
+     "SSEEnabled": true
+    },
+    "StreamSpecification": {
+     "StreamViewType": "NEW_AND_OLD_IMAGES"
+    },
+    "TableName": "monitoring-app-matrics-prod",
+    "Tags": [
+     {
+      "Key": "Environment",
+      "Value": "prod"
+     },
+     {
+      "Key": "Project",
+      "Value": "monitoring-app"
+     },
+     {
+      "Key": "StackType",
+      "Value": "Storage"
+     }
+    ]
+   },
+   "UpdateReplacePolicy": "Retain",
+   "DeletionPolicy": "Retain",
+   "Metadata": {
+    "aws:cdk:path": "monitoring-app-Storage-prod/ApplicationMetrics/Resource"
+   }
+  },
+  "LogsBucket9C4D8843": {
+   "Type": "AWS::S3::Bucket",
+   "Properties": {
+    "BucketEncryption": {
+     "ServerSideEncryptionConfiguration": [
+      {
+       "ServerSideEncryptionByDefault": {
+        "SSEAlgorithm": "AES256"
+       }
+      }
+     ]
+    },
+    "LifecycleConfiguration": {
+     "Rules": [
+      {
+       "ExpirationInDays": 365,
+       "Id": "LogLifecycle",
+       "Status": "Enabled",
+       "Transitions": [
+        {
+         "StorageClass": "STANDARD_IA",
+         "TransitionInDays": 30
+        },
+        {
+         "StorageClass": "GLACIER",
+         "TransitionInDays": 90
+        }
+       ]
+      }
+     ]
+    },
+    "PublicAccessBlockConfiguration": {
+     "BlockPublicAcls": true,
+     "BlockPublicPolicy": true,
+     "IgnorePublicAcls": true,
+     "RestrictPublicBuckets": true
+    },
+    "Tags": [
+     {
+      "Key": "Environment",
+      "Value": "prod"
+     },
+     {
+      "Key": "Project",
+      "Value": "monitoring-app"
+     },
+     {
+      "Key": "StackType",
+      "Value": "Storage"
+     }
+    ],
+    "VersioningConfiguration": {
+     "Status": "Enabled"
+    }
+   },
+   "UpdateReplacePolicy": "Retain",
+   "DeletionPolicy": "Retain",
+   "Metadata": {
+    "aws:cdk:path": "monitoring-app-Storage-prod/LogsBucket/Resource"
+   }
+  },
+  "BackupBucket26B8E51C": {
+   "Type": "AWS::S3::Bucket",
+   "Properties": {
+    "BucketEncryption": {
+     "ServerSideEncryptionConfiguration": [
+      {
+       "ServerSideEncryptionByDefault": {
+        "SSEAlgorithm": "AES256"
+       }
+      }
+     ]
+    },
+    "LifecycleConfiguration": {
+     "Rules": [
+      {
+       "ExpirationInDays": 2555,
+       "Id": "BackupLifecycle",
+       "Status": "Enabled",
+       "Transitions": [
+        {
+         "StorageClass": "GLACIER",
+         "TransitionInDays": 30
+        },
+        {
+         "StorageClass": "DEEP_ARCHIVE",
+         "TransitionInDays": 120
+        }
+       ]
+      }
+     ]
+    },
+    "PublicAccessBlockConfiguration": {
+     "BlockPublicAcls": true,
+     "BlockPublicPolicy": true,
+     "IgnorePublicAcls": true,
+     "RestrictPublicBuckets": true
+    },
+    "Tags": [
+     {
+      "Key": "Environment",
+      "Value": "prod"
+     },
+     {
+      "Key": "Project",
+      "Value": "monitoring-app"
+     },
+     {
+      "Key": "StackType",
+      "Value": "Storage"
+     }
+    ],
+    "VersioningConfiguration": {
+     "Status": "Enabled"
+    }
+   },
+   "UpdateReplacePolicy": "Retain",
+   "DeletionPolicy": "Retain",
+   "Metadata": {
+    "aws:cdk:path": "monitoring-app-Storage-prod/BackupBucket/Resource"
+   }
+  },
+  "CDKMetadata": {
+   "Type": "AWS::CDK::Metadata",
+   "Properties": {
+    "Analytics": "v2:deflate64:H4sIAAAAAAAA/zWKywrCMBBFv6X7ZIx1oWv9AKG6lzxGSNMm0slYJOTfxRRX93DO7eGoQHV6JWldkJM3UG5Z2yD0So/iPlHPyRkod20mFJdnbFAFHaCc2QbMP7lRrWJASrzY9rxyfnHLf1tFTA5hpN27V7A/gepG8l4uHLOfEYZtvyQBqwuVAAAA"
+   },
+   "Metadata": {
+    "aws:cdk:path": "monitoring-app-Storage-prod/CDKMetadata/Default"
+   }
+  }
+ },
+ "Outputs": {
+  "TableName": {
+   "Value": {
+    "Ref": "ApplicationMetrics0C795B92"
+   },
+   "Export": {
+    "Name": "monitoring-app-table-name-prod"
+   }
+  },
+  "TableArn": {
+   "Value": {
+    "Fn::GetAtt": [
+     "ApplicationMetrics0C795B92",
+     "Arn"
+    ]
+   },
+   "Export": {
+    "Name": "monitoring-app-table-arn-prod"
+   }
+  },
+  "LogsBucketName": {
+   "Value": {
+    "Ref": "LogsBucket9C4D8843"
+   },
+   "Export": {
+    "Name": "monitoring-app-logs-bucket-prod"
+   }
+  },
+  "ExportsOutputFnGetAttApplicationMetrics0C795B92ArnF1FBE358": {
+   "Value": {
+    "Fn::GetAtt": [
+     "ApplicationMetrics0C795B92",
+     "Arn"
+    ]
+   },
+   "Export": {
+    "Name": "monitoring-app-storage-prod:ExportsOutputFnGetAttApplicationMetrics0C795B92ArnF1FBE358"
+   }
+  },
+  "ExportsOutputFnGetAttLogsBucket9C4D8843Arn695CF659": {
+   "Value": {
+    "Fn::GetAtt": [
+     "LogsBucket9C4D8843",
+     "Arn"
+    ]
+   },
+   "Export": {
+    "Name": "monitoring-app-storage-prod:ExportsOutputFnGetAttLogsBucket9C4D8843Arn695CF659"
+   }
+  },
+  "ExportsOutputRefApplicationMetrics0C795B9259D38ED5": {
+   "Value": {
+    "Ref": "ApplicationMetrics0C795B92"
+   },
+   "Export": {
+    "Name": "monitoring-app-storage-prod:ExportsOutputRefApplicationMetrics0C795B9259D38ED5"
+   }
+  },
+  "ExportsOutputRefLogsBucket9C4D88434A6140BD": {
+   "Value": {
+    "Ref": "LogsBucket9C4D8843"
+   },
+   "Export": {
+    "Name": "monitoring-app-storage-prod:ExportsOutputRefLogsBucket9C4D88434A6140BD"
+   }
+  }
+ },
+ "Parameters": {
+  "BootstrapVersion": {
+   "Type": "AWS::SSM::Parameter::Value<String>",
+   "Default": "/cdk-bootstrap/hnb659fds/version",
+   "Description": "Version of the CDK Bootstrap resources in this environment, automatically retrieved from SSM Parameter Store. [cdk:skip]"
+  }
+ },
+ "Rules": {
+  "CheckBootstrapVersion": {
+   "Assertions": [
+    {
+     "Assert": {
+      "Fn::Not": [
+       {
+        "Fn::Contains": [
+         [
+          "1",
+          "2",
+          "3",
+          "4",
+          "5"
+         ],
+         {
+          "Ref": "BootstrapVersion"
+         }
+        ]
+       }
+      ]
+     },
+     "AssertDescription": "CDK bootstrap stack version 6 required. Please run 'cdk bootstrap' with a recent version of the CDK CLI."
+    }
+   ]
+  }
+ }
+}

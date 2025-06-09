@@ -1,0 +1,856 @@
+{
+ "Description": "API Gateway and routing - dev",
+ "Resources": {
+  "MonitoringApi48F708DC": {
+   "Type": "AWS::ApiGateway::RestApi",
+   "Properties": {
+    "Description": "Resilient monitoring API - dev",
+    "Name": "monitoring-app-api-dev",
+    "Tags": [
+     {
+      "Key": "Environment",
+      "Value": "dev"
+     },
+     {
+      "Key": "Project",
+      "Value": "monitoring-app"
+     },
+     {
+      "Key": "StackType",
+      "Value": "Api"
+     }
+    ]
+   },
+   "Metadata": {
+    "aws:cdk:path": "monitoring-app-Api-dev/MonitoringApi/Resource"
+   }
+  },
+  "MonitoringApiCloudWatchRoleBC6BAF36": {
+   "Type": "AWS::IAM::Role",
+   "Properties": {
+    "AssumeRolePolicyDocument": {
+     "Statement": [
+      {
+       "Action": "sts:AssumeRole",
+       "Effect": "Allow",
+       "Principal": {
+        "Service": "apigateway.amazonaws.com"
+       }
+      }
+     ],
+     "Version": "2012-10-17"
+    },
+    "ManagedPolicyArns": [
+     {
+      "Fn::Join": [
+       "",
+       [
+        "arn:",
+        {
+         "Ref": "AWS::Partition"
+        },
+        ":iam::aws:policy/service-role/AmazonAPIGatewayPushToCloudWatchLogs"
+       ]
+      ]
+     }
+    ],
+    "Tags": [
+     {
+      "Key": "Environment",
+      "Value": "dev"
+     },
+     {
+      "Key": "Project",
+      "Value": "monitoring-app"
+     },
+     {
+      "Key": "StackType",
+      "Value": "Api"
+     }
+    ]
+   },
+   "UpdateReplacePolicy": "Retain",
+   "DeletionPolicy": "Retain",
+   "Metadata": {
+    "aws:cdk:path": "monitoring-app-Api-dev/MonitoringApi/CloudWatchRole/Resource"
+   }
+  },
+  "MonitoringApiAccountE2E9E484": {
+   "Type": "AWS::ApiGateway::Account",
+   "Properties": {
+    "CloudWatchRoleArn": {
+     "Fn::GetAtt": [
+      "MonitoringApiCloudWatchRoleBC6BAF36",
+      "Arn"
+     ]
+    }
+   },
+   "DependsOn": [
+    "MonitoringApi48F708DC"
+   ],
+   "UpdateReplacePolicy": "Retain",
+   "DeletionPolicy": "Retain",
+   "Metadata": {
+    "aws:cdk:path": "monitoring-app-Api-dev/MonitoringApi/Account"
+   }
+  },
+  "MonitoringApiDeployment3C1F1035c4405217c1949a041f095ab5caa1e067": {
+   "Type": "AWS::ApiGateway::Deployment",
+   "Properties": {
+    "RestApiId": {
+     "Ref": "MonitoringApi48F708DC"
+    },
+    "Description": "Resilient monitoring API - dev"
+   },
+   "DependsOn": [
+    "MonitoringApianalyticsGETDA948E2A",
+    "MonitoringApianalyticsOPTIONS6D9DB2F1",
+    "MonitoringApianalyticsECD263AF",
+    "MonitoringApihealthGET93A25031",
+    "MonitoringApihealthOPTIONSF201993A",
+    "MonitoringApihealthD8B1CBE5",
+    "MonitoringApimetricsGETD5160828",
+    "MonitoringApimetricsOPTIONSBE0CF479",
+    "MonitoringApimetricsPOST003DA876",
+    "MonitoringApimetrics3A8F00EE",
+    "MonitoringApiOPTIONS16296D90"
+   ],
+   "Metadata": {
+    "aws:cdk:path": "monitoring-app-Api-dev/MonitoringApi/Deployment/Resource"
+   }
+  },
+  "MonitoringApiDeploymentStagedevD6C611AA": {
+   "Type": "AWS::ApiGateway::Stage",
+   "Properties": {
+    "RestApiId": {
+     "Ref": "MonitoringApi48F708DC"
+    },
+    "CacheClusterEnabled": false,
+    "DeploymentId": {
+     "Ref": "MonitoringApiDeployment3C1F1035c4405217c1949a041f095ab5caa1e067"
+    },
+    "MethodSettings": [
+     {
+      "CachingEnabled": false,
+      "DataTraceEnabled": false,
+      "HttpMethod": "*",
+      "ResourcePath": "/*",
+      "ThrottlingBurstLimit": 50,
+      "ThrottlingRateLimit": 25
+     }
+    ],
+    "StageName": "dev",
+    "Tags": [
+     {
+      "Key": "Environment",
+      "Value": "dev"
+     },
+     {
+      "Key": "Project",
+      "Value": "monitoring-app"
+     },
+     {
+      "Key": "StackType",
+      "Value": "Api"
+     }
+    ]
+   },
+   "DependsOn": [
+    "MonitoringApiAccountE2E9E484"
+   ],
+   "Metadata": {
+    "aws:cdk:path": "monitoring-app-Api-dev/MonitoringApi/DeploymentStage.dev/Resource"
+   }
+  },
+  "MonitoringApiOPTIONS16296D90": {
+   "Type": "AWS::ApiGateway::Method",
+   "Properties": {
+    "HttpMethod": "OPTIONS",
+    "ResourceId": {
+     "Fn::GetAtt": [
+      "MonitoringApi48F708DC",
+      "RootResourceId"
+     ]
+    },
+    "RestApiId": {
+     "Ref": "MonitoringApi48F708DC"
+    },
+    "AuthorizationType": "NONE",
+    "Integration": {
+     "IntegrationResponses": [
+      {
+       "ResponseParameters": {
+        "method.response.header.Access-Control-Allow-Headers": "'Content-Type,X-Amz-Date,Authorization,X-Api-Key'",
+        "method.response.header.Access-Control-Allow-Origin": "'*'",
+        "method.response.header.Access-Control-Allow-Methods": "'OPTIONS,GET,PUT,POST,DELETE,PATCH,HEAD'"
+       },
+       "StatusCode": "204"
+      }
+     ],
+     "RequestTemplates": {
+      "application/json": "{ statusCode: 200 }"
+     },
+     "Type": "MOCK"
+    },
+    "MethodResponses": [
+     {
+      "ResponseParameters": {
+       "method.response.header.Access-Control-Allow-Headers": true,
+       "method.response.header.Access-Control-Allow-Origin": true,
+       "method.response.header.Access-Control-Allow-Methods": true
+      },
+      "StatusCode": "204"
+     }
+    ]
+   },
+   "Metadata": {
+    "aws:cdk:path": "monitoring-app-Api-dev/MonitoringApi/Default/OPTIONS/Resource"
+   }
+  },
+  "MonitoringApimetrics3A8F00EE": {
+   "Type": "AWS::ApiGateway::Resource",
+   "Properties": {
+    "ParentId": {
+     "Fn::GetAtt": [
+      "MonitoringApi48F708DC",
+      "RootResourceId"
+     ]
+    },
+    "PathPart": "metrics",
+    "RestApiId": {
+     "Ref": "MonitoringApi48F708DC"
+    }
+   },
+   "Metadata": {
+    "aws:cdk:path": "monitoring-app-Api-dev/MonitoringApi/Default/metrics/Resource"
+   }
+  },
+  "MonitoringApimetricsOPTIONSBE0CF479": {
+   "Type": "AWS::ApiGateway::Method",
+   "Properties": {
+    "HttpMethod": "OPTIONS",
+    "ResourceId": {
+     "Ref": "MonitoringApimetrics3A8F00EE"
+    },
+    "RestApiId": {
+     "Ref": "MonitoringApi48F708DC"
+    },
+    "AuthorizationType": "NONE",
+    "Integration": {
+     "IntegrationResponses": [
+      {
+       "ResponseParameters": {
+        "method.response.header.Access-Control-Allow-Headers": "'Content-Type,X-Amz-Date,Authorization,X-Api-Key'",
+        "method.response.header.Access-Control-Allow-Origin": "'*'",
+        "method.response.header.Access-Control-Allow-Methods": "'OPTIONS,GET,PUT,POST,DELETE,PATCH,HEAD'"
+       },
+       "StatusCode": "204"
+      }
+     ],
+     "RequestTemplates": {
+      "application/json": "{ statusCode: 200 }"
+     },
+     "Type": "MOCK"
+    },
+    "MethodResponses": [
+     {
+      "ResponseParameters": {
+       "method.response.header.Access-Control-Allow-Headers": true,
+       "method.response.header.Access-Control-Allow-Origin": true,
+       "method.response.header.Access-Control-Allow-Methods": true
+      },
+      "StatusCode": "204"
+     }
+    ]
+   },
+   "Metadata": {
+    "aws:cdk:path": "monitoring-app-Api-dev/MonitoringApi/Default/metrics/OPTIONS/Resource"
+   }
+  },
+  "MonitoringApimetricsGETApiPermissionmonitoringappApidevMonitoringApi30447D9AGETmetrics114E43AB": {
+   "Type": "AWS::Lambda::Permission",
+   "Properties": {
+    "Action": "lambda:InvokeFunction",
+    "FunctionName": {
+     "Fn::ImportValue": "monitoring-app-compute-dev:ExportsOutputFnGetAttApiLambda91D2282DArn93907623"
+    },
+    "Principal": "apigateway.amazonaws.com",
+    "SourceArn": {
+     "Fn::Join": [
+      "",
+      [
+       "arn:aws:execute-api:us-east-1:084828566306:",
+       {
+        "Ref": "MonitoringApi48F708DC"
+       },
+       "/",
+       {
+        "Ref": "MonitoringApiDeploymentStagedevD6C611AA"
+       },
+       "/GET/metrics"
+      ]
+     ]
+    }
+   },
+   "Metadata": {
+    "aws:cdk:path": "monitoring-app-Api-dev/MonitoringApi/Default/metrics/GET/ApiPermission.monitoringappApidevMonitoringApi30447D9A.GET..metrics"
+   }
+  },
+  "MonitoringApimetricsGETApiPermissionTestmonitoringappApidevMonitoringApi30447D9AGETmetrics03DC0216": {
+   "Type": "AWS::Lambda::Permission",
+   "Properties": {
+    "Action": "lambda:InvokeFunction",
+    "FunctionName": {
+     "Fn::ImportValue": "monitoring-app-compute-dev:ExportsOutputFnGetAttApiLambda91D2282DArn93907623"
+    },
+    "Principal": "apigateway.amazonaws.com",
+    "SourceArn": {
+     "Fn::Join": [
+      "",
+      [
+       "arn:aws:execute-api:us-east-1:084828566306:",
+       {
+        "Ref": "MonitoringApi48F708DC"
+       },
+       "/test-invoke-stage/GET/metrics"
+      ]
+     ]
+    }
+   },
+   "Metadata": {
+    "aws:cdk:path": "monitoring-app-Api-dev/MonitoringApi/Default/metrics/GET/ApiPermission.Test.monitoringappApidevMonitoringApi30447D9A.GET..metrics"
+   }
+  },
+  "MonitoringApimetricsGETD5160828": {
+   "Type": "AWS::ApiGateway::Method",
+   "Properties": {
+    "HttpMethod": "GET",
+    "ResourceId": {
+     "Ref": "MonitoringApimetrics3A8F00EE"
+    },
+    "RestApiId": {
+     "Ref": "MonitoringApi48F708DC"
+    },
+    "AuthorizationType": "NONE",
+    "Integration": {
+     "IntegrationHttpMethod": "POST",
+     "IntegrationResponses": [
+      {
+       "StatusCode": "200"
+      }
+     ],
+     "Type": "AWS_PROXY",
+     "Uri": {
+      "Fn::Join": [
+       "",
+       [
+        "arn:aws:apigateway:us-east-1:lambda:path/2015-03-31/functions/",
+        {
+         "Fn::ImportValue": "monitoring-app-compute-dev:ExportsOutputFnGetAttApiLambda91D2282DArn93907623"
+        },
+        "/invocations"
+       ]
+      ]
+     }
+    }
+   },
+   "Metadata": {
+    "aws:cdk:path": "monitoring-app-Api-dev/MonitoringApi/Default/metrics/GET/Resource"
+   }
+  },
+  "MonitoringApimetricsPOSTApiPermissionmonitoringappApidevMonitoringApi30447D9APOSTmetrics5C800631": {
+   "Type": "AWS::Lambda::Permission",
+   "Properties": {
+    "Action": "lambda:InvokeFunction",
+    "FunctionName": {
+     "Fn::ImportValue": "monitoring-app-compute-dev:ExportsOutputFnGetAttApiLambda91D2282DArn93907623"
+    },
+    "Principal": "apigateway.amazonaws.com",
+    "SourceArn": {
+     "Fn::Join": [
+      "",
+      [
+       "arn:aws:execute-api:us-east-1:084828566306:",
+       {
+        "Ref": "MonitoringApi48F708DC"
+       },
+       "/",
+       {
+        "Ref": "MonitoringApiDeploymentStagedevD6C611AA"
+       },
+       "/POST/metrics"
+      ]
+     ]
+    }
+   },
+   "Metadata": {
+    "aws:cdk:path": "monitoring-app-Api-dev/MonitoringApi/Default/metrics/POST/ApiPermission.monitoringappApidevMonitoringApi30447D9A.POST..metrics"
+   }
+  },
+  "MonitoringApimetricsPOSTApiPermissionTestmonitoringappApidevMonitoringApi30447D9APOSTmetrics62857669": {
+   "Type": "AWS::Lambda::Permission",
+   "Properties": {
+    "Action": "lambda:InvokeFunction",
+    "FunctionName": {
+     "Fn::ImportValue": "monitoring-app-compute-dev:ExportsOutputFnGetAttApiLambda91D2282DArn93907623"
+    },
+    "Principal": "apigateway.amazonaws.com",
+    "SourceArn": {
+     "Fn::Join": [
+      "",
+      [
+       "arn:aws:execute-api:us-east-1:084828566306:",
+       {
+        "Ref": "MonitoringApi48F708DC"
+       },
+       "/test-invoke-stage/POST/metrics"
+      ]
+     ]
+    }
+   },
+   "Metadata": {
+    "aws:cdk:path": "monitoring-app-Api-dev/MonitoringApi/Default/metrics/POST/ApiPermission.Test.monitoringappApidevMonitoringApi30447D9A.POST..metrics"
+   }
+  },
+  "MonitoringApimetricsPOST003DA876": {
+   "Type": "AWS::ApiGateway::Method",
+   "Properties": {
+    "HttpMethod": "POST",
+    "ResourceId": {
+     "Ref": "MonitoringApimetrics3A8F00EE"
+    },
+    "RestApiId": {
+     "Ref": "MonitoringApi48F708DC"
+    },
+    "AuthorizationType": "NONE",
+    "Integration": {
+     "IntegrationHttpMethod": "POST",
+     "IntegrationResponses": [
+      {
+       "StatusCode": "200"
+      }
+     ],
+     "Type": "AWS_PROXY",
+     "Uri": {
+      "Fn::Join": [
+       "",
+       [
+        "arn:aws:apigateway:us-east-1:lambda:path/2015-03-31/functions/",
+        {
+         "Fn::ImportValue": "monitoring-app-compute-dev:ExportsOutputFnGetAttApiLambda91D2282DArn93907623"
+        },
+        "/invocations"
+       ]
+      ]
+     }
+    }
+   },
+   "Metadata": {
+    "aws:cdk:path": "monitoring-app-Api-dev/MonitoringApi/Default/metrics/POST/Resource"
+   }
+  },
+  "MonitoringApihealthD8B1CBE5": {
+   "Type": "AWS::ApiGateway::Resource",
+   "Properties": {
+    "ParentId": {
+     "Fn::GetAtt": [
+      "MonitoringApi48F708DC",
+      "RootResourceId"
+     ]
+    },
+    "PathPart": "health",
+    "RestApiId": {
+     "Ref": "MonitoringApi48F708DC"
+    }
+   },
+   "Metadata": {
+    "aws:cdk:path": "monitoring-app-Api-dev/MonitoringApi/Default/health/Resource"
+   }
+  },
+  "MonitoringApihealthOPTIONSF201993A": {
+   "Type": "AWS::ApiGateway::Method",
+   "Properties": {
+    "HttpMethod": "OPTIONS",
+    "ResourceId": {
+     "Ref": "MonitoringApihealthD8B1CBE5"
+    },
+    "RestApiId": {
+     "Ref": "MonitoringApi48F708DC"
+    },
+    "AuthorizationType": "NONE",
+    "Integration": {
+     "IntegrationResponses": [
+      {
+       "ResponseParameters": {
+        "method.response.header.Access-Control-Allow-Headers": "'Content-Type,X-Amz-Date,Authorization,X-Api-Key'",
+        "method.response.header.Access-Control-Allow-Origin": "'*'",
+        "method.response.header.Access-Control-Allow-Methods": "'OPTIONS,GET,PUT,POST,DELETE,PATCH,HEAD'"
+       },
+       "StatusCode": "204"
+      }
+     ],
+     "RequestTemplates": {
+      "application/json": "{ statusCode: 200 }"
+     },
+     "Type": "MOCK"
+    },
+    "MethodResponses": [
+     {
+      "ResponseParameters": {
+       "method.response.header.Access-Control-Allow-Headers": true,
+       "method.response.header.Access-Control-Allow-Origin": true,
+       "method.response.header.Access-Control-Allow-Methods": true
+      },
+      "StatusCode": "204"
+     }
+    ]
+   },
+   "Metadata": {
+    "aws:cdk:path": "monitoring-app-Api-dev/MonitoringApi/Default/health/OPTIONS/Resource"
+   }
+  },
+  "MonitoringApihealthGETApiPermissionmonitoringappApidevMonitoringApi30447D9AGEThealth81E11A11": {
+   "Type": "AWS::Lambda::Permission",
+   "Properties": {
+    "Action": "lambda:InvokeFunction",
+    "FunctionName": {
+     "Fn::ImportValue": "monitoring-app-compute-dev:ExportsOutputFnGetAttApiLambda91D2282DArn93907623"
+    },
+    "Principal": "apigateway.amazonaws.com",
+    "SourceArn": {
+     "Fn::Join": [
+      "",
+      [
+       "arn:aws:execute-api:us-east-1:084828566306:",
+       {
+        "Ref": "MonitoringApi48F708DC"
+       },
+       "/",
+       {
+        "Ref": "MonitoringApiDeploymentStagedevD6C611AA"
+       },
+       "/GET/health"
+      ]
+     ]
+    }
+   },
+   "Metadata": {
+    "aws:cdk:path": "monitoring-app-Api-dev/MonitoringApi/Default/health/GET/ApiPermission.monitoringappApidevMonitoringApi30447D9A.GET..health"
+   }
+  },
+  "MonitoringApihealthGETApiPermissionTestmonitoringappApidevMonitoringApi30447D9AGEThealthEE29892E": {
+   "Type": "AWS::Lambda::Permission",
+   "Properties": {
+    "Action": "lambda:InvokeFunction",
+    "FunctionName": {
+     "Fn::ImportValue": "monitoring-app-compute-dev:ExportsOutputFnGetAttApiLambda91D2282DArn93907623"
+    },
+    "Principal": "apigateway.amazonaws.com",
+    "SourceArn": {
+     "Fn::Join": [
+      "",
+      [
+       "arn:aws:execute-api:us-east-1:084828566306:",
+       {
+        "Ref": "MonitoringApi48F708DC"
+       },
+       "/test-invoke-stage/GET/health"
+      ]
+     ]
+    }
+   },
+   "Metadata": {
+    "aws:cdk:path": "monitoring-app-Api-dev/MonitoringApi/Default/health/GET/ApiPermission.Test.monitoringappApidevMonitoringApi30447D9A.GET..health"
+   }
+  },
+  "MonitoringApihealthGET93A25031": {
+   "Type": "AWS::ApiGateway::Method",
+   "Properties": {
+    "HttpMethod": "GET",
+    "ResourceId": {
+     "Ref": "MonitoringApihealthD8B1CBE5"
+    },
+    "RestApiId": {
+     "Ref": "MonitoringApi48F708DC"
+    },
+    "AuthorizationType": "NONE",
+    "Integration": {
+     "IntegrationHttpMethod": "POST",
+     "IntegrationResponses": [
+      {
+       "StatusCode": "200"
+      }
+     ],
+     "Type": "AWS_PROXY",
+     "Uri": {
+      "Fn::Join": [
+       "",
+       [
+        "arn:aws:apigateway:us-east-1:lambda:path/2015-03-31/functions/",
+        {
+         "Fn::ImportValue": "monitoring-app-compute-dev:ExportsOutputFnGetAttApiLambda91D2282DArn93907623"
+        },
+        "/invocations"
+       ]
+      ]
+     }
+    }
+   },
+   "Metadata": {
+    "aws:cdk:path": "monitoring-app-Api-dev/MonitoringApi/Default/health/GET/Resource"
+   }
+  },
+  "MonitoringApianalyticsECD263AF": {
+   "Type": "AWS::ApiGateway::Resource",
+   "Properties": {
+    "ParentId": {
+     "Fn::GetAtt": [
+      "MonitoringApi48F708DC",
+      "RootResourceId"
+     ]
+    },
+    "PathPart": "analytics",
+    "RestApiId": {
+     "Ref": "MonitoringApi48F708DC"
+    }
+   },
+   "Metadata": {
+    "aws:cdk:path": "monitoring-app-Api-dev/MonitoringApi/Default/analytics/Resource"
+   }
+  },
+  "MonitoringApianalyticsOPTIONS6D9DB2F1": {
+   "Type": "AWS::ApiGateway::Method",
+   "Properties": {
+    "HttpMethod": "OPTIONS",
+    "ResourceId": {
+     "Ref": "MonitoringApianalyticsECD263AF"
+    },
+    "RestApiId": {
+     "Ref": "MonitoringApi48F708DC"
+    },
+    "AuthorizationType": "NONE",
+    "Integration": {
+     "IntegrationResponses": [
+      {
+       "ResponseParameters": {
+        "method.response.header.Access-Control-Allow-Headers": "'Content-Type,X-Amz-Date,Authorization,X-Api-Key'",
+        "method.response.header.Access-Control-Allow-Origin": "'*'",
+        "method.response.header.Access-Control-Allow-Methods": "'OPTIONS,GET,PUT,POST,DELETE,PATCH,HEAD'"
+       },
+       "StatusCode": "204"
+      }
+     ],
+     "RequestTemplates": {
+      "application/json": "{ statusCode: 200 }"
+     },
+     "Type": "MOCK"
+    },
+    "MethodResponses": [
+     {
+      "ResponseParameters": {
+       "method.response.header.Access-Control-Allow-Headers": true,
+       "method.response.header.Access-Control-Allow-Origin": true,
+       "method.response.header.Access-Control-Allow-Methods": true
+      },
+      "StatusCode": "204"
+     }
+    ]
+   },
+   "Metadata": {
+    "aws:cdk:path": "monitoring-app-Api-dev/MonitoringApi/Default/analytics/OPTIONS/Resource"
+   }
+  },
+  "MonitoringApianalyticsGETApiPermissionmonitoringappApidevMonitoringApi30447D9AGETanalytics31098373": {
+   "Type": "AWS::Lambda::Permission",
+   "Properties": {
+    "Action": "lambda:InvokeFunction",
+    "FunctionName": {
+     "Fn::ImportValue": "monitoring-app-compute-dev:ExportsOutputFnGetAttApiLambda91D2282DArn93907623"
+    },
+    "Principal": "apigateway.amazonaws.com",
+    "SourceArn": {
+     "Fn::Join": [
+      "",
+      [
+       "arn:aws:execute-api:us-east-1:084828566306:",
+       {
+        "Ref": "MonitoringApi48F708DC"
+       },
+       "/",
+       {
+        "Ref": "MonitoringApiDeploymentStagedevD6C611AA"
+       },
+       "/GET/analytics"
+      ]
+     ]
+    }
+   },
+   "Metadata": {
+    "aws:cdk:path": "monitoring-app-Api-dev/MonitoringApi/Default/analytics/GET/ApiPermission.monitoringappApidevMonitoringApi30447D9A.GET..analytics"
+   }
+  },
+  "MonitoringApianalyticsGETApiPermissionTestmonitoringappApidevMonitoringApi30447D9AGETanalytics3D17420A": {
+   "Type": "AWS::Lambda::Permission",
+   "Properties": {
+    "Action": "lambda:InvokeFunction",
+    "FunctionName": {
+     "Fn::ImportValue": "monitoring-app-compute-dev:ExportsOutputFnGetAttApiLambda91D2282DArn93907623"
+    },
+    "Principal": "apigateway.amazonaws.com",
+    "SourceArn": {
+     "Fn::Join": [
+      "",
+      [
+       "arn:aws:execute-api:us-east-1:084828566306:",
+       {
+        "Ref": "MonitoringApi48F708DC"
+       },
+       "/test-invoke-stage/GET/analytics"
+      ]
+     ]
+    }
+   },
+   "Metadata": {
+    "aws:cdk:path": "monitoring-app-Api-dev/MonitoringApi/Default/analytics/GET/ApiPermission.Test.monitoringappApidevMonitoringApi30447D9A.GET..analytics"
+   }
+  },
+  "MonitoringApianalyticsGETDA948E2A": {
+   "Type": "AWS::ApiGateway::Method",
+   "Properties": {
+    "HttpMethod": "GET",
+    "ResourceId": {
+     "Ref": "MonitoringApianalyticsECD263AF"
+    },
+    "RestApiId": {
+     "Ref": "MonitoringApi48F708DC"
+    },
+    "AuthorizationType": "NONE",
+    "Integration": {
+     "IntegrationHttpMethod": "POST",
+     "IntegrationResponses": [
+      {
+       "StatusCode": "200"
+      }
+     ],
+     "Type": "AWS_PROXY",
+     "Uri": {
+      "Fn::Join": [
+       "",
+       [
+        "arn:aws:apigateway:us-east-1:lambda:path/2015-03-31/functions/",
+        {
+         "Fn::ImportValue": "monitoring-app-compute-dev:ExportsOutputFnGetAttApiLambda91D2282DArn93907623"
+        },
+        "/invocations"
+       ]
+      ]
+     }
+    }
+   },
+   "Metadata": {
+    "aws:cdk:path": "monitoring-app-Api-dev/MonitoringApi/Default/analytics/GET/Resource"
+   }
+  },
+  "CDKMetadata": {
+   "Type": "AWS::CDK::Metadata",
+   "Properties": {
+    "Analytics": "v2:deflate64:H4sIAAAAAAAA/1WNyw6CQAxFv8X9UJGNbn1sjQY/wNShanUehHYkhvDvBtFEVz09N+0tYJ5DPsFWMlvdM8cn6A6K9m6wlWOHNV9QqcUndCWJLms263P4waW1MQU1G6pdfHoKOtif7aB4ocGNUJLE1FhaoZDZkl5jNYQf+qafkjf3htFDV0Y36uioNw79qUJYn8OeGs8iHEP/d75LWif9fxRiRXCT6aPIYbaAfHIT5qxJQdkTlON8AdL5s/ITAQAA"
+   },
+   "Metadata": {
+    "aws:cdk:path": "monitoring-app-Api-dev/CDKMetadata/Default"
+   }
+  }
+ },
+ "Outputs": {
+  "MonitoringApiEndpointC03AC417": {
+   "Value": {
+    "Fn::Join": [
+     "",
+     [
+      "https://",
+      {
+       "Ref": "MonitoringApi48F708DC"
+      },
+      ".execute-api.us-east-1.",
+      {
+       "Ref": "AWS::URLSuffix"
+      },
+      "/",
+      {
+       "Ref": "MonitoringApiDeploymentStagedevD6C611AA"
+      },
+      "/"
+     ]
+    ]
+   }
+  },
+  "ApiUrl": {
+   "Description": "API Gateway URL",
+   "Value": {
+    "Fn::Join": [
+     "",
+     [
+      "https://",
+      {
+       "Ref": "MonitoringApi48F708DC"
+      },
+      ".execute-api.us-east-1.",
+      {
+       "Ref": "AWS::URLSuffix"
+      },
+      "/",
+      {
+       "Ref": "MonitoringApiDeploymentStagedevD6C611AA"
+      },
+      "/"
+     ]
+    ]
+   },
+   "Export": {
+    "Name": "monitoring-app-api-url-dev"
+   }
+  },
+  "ApiId": {
+   "Value": {
+    "Ref": "MonitoringApi48F708DC"
+   },
+   "Export": {
+    "Name": "monitoring-app-api-id-dev"
+   }
+  }
+ },
+ "Parameters": {
+  "BootstrapVersion": {
+   "Type": "AWS::SSM::Parameter::Value<String>",
+   "Default": "/cdk-bootstrap/hnb659fds/version",
+   "Description": "Version of the CDK Bootstrap resources in this environment, automatically retrieved from SSM Parameter Store. [cdk:skip]"
+  }
+ },
+ "Rules": {
+  "CheckBootstrapVersion": {
+   "Assertions": [
+    {
+     "Assert": {
+      "Fn::Not": [
+       {
+        "Fn::Contains": [
+         [
+          "1",
+          "2",
+          "3",
+          "4",
+          "5"
+         ],
+         {
+          "Ref": "BootstrapVersion"
+         }
+        ]
+       }
+      ]
+     },
+     "AssertDescription": "CDK bootstrap stack version 6 required. Please run 'cdk bootstrap' with a recent version of the CDK CLI."
+    }
+   ]
+  }
+ }
+}

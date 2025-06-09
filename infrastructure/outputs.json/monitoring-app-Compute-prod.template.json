@@ -1,0 +1,590 @@
+{
+ "Description": "Lambda functions and compute - prod",
+ "Resources": {
+  "ApiLambdaSecurityGroup421E87DA": {
+   "Type": "AWS::EC2::SecurityGroup",
+   "Properties": {
+    "GroupDescription": "Automatic security group for Lambda Function monitoringappComputeprodApiLambdaECB71F09",
+    "SecurityGroupEgress": [
+     {
+      "CidrIp": "0.0.0.0/0",
+      "Description": "Allow all outbound traffic by default",
+      "IpProtocol": "-1"
+     }
+    ],
+    "Tags": [
+     {
+      "Key": "Environment",
+      "Value": "prod"
+     },
+     {
+      "Key": "Project",
+      "Value": "monitoring-app"
+     },
+     {
+      "Key": "StackType",
+      "Value": "Compute"
+     }
+    ],
+    "VpcId": {
+     "Fn::ImportValue": "monitoring-app-networking-prod:ExportsOutputRefMonitoringVPC8FAA53D96DCBBE0C"
+    }
+   },
+   "Metadata": {
+    "aws:cdk:path": "monitoring-app-Compute-prod/ApiLambda/SecurityGroup/Resource"
+   }
+  },
+  "ApiLambda91D2282D": {
+   "Type": "AWS::Lambda::Function",
+   "Properties": {
+    "Code": {
+     "S3Bucket": "cdk-hnb659fds-assets-084828566306-us-east-1",
+     "S3Key": "3049463a7944c802ee3b81bb0ea38f37308b78ef71568043ebb6e4eb1e1f8af9.zip"
+    },
+    "Role": {
+     "Fn::ImportValue": "monitoring-app-security-prod:ExportsOutputFnGetAttApiLambdaRole66D0B4CDArn3CBE2556"
+    },
+    "Environment": {
+     "Variables": {
+      "TABLE_NAME": {
+       "Fn::ImportValue": "monitoring-app-storage-prod:ExportsOutputRefApplicationMetrics0C795B9259D38ED5"
+      },
+      "PROCESSING_QUEUE_URL": {
+       "Fn::ImportValue": "monitoring-app-messaging-prod:ExportsOutputRefProcessingQueue6DC600C3BF6B2149"
+      },
+      "ENVIRONMENT": "prod"
+     }
+    },
+    "FunctionName": "monitoring-app-api-prod",
+    "Handler": "lambda_function.lambda_handler",
+    "Runtime": "python3.9",
+    "Tags": [
+     {
+      "Key": "Environment",
+      "Value": "prod"
+     },
+     {
+      "Key": "Project",
+      "Value": "monitoring-app"
+     },
+     {
+      "Key": "StackType",
+      "Value": "Compute"
+     }
+    ],
+    "Timeout": 30,
+    "VpcConfig": {
+     "SecurityGroupIds": [
+      {
+       "Fn::GetAtt": [
+        "ApiLambdaSecurityGroup421E87DA",
+        "GroupId"
+       ]
+      }
+     ],
+     "SubnetIds": [
+      {
+       "Fn::ImportValue": "monitoring-app-networking-prod:ExportsOutputRefMonitoringVPCPrivateSubnet1SubnetC43E6062AEB93B2C"
+      },
+      {
+       "Fn::ImportValue": "monitoring-app-networking-prod:ExportsOutputRefMonitoringVPCPrivateSubnet2SubnetEF8EC316501526F0"
+      },
+      {
+       "Fn::ImportValue": "monitoring-app-networking-prod:ExportsOutputRefMonitoringVPCPrivateSubnet3SubnetEDC84B0CFDBE5EA3"
+      }
+     ]
+    }
+   },
+   "Metadata": {
+    "aws:cdk:path": "monitoring-app-Compute-prod/ApiLambda/Resource",
+    "aws:asset:path": "asset.3049463a7944c802ee3b81bb0ea38f37308b78ef71568043ebb6e4eb1e1f8af9",
+    "aws:asset:is-bundled": false,
+    "aws:asset:property": "Code"
+   }
+  },
+  "LogProcessorSecurityGroup0C45647E": {
+   "Type": "AWS::EC2::SecurityGroup",
+   "Properties": {
+    "GroupDescription": "Automatic security group for Lambda Function monitoringappComputeprodLogProcessor09F174E7",
+    "SecurityGroupEgress": [
+     {
+      "CidrIp": "0.0.0.0/0",
+      "Description": "Allow all outbound traffic by default",
+      "IpProtocol": "-1"
+     }
+    ],
+    "Tags": [
+     {
+      "Key": "Environment",
+      "Value": "prod"
+     },
+     {
+      "Key": "Project",
+      "Value": "monitoring-app"
+     },
+     {
+      "Key": "StackType",
+      "Value": "Compute"
+     }
+    ],
+    "VpcId": {
+     "Fn::ImportValue": "monitoring-app-networking-prod:ExportsOutputRefMonitoringVPC8FAA53D96DCBBE0C"
+    }
+   },
+   "Metadata": {
+    "aws:cdk:path": "monitoring-app-Compute-prod/LogProcessor/SecurityGroup/Resource"
+   }
+  },
+  "LogProcessorDB773CA7": {
+   "Type": "AWS::Lambda::Function",
+   "Properties": {
+    "Code": {
+     "S3Bucket": "cdk-hnb659fds-assets-084828566306-us-east-1",
+     "S3Key": "1ee318fa88232f315f984de2bb6feb54f2de3fc58f5ecaad9dafd3f7c337575a.zip"
+    },
+    "Role": {
+     "Fn::ImportValue": "monitoring-app-security-prod:ExportsOutputFnGetAttLambdaExecutionRoleD5C26073ArnADAF6607"
+    },
+    "Environment": {
+     "Variables": {
+      "TABLE_NAME": {
+       "Fn::ImportValue": "monitoring-app-storage-prod:ExportsOutputRefApplicationMetrics0C795B9259D38ED5"
+      },
+      "ENVIRONMENT": "prod",
+      "DLQ_URL": {
+       "Fn::ImportValue": "monitoring-app-messaging-prod:ExportsOutputRefDLQ581697C4C2809D62"
+      }
+     }
+    },
+    "FunctionName": "monitoring-app-log-processor-prod",
+    "Handler": "lambda_function.lambda_handler",
+    "Runtime": "python3.9",
+    "Tags": [
+     {
+      "Key": "Environment",
+      "Value": "prod"
+     },
+     {
+      "Key": "Project",
+      "Value": "monitoring-app"
+     },
+     {
+      "Key": "StackType",
+      "Value": "Compute"
+     }
+    ],
+    "Timeout": 30,
+    "VpcConfig": {
+     "SecurityGroupIds": [
+      {
+       "Fn::GetAtt": [
+        "LogProcessorSecurityGroup0C45647E",
+        "GroupId"
+       ]
+      }
+     ],
+     "SubnetIds": [
+      {
+       "Fn::ImportValue": "monitoring-app-networking-prod:ExportsOutputRefMonitoringVPCPrivateSubnet1SubnetC43E6062AEB93B2C"
+      },
+      {
+       "Fn::ImportValue": "monitoring-app-networking-prod:ExportsOutputRefMonitoringVPCPrivateSubnet2SubnetEF8EC316501526F0"
+      },
+      {
+       "Fn::ImportValue": "monitoring-app-networking-prod:ExportsOutputRefMonitoringVPCPrivateSubnet3SubnetEDC84B0CFDBE5EA3"
+      }
+     ]
+    }
+   },
+   "Metadata": {
+    "aws:cdk:path": "monitoring-app-Compute-prod/LogProcessor/Resource",
+    "aws:asset:path": "asset.1ee318fa88232f315f984de2bb6feb54f2de3fc58f5ecaad9dafd3f7c337575a",
+    "aws:asset:is-bundled": false,
+    "aws:asset:property": "Code"
+   }
+  },
+  "HealthMonitor5F362362": {
+   "Type": "AWS::Lambda::Function",
+   "Properties": {
+    "Code": {
+     "S3Bucket": "cdk-hnb659fds-assets-084828566306-us-east-1",
+     "S3Key": "cd06a090493e185f8c8a84c3a768ab476d0c59c1b09944283a87f95d73555fd5.zip"
+    },
+    "Role": {
+     "Fn::ImportValue": "monitoring-app-security-prod:ExportsOutputFnGetAttLambdaExecutionRoleD5C26073ArnADAF6607"
+    },
+    "Environment": {
+     "Variables": {
+      "TABLE_NAME": {
+       "Fn::ImportValue": "monitoring-app-storage-prod:ExportsOutputRefApplicationMetrics0C795B9259D38ED5"
+      },
+      "ENVIRONMENT": "prod",
+      "API_URL": "to-be-configured"
+     }
+    },
+    "FunctionName": "monitoring-app-health-prod",
+    "Handler": "lambda_function.lambda_handler",
+    "Runtime": "python3.9",
+    "Tags": [
+     {
+      "Key": "Environment",
+      "Value": "prod"
+     },
+     {
+      "Key": "Project",
+      "Value": "monitoring-app"
+     },
+     {
+      "Key": "StackType",
+      "Value": "Compute"
+     }
+    ],
+    "Timeout": 300
+   },
+   "Metadata": {
+    "aws:cdk:path": "monitoring-app-Compute-prod/HealthMonitor/Resource",
+    "aws:asset:path": "asset.cd06a090493e185f8c8a84c3a768ab476d0c59c1b09944283a87f95d73555fd5",
+    "aws:asset:is-bundled": false,
+    "aws:asset:property": "Code"
+   }
+  },
+  "AiAnalysisF7225954": {
+   "Type": "AWS::Lambda::Function",
+   "Properties": {
+    "Code": {
+     "S3Bucket": "cdk-hnb659fds-assets-084828566306-us-east-1",
+     "S3Key": "2d6fd0d16e2356bfa6a007020d5a8869c9f69fdbe38e9d3c1a83ab8692bad02d.zip"
+    },
+    "Role": {
+     "Fn::ImportValue": "monitoring-app-security-prod:ExportsOutputFnGetAttApiLambdaRole66D0B4CDArn3CBE2556"
+    },
+    "Environment": {
+     "Variables": {
+      "TABLE_NAME": {
+       "Fn::ImportValue": "monitoring-app-storage-prod:ExportsOutputRefApplicationMetrics0C795B9259D38ED5"
+      },
+      "ENVIRONMENT": "prod"
+     }
+    },
+    "FunctionName": "monitoring-app-ai-analysis-prod",
+    "Handler": "lambda_function.lambda_handler",
+    "Runtime": "python3.9",
+    "Tags": [
+     {
+      "Key": "Environment",
+      "Value": "prod"
+     },
+     {
+      "Key": "Project",
+      "Value": "monitoring-app"
+     },
+     {
+      "Key": "StackType",
+      "Value": "Compute"
+     }
+    ],
+    "Timeout": 900
+   },
+   "Metadata": {
+    "aws:cdk:path": "monitoring-app-Compute-prod/AiAnalysis/Resource",
+    "aws:asset:path": "asset.2d6fd0d16e2356bfa6a007020d5a8869c9f69fdbe38e9d3c1a83ab8692bad02d",
+    "aws:asset:is-bundled": false,
+    "aws:asset:property": "Code"
+   }
+  },
+  "BackupProcessor5101C858": {
+   "Type": "AWS::Lambda::Function",
+   "Properties": {
+    "Code": {
+     "S3Bucket": "cdk-hnb659fds-assets-084828566306-us-east-1",
+     "S3Key": "44a907edd0abb51d76ec1bcf008452b610f091c5623bdc78f0ca7143cc7ee709.zip"
+    },
+    "Role": {
+     "Fn::ImportValue": "monitoring-app-security-prod:ExportsOutputFnGetAttLambdaExecutionRoleD5C26073ArnADAF6607"
+    },
+    "Environment": {
+     "Variables": {
+      "TABLE_NAME": {
+       "Fn::ImportValue": "monitoring-app-storage-prod:ExportsOutputRefApplicationMetrics0C795B9259D38ED5"
+      },
+      "ENVIRONMENT": "prod"
+     }
+    },
+    "FunctionName": "monitoring-app-backup-prod",
+    "Handler": "lambda_function.lambda_handler",
+    "Runtime": "python3.9",
+    "Tags": [
+     {
+      "Key": "Environment",
+      "Value": "prod"
+     },
+     {
+      "Key": "Project",
+      "Value": "monitoring-app"
+     },
+     {
+      "Key": "StackType",
+      "Value": "Compute"
+     }
+    ],
+    "Timeout": 600
+   },
+   "Metadata": {
+    "aws:cdk:path": "monitoring-app-Compute-prod/BackupProcessor/Resource",
+    "aws:asset:path": "asset.44a907edd0abb51d76ec1bcf008452b610f091c5623bdc78f0ca7143cc7ee709",
+    "aws:asset:is-bundled": false,
+    "aws:asset:property": "Code"
+   }
+  },
+  "HealthCheckSchedule9843A4E1": {
+   "Type": "AWS::Events::Rule",
+   "Properties": {
+    "Description": "Run health checks every 5 minutes",
+    "ScheduleExpression": "rate(5 minutes)",
+    "State": "ENABLED",
+    "Targets": [
+     {
+      "Arn": {
+       "Fn::GetAtt": [
+        "HealthMonitor5F362362",
+        "Arn"
+       ]
+      },
+      "Id": "Target0"
+     }
+    ]
+   },
+   "Metadata": {
+    "aws:cdk:path": "monitoring-app-Compute-prod/HealthCheckSchedule/Resource"
+   }
+  },
+  "HealthCheckScheduleAllowEventRulemonitoringappComputeprodHealthMonitor01B35509ACF437B0": {
+   "Type": "AWS::Lambda::Permission",
+   "Properties": {
+    "Action": "lambda:InvokeFunction",
+    "FunctionName": {
+     "Fn::GetAtt": [
+      "HealthMonitor5F362362",
+      "Arn"
+     ]
+    },
+    "Principal": "events.amazonaws.com",
+    "SourceArn": {
+     "Fn::GetAtt": [
+      "HealthCheckSchedule9843A4E1",
+      "Arn"
+     ]
+    }
+   },
+   "Metadata": {
+    "aws:cdk:path": "monitoring-app-Compute-prod/HealthCheckSchedule/AllowEventRulemonitoringappComputeprodHealthMonitor01B35509"
+   }
+  },
+  "AiAnalysisSchedule8964FC7D": {
+   "Type": "AWS::Events::Rule",
+   "Properties": {
+    "Description": "Run AI analysis every hour",
+    "ScheduleExpression": "rate(1 hour)",
+    "State": "ENABLED",
+    "Targets": [
+     {
+      "Arn": {
+       "Fn::GetAtt": [
+        "AiAnalysisF7225954",
+        "Arn"
+       ]
+      },
+      "Id": "Target0"
+     }
+    ]
+   },
+   "Metadata": {
+    "aws:cdk:path": "monitoring-app-Compute-prod/AiAnalysisSchedule/Resource"
+   }
+  },
+  "AiAnalysisScheduleAllowEventRulemonitoringappComputeprodAiAnalysis0EB6FA3018ED3A86": {
+   "Type": "AWS::Lambda::Permission",
+   "Properties": {
+    "Action": "lambda:InvokeFunction",
+    "FunctionName": {
+     "Fn::GetAtt": [
+      "AiAnalysisF7225954",
+      "Arn"
+     ]
+    },
+    "Principal": "events.amazonaws.com",
+    "SourceArn": {
+     "Fn::GetAtt": [
+      "AiAnalysisSchedule8964FC7D",
+      "Arn"
+     ]
+    }
+   },
+   "Metadata": {
+    "aws:cdk:path": "monitoring-app-Compute-prod/AiAnalysisSchedule/AllowEventRulemonitoringappComputeprodAiAnalysis0EB6FA30"
+   }
+  },
+  "BackupSchedule6468EDCB": {
+   "Type": "AWS::Events::Rule",
+   "Properties": {
+    "Description": "Daily backup at 2 AM",
+    "ScheduleExpression": "cron(0 2 * * ? *)",
+    "State": "ENABLED",
+    "Targets": [
+     {
+      "Arn": {
+       "Fn::GetAtt": [
+        "BackupProcessor5101C858",
+        "Arn"
+       ]
+      },
+      "Id": "Target0"
+     }
+    ]
+   },
+   "Metadata": {
+    "aws:cdk:path": "monitoring-app-Compute-prod/BackupSchedule/Resource"
+   }
+  },
+  "BackupScheduleAllowEventRulemonitoringappComputeprodBackupProcessor2440437DF46D62EE": {
+   "Type": "AWS::Lambda::Permission",
+   "Properties": {
+    "Action": "lambda:InvokeFunction",
+    "FunctionName": {
+     "Fn::GetAtt": [
+      "BackupProcessor5101C858",
+      "Arn"
+     ]
+    },
+    "Principal": "events.amazonaws.com",
+    "SourceArn": {
+     "Fn::GetAtt": [
+      "BackupSchedule6468EDCB",
+      "Arn"
+     ]
+    }
+   },
+   "Metadata": {
+    "aws:cdk:path": "monitoring-app-Compute-prod/BackupSchedule/AllowEventRulemonitoringappComputeprodBackupProcessor2440437D"
+   }
+  },
+  "CDKMetadata": {
+   "Type": "AWS::CDK::Metadata",
+   "Properties": {
+    "Analytics": "v2:deflate64:H4sIAAAAAAAA/1WMzw4BMRDGn8W9O9Y6cEXCkdgHkOoOGbvbSmeGSNN3l3Lh9Pvy/WtgUUM9sU+uXNdXA50htWJdb+yTT2mw47mzkLbqnVDwZnPxv/qAcSRmCj4bnp8sMwrDqsDwHNbqepS1ZTToGkgtOo0kr10Mei/7PyMbfKAXhnTUAUtcmLP5/LVir+Svxd6r3FU+BeSg0WE2PnQIN54+mhpmS6gnNyaqonqhEeH45RskQ8aa7gAAAA=="
+   },
+   "Metadata": {
+    "aws:cdk:path": "monitoring-app-Compute-prod/CDKMetadata/Default"
+   }
+  }
+ },
+ "Outputs": {
+  "ApiLambdaArn": {
+   "Value": {
+    "Fn::GetAtt": [
+     "ApiLambda91D2282D",
+     "Arn"
+    ]
+   },
+   "Export": {
+    "Name": "monitoring-app-api-lambda-arn-prod"
+   }
+  },
+  "ExportsOutputFnGetAttApiLambda91D2282DArn93907623": {
+   "Value": {
+    "Fn::GetAtt": [
+     "ApiLambda91D2282D",
+     "Arn"
+    ]
+   },
+   "Export": {
+    "Name": "monitoring-app-compute-prod:ExportsOutputFnGetAttApiLambda91D2282DArn93907623"
+   }
+  },
+  "ExportsOutputRefApiLambda91D2282D3158688D": {
+   "Value": {
+    "Ref": "ApiLambda91D2282D"
+   },
+   "Export": {
+    "Name": "monitoring-app-compute-prod:ExportsOutputRefApiLambda91D2282D3158688D"
+   }
+  },
+  "ExportsOutputRefLogProcessorDB773CA752571FE5": {
+   "Value": {
+    "Ref": "LogProcessorDB773CA7"
+   },
+   "Export": {
+    "Name": "monitoring-app-compute-prod:ExportsOutputRefLogProcessorDB773CA752571FE5"
+   }
+  },
+  "ExportsOutputRefHealthMonitor5F3623624578B3D6": {
+   "Value": {
+    "Ref": "HealthMonitor5F362362"
+   },
+   "Export": {
+    "Name": "monitoring-app-compute-prod:ExportsOutputRefHealthMonitor5F3623624578B3D6"
+   }
+  },
+  "ExportsOutputRefAiAnalysisF7225954B6F3A1D8": {
+   "Value": {
+    "Ref": "AiAnalysisF7225954"
+   },
+   "Export": {
+    "Name": "monitoring-app-compute-prod:ExportsOutputRefAiAnalysisF7225954B6F3A1D8"
+   }
+  },
+  "ExportsOutputRefBackupProcessor5101C858EF0C2C75": {
+   "Value": {
+    "Ref": "BackupProcessor5101C858"
+   },
+   "Export": {
+    "Name": "monitoring-app-compute-prod:ExportsOutputRefBackupProcessor5101C858EF0C2C75"
+   }
+  },
+  "ExportsOutputFnGetAttLogProcessorDB773CA7Arn5CC3A96E": {
+   "Value": {
+    "Fn::GetAtt": [
+     "LogProcessorDB773CA7",
+     "Arn"
+    ]
+   },
+   "Export": {
+    "Name": "monitoring-app-compute-prod:ExportsOutputFnGetAttLogProcessorDB773CA7Arn5CC3A96E"
+   }
+  }
+ },
+ "Parameters": {
+  "BootstrapVersion": {
+   "Type": "AWS::SSM::Parameter::Value<String>",
+   "Default": "/cdk-bootstrap/hnb659fds/version",
+   "Description": "Version of the CDK Bootstrap resources in this environment, automatically retrieved from SSM Parameter Store. [cdk:skip]"
+  }
+ },
+ "Rules": {
+  "CheckBootstrapVersion": {
+   "Assertions": [
+    {
+     "Assert": {
+      "Fn::Not": [
+       {
+        "Fn::Contains": [
+         [
+          "1",
+          "2",
+          "3",
+          "4",
+          "5"
+         ],
+         {
+          "Ref": "BootstrapVersion"
+         }
+        ]
+       }
+      ]
+     },
+     "AssertDescription": "CDK bootstrap stack version 6 required. Please run 'cdk bootstrap' with a recent version of the CDK CLI."
+    }
+   ]
+  }
+ }
+}

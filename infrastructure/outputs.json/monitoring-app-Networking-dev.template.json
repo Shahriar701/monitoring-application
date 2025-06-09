@@ -1,0 +1,1198 @@
+{
+ "Description": "Networking infrastructure - dev",
+ "Resources": {
+  "MonitoringVPC8FAA53D9": {
+   "Type": "AWS::EC2::VPC",
+   "Properties": {
+    "CidrBlock": "10.0.0.0/16",
+    "EnableDnsHostnames": true,
+    "EnableDnsSupport": true,
+    "InstanceTenancy": "default",
+    "Tags": [
+     {
+      "Key": "Environment",
+      "Value": "dev"
+     },
+     {
+      "Key": "Name",
+      "Value": "monitoring-app-vpc-dev"
+     },
+     {
+      "Key": "Project",
+      "Value": "monitoring-app"
+     },
+     {
+      "Key": "StackType",
+      "Value": "Networking"
+     }
+    ]
+   },
+   "Metadata": {
+    "aws:cdk:path": "monitoring-app-Networking-dev/MonitoringVPC/Resource"
+   }
+  },
+  "MonitoringVPCPublicSubnet1Subnet58600EDB": {
+   "Type": "AWS::EC2::Subnet",
+   "Properties": {
+    "VpcId": {
+     "Ref": "MonitoringVPC8FAA53D9"
+    },
+    "AvailabilityZone": "us-east-1a",
+    "CidrBlock": "10.0.0.0/24",
+    "MapPublicIpOnLaunch": true,
+    "Tags": [
+     {
+      "Key": "aws-cdk:subnet-name",
+      "Value": "Public"
+     },
+     {
+      "Key": "aws-cdk:subnet-type",
+      "Value": "Public"
+     },
+     {
+      "Key": "Environment",
+      "Value": "dev"
+     },
+     {
+      "Key": "Name",
+      "Value": "monitoring-app-Networking-dev/MonitoringVPC/PublicSubnet1"
+     },
+     {
+      "Key": "Project",
+      "Value": "monitoring-app"
+     },
+     {
+      "Key": "StackType",
+      "Value": "Networking"
+     }
+    ]
+   },
+   "Metadata": {
+    "aws:cdk:path": "monitoring-app-Networking-dev/MonitoringVPC/PublicSubnet1/Subnet"
+   }
+  },
+  "MonitoringVPCPublicSubnet1RouteTable9316060E": {
+   "Type": "AWS::EC2::RouteTable",
+   "Properties": {
+    "VpcId": {
+     "Ref": "MonitoringVPC8FAA53D9"
+    },
+    "Tags": [
+     {
+      "Key": "Environment",
+      "Value": "dev"
+     },
+     {
+      "Key": "Name",
+      "Value": "monitoring-app-Networking-dev/MonitoringVPC/PublicSubnet1"
+     },
+     {
+      "Key": "Project",
+      "Value": "monitoring-app"
+     },
+     {
+      "Key": "StackType",
+      "Value": "Networking"
+     }
+    ]
+   },
+   "Metadata": {
+    "aws:cdk:path": "monitoring-app-Networking-dev/MonitoringVPC/PublicSubnet1/RouteTable"
+   }
+  },
+  "MonitoringVPCPublicSubnet1RouteTableAssociationA44F66F2": {
+   "Type": "AWS::EC2::SubnetRouteTableAssociation",
+   "Properties": {
+    "RouteTableId": {
+     "Ref": "MonitoringVPCPublicSubnet1RouteTable9316060E"
+    },
+    "SubnetId": {
+     "Ref": "MonitoringVPCPublicSubnet1Subnet58600EDB"
+    }
+   },
+   "Metadata": {
+    "aws:cdk:path": "monitoring-app-Networking-dev/MonitoringVPC/PublicSubnet1/RouteTableAssociation"
+   }
+  },
+  "MonitoringVPCPublicSubnet1DefaultRoute1BEEDEC3": {
+   "Type": "AWS::EC2::Route",
+   "Properties": {
+    "RouteTableId": {
+     "Ref": "MonitoringVPCPublicSubnet1RouteTable9316060E"
+    },
+    "DestinationCidrBlock": "0.0.0.0/0",
+    "GatewayId": {
+     "Ref": "MonitoringVPCIGW1B780536"
+    }
+   },
+   "DependsOn": [
+    "MonitoringVPCVPCGW2108EF91"
+   ],
+   "Metadata": {
+    "aws:cdk:path": "monitoring-app-Networking-dev/MonitoringVPC/PublicSubnet1/DefaultRoute"
+   }
+  },
+  "MonitoringVPCPublicSubnet1EIP604C75E9": {
+   "Type": "AWS::EC2::EIP",
+   "Properties": {
+    "Domain": "vpc",
+    "Tags": [
+     {
+      "Key": "Environment",
+      "Value": "dev"
+     },
+     {
+      "Key": "Name",
+      "Value": "monitoring-app-Networking-dev/MonitoringVPC/PublicSubnet1"
+     },
+     {
+      "Key": "Project",
+      "Value": "monitoring-app"
+     },
+     {
+      "Key": "StackType",
+      "Value": "Networking"
+     }
+    ]
+   },
+   "Metadata": {
+    "aws:cdk:path": "monitoring-app-Networking-dev/MonitoringVPC/PublicSubnet1/EIP"
+   }
+  },
+  "MonitoringVPCPublicSubnet1NATGatewayE2662609": {
+   "Type": "AWS::EC2::NatGateway",
+   "Properties": {
+    "SubnetId": {
+     "Ref": "MonitoringVPCPublicSubnet1Subnet58600EDB"
+    },
+    "AllocationId": {
+     "Fn::GetAtt": [
+      "MonitoringVPCPublicSubnet1EIP604C75E9",
+      "AllocationId"
+     ]
+    },
+    "Tags": [
+     {
+      "Key": "Environment",
+      "Value": "dev"
+     },
+     {
+      "Key": "Name",
+      "Value": "monitoring-app-Networking-dev/MonitoringVPC/PublicSubnet1"
+     },
+     {
+      "Key": "Project",
+      "Value": "monitoring-app"
+     },
+     {
+      "Key": "StackType",
+      "Value": "Networking"
+     }
+    ]
+   },
+   "DependsOn": [
+    "MonitoringVPCPublicSubnet1DefaultRoute1BEEDEC3",
+    "MonitoringVPCPublicSubnet1RouteTableAssociationA44F66F2"
+   ],
+   "Metadata": {
+    "aws:cdk:path": "monitoring-app-Networking-dev/MonitoringVPC/PublicSubnet1/NATGateway"
+   }
+  },
+  "MonitoringVPCPublicSubnet2Subnet4F5FB28C": {
+   "Type": "AWS::EC2::Subnet",
+   "Properties": {
+    "VpcId": {
+     "Ref": "MonitoringVPC8FAA53D9"
+    },
+    "AvailabilityZone": "us-east-1b",
+    "CidrBlock": "10.0.1.0/24",
+    "MapPublicIpOnLaunch": true,
+    "Tags": [
+     {
+      "Key": "aws-cdk:subnet-name",
+      "Value": "Public"
+     },
+     {
+      "Key": "aws-cdk:subnet-type",
+      "Value": "Public"
+     },
+     {
+      "Key": "Environment",
+      "Value": "dev"
+     },
+     {
+      "Key": "Name",
+      "Value": "monitoring-app-Networking-dev/MonitoringVPC/PublicSubnet2"
+     },
+     {
+      "Key": "Project",
+      "Value": "monitoring-app"
+     },
+     {
+      "Key": "StackType",
+      "Value": "Networking"
+     }
+    ]
+   },
+   "Metadata": {
+    "aws:cdk:path": "monitoring-app-Networking-dev/MonitoringVPC/PublicSubnet2/Subnet"
+   }
+  },
+  "MonitoringVPCPublicSubnet2RouteTable70F6B716": {
+   "Type": "AWS::EC2::RouteTable",
+   "Properties": {
+    "VpcId": {
+     "Ref": "MonitoringVPC8FAA53D9"
+    },
+    "Tags": [
+     {
+      "Key": "Environment",
+      "Value": "dev"
+     },
+     {
+      "Key": "Name",
+      "Value": "monitoring-app-Networking-dev/MonitoringVPC/PublicSubnet2"
+     },
+     {
+      "Key": "Project",
+      "Value": "monitoring-app"
+     },
+     {
+      "Key": "StackType",
+      "Value": "Networking"
+     }
+    ]
+   },
+   "Metadata": {
+    "aws:cdk:path": "monitoring-app-Networking-dev/MonitoringVPC/PublicSubnet2/RouteTable"
+   }
+  },
+  "MonitoringVPCPublicSubnet2RouteTableAssociationB288D7DF": {
+   "Type": "AWS::EC2::SubnetRouteTableAssociation",
+   "Properties": {
+    "RouteTableId": {
+     "Ref": "MonitoringVPCPublicSubnet2RouteTable70F6B716"
+    },
+    "SubnetId": {
+     "Ref": "MonitoringVPCPublicSubnet2Subnet4F5FB28C"
+    }
+   },
+   "Metadata": {
+    "aws:cdk:path": "monitoring-app-Networking-dev/MonitoringVPC/PublicSubnet2/RouteTableAssociation"
+   }
+  },
+  "MonitoringVPCPublicSubnet2DefaultRouteD78CFB6A": {
+   "Type": "AWS::EC2::Route",
+   "Properties": {
+    "RouteTableId": {
+     "Ref": "MonitoringVPCPublicSubnet2RouteTable70F6B716"
+    },
+    "DestinationCidrBlock": "0.0.0.0/0",
+    "GatewayId": {
+     "Ref": "MonitoringVPCIGW1B780536"
+    }
+   },
+   "DependsOn": [
+    "MonitoringVPCVPCGW2108EF91"
+   ],
+   "Metadata": {
+    "aws:cdk:path": "monitoring-app-Networking-dev/MonitoringVPC/PublicSubnet2/DefaultRoute"
+   }
+  },
+  "MonitoringVPCPublicSubnet3Subnet2BB0045A": {
+   "Type": "AWS::EC2::Subnet",
+   "Properties": {
+    "VpcId": {
+     "Ref": "MonitoringVPC8FAA53D9"
+    },
+    "AvailabilityZone": "us-east-1c",
+    "CidrBlock": "10.0.2.0/24",
+    "MapPublicIpOnLaunch": true,
+    "Tags": [
+     {
+      "Key": "aws-cdk:subnet-name",
+      "Value": "Public"
+     },
+     {
+      "Key": "aws-cdk:subnet-type",
+      "Value": "Public"
+     },
+     {
+      "Key": "Environment",
+      "Value": "dev"
+     },
+     {
+      "Key": "Name",
+      "Value": "monitoring-app-Networking-dev/MonitoringVPC/PublicSubnet3"
+     },
+     {
+      "Key": "Project",
+      "Value": "monitoring-app"
+     },
+     {
+      "Key": "StackType",
+      "Value": "Networking"
+     }
+    ]
+   },
+   "Metadata": {
+    "aws:cdk:path": "monitoring-app-Networking-dev/MonitoringVPC/PublicSubnet3/Subnet"
+   }
+  },
+  "MonitoringVPCPublicSubnet3RouteTableE9CFB34C": {
+   "Type": "AWS::EC2::RouteTable",
+   "Properties": {
+    "VpcId": {
+     "Ref": "MonitoringVPC8FAA53D9"
+    },
+    "Tags": [
+     {
+      "Key": "Environment",
+      "Value": "dev"
+     },
+     {
+      "Key": "Name",
+      "Value": "monitoring-app-Networking-dev/MonitoringVPC/PublicSubnet3"
+     },
+     {
+      "Key": "Project",
+      "Value": "monitoring-app"
+     },
+     {
+      "Key": "StackType",
+      "Value": "Networking"
+     }
+    ]
+   },
+   "Metadata": {
+    "aws:cdk:path": "monitoring-app-Networking-dev/MonitoringVPC/PublicSubnet3/RouteTable"
+   }
+  },
+  "MonitoringVPCPublicSubnet3RouteTableAssociation7B0B0464": {
+   "Type": "AWS::EC2::SubnetRouteTableAssociation",
+   "Properties": {
+    "RouteTableId": {
+     "Ref": "MonitoringVPCPublicSubnet3RouteTableE9CFB34C"
+    },
+    "SubnetId": {
+     "Ref": "MonitoringVPCPublicSubnet3Subnet2BB0045A"
+    }
+   },
+   "Metadata": {
+    "aws:cdk:path": "monitoring-app-Networking-dev/MonitoringVPC/PublicSubnet3/RouteTableAssociation"
+   }
+  },
+  "MonitoringVPCPublicSubnet3DefaultRouteB2199A8C": {
+   "Type": "AWS::EC2::Route",
+   "Properties": {
+    "RouteTableId": {
+     "Ref": "MonitoringVPCPublicSubnet3RouteTableE9CFB34C"
+    },
+    "DestinationCidrBlock": "0.0.0.0/0",
+    "GatewayId": {
+     "Ref": "MonitoringVPCIGW1B780536"
+    }
+   },
+   "DependsOn": [
+    "MonitoringVPCVPCGW2108EF91"
+   ],
+   "Metadata": {
+    "aws:cdk:path": "monitoring-app-Networking-dev/MonitoringVPC/PublicSubnet3/DefaultRoute"
+   }
+  },
+  "MonitoringVPCPrivateSubnet1SubnetC43E6062": {
+   "Type": "AWS::EC2::Subnet",
+   "Properties": {
+    "VpcId": {
+     "Ref": "MonitoringVPC8FAA53D9"
+    },
+    "AvailabilityZone": "us-east-1a",
+    "CidrBlock": "10.0.3.0/24",
+    "MapPublicIpOnLaunch": false,
+    "Tags": [
+     {
+      "Key": "aws-cdk:subnet-name",
+      "Value": "Private"
+     },
+     {
+      "Key": "aws-cdk:subnet-type",
+      "Value": "Private"
+     },
+     {
+      "Key": "Environment",
+      "Value": "dev"
+     },
+     {
+      "Key": "Name",
+      "Value": "monitoring-app-Networking-dev/MonitoringVPC/PrivateSubnet1"
+     },
+     {
+      "Key": "Project",
+      "Value": "monitoring-app"
+     },
+     {
+      "Key": "StackType",
+      "Value": "Networking"
+     }
+    ]
+   },
+   "Metadata": {
+    "aws:cdk:path": "monitoring-app-Networking-dev/MonitoringVPC/PrivateSubnet1/Subnet"
+   }
+  },
+  "MonitoringVPCPrivateSubnet1RouteTable7090090B": {
+   "Type": "AWS::EC2::RouteTable",
+   "Properties": {
+    "VpcId": {
+     "Ref": "MonitoringVPC8FAA53D9"
+    },
+    "Tags": [
+     {
+      "Key": "Environment",
+      "Value": "dev"
+     },
+     {
+      "Key": "Name",
+      "Value": "monitoring-app-Networking-dev/MonitoringVPC/PrivateSubnet1"
+     },
+     {
+      "Key": "Project",
+      "Value": "monitoring-app"
+     },
+     {
+      "Key": "StackType",
+      "Value": "Networking"
+     }
+    ]
+   },
+   "Metadata": {
+    "aws:cdk:path": "monitoring-app-Networking-dev/MonitoringVPC/PrivateSubnet1/RouteTable"
+   }
+  },
+  "MonitoringVPCPrivateSubnet1RouteTableAssociation4BCCB130": {
+   "Type": "AWS::EC2::SubnetRouteTableAssociation",
+   "Properties": {
+    "RouteTableId": {
+     "Ref": "MonitoringVPCPrivateSubnet1RouteTable7090090B"
+    },
+    "SubnetId": {
+     "Ref": "MonitoringVPCPrivateSubnet1SubnetC43E6062"
+    }
+   },
+   "Metadata": {
+    "aws:cdk:path": "monitoring-app-Networking-dev/MonitoringVPC/PrivateSubnet1/RouteTableAssociation"
+   }
+  },
+  "MonitoringVPCPrivateSubnet1DefaultRoute33722E0F": {
+   "Type": "AWS::EC2::Route",
+   "Properties": {
+    "RouteTableId": {
+     "Ref": "MonitoringVPCPrivateSubnet1RouteTable7090090B"
+    },
+    "DestinationCidrBlock": "0.0.0.0/0",
+    "NatGatewayId": {
+     "Ref": "MonitoringVPCPublicSubnet1NATGatewayE2662609"
+    }
+   },
+   "Metadata": {
+    "aws:cdk:path": "monitoring-app-Networking-dev/MonitoringVPC/PrivateSubnet1/DefaultRoute"
+   }
+  },
+  "MonitoringVPCPrivateSubnet2SubnetEF8EC316": {
+   "Type": "AWS::EC2::Subnet",
+   "Properties": {
+    "VpcId": {
+     "Ref": "MonitoringVPC8FAA53D9"
+    },
+    "AvailabilityZone": "us-east-1b",
+    "CidrBlock": "10.0.4.0/24",
+    "MapPublicIpOnLaunch": false,
+    "Tags": [
+     {
+      "Key": "aws-cdk:subnet-name",
+      "Value": "Private"
+     },
+     {
+      "Key": "aws-cdk:subnet-type",
+      "Value": "Private"
+     },
+     {
+      "Key": "Environment",
+      "Value": "dev"
+     },
+     {
+      "Key": "Name",
+      "Value": "monitoring-app-Networking-dev/MonitoringVPC/PrivateSubnet2"
+     },
+     {
+      "Key": "Project",
+      "Value": "monitoring-app"
+     },
+     {
+      "Key": "StackType",
+      "Value": "Networking"
+     }
+    ]
+   },
+   "Metadata": {
+    "aws:cdk:path": "monitoring-app-Networking-dev/MonitoringVPC/PrivateSubnet2/Subnet"
+   }
+  },
+  "MonitoringVPCPrivateSubnet2RouteTable1A68EDEE": {
+   "Type": "AWS::EC2::RouteTable",
+   "Properties": {
+    "VpcId": {
+     "Ref": "MonitoringVPC8FAA53D9"
+    },
+    "Tags": [
+     {
+      "Key": "Environment",
+      "Value": "dev"
+     },
+     {
+      "Key": "Name",
+      "Value": "monitoring-app-Networking-dev/MonitoringVPC/PrivateSubnet2"
+     },
+     {
+      "Key": "Project",
+      "Value": "monitoring-app"
+     },
+     {
+      "Key": "StackType",
+      "Value": "Networking"
+     }
+    ]
+   },
+   "Metadata": {
+    "aws:cdk:path": "monitoring-app-Networking-dev/MonitoringVPC/PrivateSubnet2/RouteTable"
+   }
+  },
+  "MonitoringVPCPrivateSubnet2RouteTableAssociationE679B013": {
+   "Type": "AWS::EC2::SubnetRouteTableAssociation",
+   "Properties": {
+    "RouteTableId": {
+     "Ref": "MonitoringVPCPrivateSubnet2RouteTable1A68EDEE"
+    },
+    "SubnetId": {
+     "Ref": "MonitoringVPCPrivateSubnet2SubnetEF8EC316"
+    }
+   },
+   "Metadata": {
+    "aws:cdk:path": "monitoring-app-Networking-dev/MonitoringVPC/PrivateSubnet2/RouteTableAssociation"
+   }
+  },
+  "MonitoringVPCPrivateSubnet2DefaultRoute3A9D65BB": {
+   "Type": "AWS::EC2::Route",
+   "Properties": {
+    "RouteTableId": {
+     "Ref": "MonitoringVPCPrivateSubnet2RouteTable1A68EDEE"
+    },
+    "DestinationCidrBlock": "0.0.0.0/0",
+    "NatGatewayId": {
+     "Ref": "MonitoringVPCPublicSubnet1NATGatewayE2662609"
+    }
+   },
+   "Metadata": {
+    "aws:cdk:path": "monitoring-app-Networking-dev/MonitoringVPC/PrivateSubnet2/DefaultRoute"
+   }
+  },
+  "MonitoringVPCPrivateSubnet3SubnetEDC84B0C": {
+   "Type": "AWS::EC2::Subnet",
+   "Properties": {
+    "VpcId": {
+     "Ref": "MonitoringVPC8FAA53D9"
+    },
+    "AvailabilityZone": "us-east-1c",
+    "CidrBlock": "10.0.5.0/24",
+    "MapPublicIpOnLaunch": false,
+    "Tags": [
+     {
+      "Key": "aws-cdk:subnet-name",
+      "Value": "Private"
+     },
+     {
+      "Key": "aws-cdk:subnet-type",
+      "Value": "Private"
+     },
+     {
+      "Key": "Environment",
+      "Value": "dev"
+     },
+     {
+      "Key": "Name",
+      "Value": "monitoring-app-Networking-dev/MonitoringVPC/PrivateSubnet3"
+     },
+     {
+      "Key": "Project",
+      "Value": "monitoring-app"
+     },
+     {
+      "Key": "StackType",
+      "Value": "Networking"
+     }
+    ]
+   },
+   "Metadata": {
+    "aws:cdk:path": "monitoring-app-Networking-dev/MonitoringVPC/PrivateSubnet3/Subnet"
+   }
+  },
+  "MonitoringVPCPrivateSubnet3RouteTable3254D138": {
+   "Type": "AWS::EC2::RouteTable",
+   "Properties": {
+    "VpcId": {
+     "Ref": "MonitoringVPC8FAA53D9"
+    },
+    "Tags": [
+     {
+      "Key": "Environment",
+      "Value": "dev"
+     },
+     {
+      "Key": "Name",
+      "Value": "monitoring-app-Networking-dev/MonitoringVPC/PrivateSubnet3"
+     },
+     {
+      "Key": "Project",
+      "Value": "monitoring-app"
+     },
+     {
+      "Key": "StackType",
+      "Value": "Networking"
+     }
+    ]
+   },
+   "Metadata": {
+    "aws:cdk:path": "monitoring-app-Networking-dev/MonitoringVPC/PrivateSubnet3/RouteTable"
+   }
+  },
+  "MonitoringVPCPrivateSubnet3RouteTableAssociation7B1B7101": {
+   "Type": "AWS::EC2::SubnetRouteTableAssociation",
+   "Properties": {
+    "RouteTableId": {
+     "Ref": "MonitoringVPCPrivateSubnet3RouteTable3254D138"
+    },
+    "SubnetId": {
+     "Ref": "MonitoringVPCPrivateSubnet3SubnetEDC84B0C"
+    }
+   },
+   "Metadata": {
+    "aws:cdk:path": "monitoring-app-Networking-dev/MonitoringVPC/PrivateSubnet3/RouteTableAssociation"
+   }
+  },
+  "MonitoringVPCPrivateSubnet3DefaultRoute51B534E7": {
+   "Type": "AWS::EC2::Route",
+   "Properties": {
+    "RouteTableId": {
+     "Ref": "MonitoringVPCPrivateSubnet3RouteTable3254D138"
+    },
+    "DestinationCidrBlock": "0.0.0.0/0",
+    "NatGatewayId": {
+     "Ref": "MonitoringVPCPublicSubnet1NATGatewayE2662609"
+    }
+   },
+   "Metadata": {
+    "aws:cdk:path": "monitoring-app-Networking-dev/MonitoringVPC/PrivateSubnet3/DefaultRoute"
+   }
+  },
+  "MonitoringVPCIsolatedSubnet1SubnetB36CE161": {
+   "Type": "AWS::EC2::Subnet",
+   "Properties": {
+    "VpcId": {
+     "Ref": "MonitoringVPC8FAA53D9"
+    },
+    "AvailabilityZone": "us-east-1a",
+    "CidrBlock": "10.0.6.0/24",
+    "MapPublicIpOnLaunch": false,
+    "Tags": [
+     {
+      "Key": "aws-cdk:subnet-name",
+      "Value": "Isolated"
+     },
+     {
+      "Key": "aws-cdk:subnet-type",
+      "Value": "Isolated"
+     },
+     {
+      "Key": "Environment",
+      "Value": "dev"
+     },
+     {
+      "Key": "Name",
+      "Value": "monitoring-app-Networking-dev/MonitoringVPC/IsolatedSubnet1"
+     },
+     {
+      "Key": "Project",
+      "Value": "monitoring-app"
+     },
+     {
+      "Key": "StackType",
+      "Value": "Networking"
+     }
+    ]
+   },
+   "Metadata": {
+    "aws:cdk:path": "monitoring-app-Networking-dev/MonitoringVPC/IsolatedSubnet1/Subnet"
+   }
+  },
+  "MonitoringVPCIsolatedSubnet1RouteTable21EDCF97": {
+   "Type": "AWS::EC2::RouteTable",
+   "Properties": {
+    "VpcId": {
+     "Ref": "MonitoringVPC8FAA53D9"
+    },
+    "Tags": [
+     {
+      "Key": "Environment",
+      "Value": "dev"
+     },
+     {
+      "Key": "Name",
+      "Value": "monitoring-app-Networking-dev/MonitoringVPC/IsolatedSubnet1"
+     },
+     {
+      "Key": "Project",
+      "Value": "monitoring-app"
+     },
+     {
+      "Key": "StackType",
+      "Value": "Networking"
+     }
+    ]
+   },
+   "Metadata": {
+    "aws:cdk:path": "monitoring-app-Networking-dev/MonitoringVPC/IsolatedSubnet1/RouteTable"
+   }
+  },
+  "MonitoringVPCIsolatedSubnet1RouteTableAssociation36A4C832": {
+   "Type": "AWS::EC2::SubnetRouteTableAssociation",
+   "Properties": {
+    "RouteTableId": {
+     "Ref": "MonitoringVPCIsolatedSubnet1RouteTable21EDCF97"
+    },
+    "SubnetId": {
+     "Ref": "MonitoringVPCIsolatedSubnet1SubnetB36CE161"
+    }
+   },
+   "Metadata": {
+    "aws:cdk:path": "monitoring-app-Networking-dev/MonitoringVPC/IsolatedSubnet1/RouteTableAssociation"
+   }
+  },
+  "MonitoringVPCIsolatedSubnet2Subnet5CBA1CFD": {
+   "Type": "AWS::EC2::Subnet",
+   "Properties": {
+    "VpcId": {
+     "Ref": "MonitoringVPC8FAA53D9"
+    },
+    "AvailabilityZone": "us-east-1b",
+    "CidrBlock": "10.0.7.0/24",
+    "MapPublicIpOnLaunch": false,
+    "Tags": [
+     {
+      "Key": "aws-cdk:subnet-name",
+      "Value": "Isolated"
+     },
+     {
+      "Key": "aws-cdk:subnet-type",
+      "Value": "Isolated"
+     },
+     {
+      "Key": "Environment",
+      "Value": "dev"
+     },
+     {
+      "Key": "Name",
+      "Value": "monitoring-app-Networking-dev/MonitoringVPC/IsolatedSubnet2"
+     },
+     {
+      "Key": "Project",
+      "Value": "monitoring-app"
+     },
+     {
+      "Key": "StackType",
+      "Value": "Networking"
+     }
+    ]
+   },
+   "Metadata": {
+    "aws:cdk:path": "monitoring-app-Networking-dev/MonitoringVPC/IsolatedSubnet2/Subnet"
+   }
+  },
+  "MonitoringVPCIsolatedSubnet2RouteTable1303EC78": {
+   "Type": "AWS::EC2::RouteTable",
+   "Properties": {
+    "VpcId": {
+     "Ref": "MonitoringVPC8FAA53D9"
+    },
+    "Tags": [
+     {
+      "Key": "Environment",
+      "Value": "dev"
+     },
+     {
+      "Key": "Name",
+      "Value": "monitoring-app-Networking-dev/MonitoringVPC/IsolatedSubnet2"
+     },
+     {
+      "Key": "Project",
+      "Value": "monitoring-app"
+     },
+     {
+      "Key": "StackType",
+      "Value": "Networking"
+     }
+    ]
+   },
+   "Metadata": {
+    "aws:cdk:path": "monitoring-app-Networking-dev/MonitoringVPC/IsolatedSubnet2/RouteTable"
+   }
+  },
+  "MonitoringVPCIsolatedSubnet2RouteTableAssociation7C5D3BC3": {
+   "Type": "AWS::EC2::SubnetRouteTableAssociation",
+   "Properties": {
+    "RouteTableId": {
+     "Ref": "MonitoringVPCIsolatedSubnet2RouteTable1303EC78"
+    },
+    "SubnetId": {
+     "Ref": "MonitoringVPCIsolatedSubnet2Subnet5CBA1CFD"
+    }
+   },
+   "Metadata": {
+    "aws:cdk:path": "monitoring-app-Networking-dev/MonitoringVPC/IsolatedSubnet2/RouteTableAssociation"
+   }
+  },
+  "MonitoringVPCIsolatedSubnet3Subnet53DDA484": {
+   "Type": "AWS::EC2::Subnet",
+   "Properties": {
+    "VpcId": {
+     "Ref": "MonitoringVPC8FAA53D9"
+    },
+    "AvailabilityZone": "us-east-1c",
+    "CidrBlock": "10.0.8.0/24",
+    "MapPublicIpOnLaunch": false,
+    "Tags": [
+     {
+      "Key": "aws-cdk:subnet-name",
+      "Value": "Isolated"
+     },
+     {
+      "Key": "aws-cdk:subnet-type",
+      "Value": "Isolated"
+     },
+     {
+      "Key": "Environment",
+      "Value": "dev"
+     },
+     {
+      "Key": "Name",
+      "Value": "monitoring-app-Networking-dev/MonitoringVPC/IsolatedSubnet3"
+     },
+     {
+      "Key": "Project",
+      "Value": "monitoring-app"
+     },
+     {
+      "Key": "StackType",
+      "Value": "Networking"
+     }
+    ]
+   },
+   "Metadata": {
+    "aws:cdk:path": "monitoring-app-Networking-dev/MonitoringVPC/IsolatedSubnet3/Subnet"
+   }
+  },
+  "MonitoringVPCIsolatedSubnet3RouteTable6BCE6CA3": {
+   "Type": "AWS::EC2::RouteTable",
+   "Properties": {
+    "VpcId": {
+     "Ref": "MonitoringVPC8FAA53D9"
+    },
+    "Tags": [
+     {
+      "Key": "Environment",
+      "Value": "dev"
+     },
+     {
+      "Key": "Name",
+      "Value": "monitoring-app-Networking-dev/MonitoringVPC/IsolatedSubnet3"
+     },
+     {
+      "Key": "Project",
+      "Value": "monitoring-app"
+     },
+     {
+      "Key": "StackType",
+      "Value": "Networking"
+     }
+    ]
+   },
+   "Metadata": {
+    "aws:cdk:path": "monitoring-app-Networking-dev/MonitoringVPC/IsolatedSubnet3/RouteTable"
+   }
+  },
+  "MonitoringVPCIsolatedSubnet3RouteTableAssociation37F78D5E": {
+   "Type": "AWS::EC2::SubnetRouteTableAssociation",
+   "Properties": {
+    "RouteTableId": {
+     "Ref": "MonitoringVPCIsolatedSubnet3RouteTable6BCE6CA3"
+    },
+    "SubnetId": {
+     "Ref": "MonitoringVPCIsolatedSubnet3Subnet53DDA484"
+    }
+   },
+   "Metadata": {
+    "aws:cdk:path": "monitoring-app-Networking-dev/MonitoringVPC/IsolatedSubnet3/RouteTableAssociation"
+   }
+  },
+  "MonitoringVPCIGW1B780536": {
+   "Type": "AWS::EC2::InternetGateway",
+   "Properties": {
+    "Tags": [
+     {
+      "Key": "Environment",
+      "Value": "dev"
+     },
+     {
+      "Key": "Name",
+      "Value": "monitoring-app-vpc-dev"
+     },
+     {
+      "Key": "Project",
+      "Value": "monitoring-app"
+     },
+     {
+      "Key": "StackType",
+      "Value": "Networking"
+     }
+    ]
+   },
+   "Metadata": {
+    "aws:cdk:path": "monitoring-app-Networking-dev/MonitoringVPC/IGW"
+   }
+  },
+  "MonitoringVPCVPCGW2108EF91": {
+   "Type": "AWS::EC2::VPCGatewayAttachment",
+   "Properties": {
+    "VpcId": {
+     "Ref": "MonitoringVPC8FAA53D9"
+    },
+    "InternetGatewayId": {
+     "Ref": "MonitoringVPCIGW1B780536"
+    }
+   },
+   "Metadata": {
+    "aws:cdk:path": "monitoring-app-Networking-dev/MonitoringVPC/VPCGW"
+   }
+  },
+  "MonitoringVPCDynamoDBEndpointD83C1CAD": {
+   "Type": "AWS::EC2::VPCEndpoint",
+   "Properties": {
+    "ServiceName": {
+     "Fn::Join": [
+      "",
+      [
+       "com.amazonaws.",
+       {
+        "Ref": "AWS::Region"
+       },
+       ".dynamodb"
+      ]
+     ]
+    },
+    "VpcId": {
+     "Ref": "MonitoringVPC8FAA53D9"
+    },
+    "RouteTableIds": [
+     {
+      "Ref": "MonitoringVPCPrivateSubnet1RouteTable7090090B"
+     },
+     {
+      "Ref": "MonitoringVPCPrivateSubnet2RouteTable1A68EDEE"
+     },
+     {
+      "Ref": "MonitoringVPCPrivateSubnet3RouteTable3254D138"
+     }
+    ],
+    "VpcEndpointType": "Gateway"
+   },
+   "Metadata": {
+    "aws:cdk:path": "monitoring-app-Networking-dev/MonitoringVPC/DynamoDBEndpoint/Resource"
+   }
+  },
+  "MonitoringVPCS3EndpointB7FEDF88": {
+   "Type": "AWS::EC2::VPCEndpoint",
+   "Properties": {
+    "ServiceName": {
+     "Fn::Join": [
+      "",
+      [
+       "com.amazonaws.",
+       {
+        "Ref": "AWS::Region"
+       },
+       ".s3"
+      ]
+     ]
+    },
+    "VpcId": {
+     "Ref": "MonitoringVPC8FAA53D9"
+    },
+    "RouteTableIds": [
+     {
+      "Ref": "MonitoringVPCPrivateSubnet1RouteTable7090090B"
+     },
+     {
+      "Ref": "MonitoringVPCPrivateSubnet2RouteTable1A68EDEE"
+     },
+     {
+      "Ref": "MonitoringVPCPrivateSubnet3RouteTable3254D138"
+     }
+    ],
+    "VpcEndpointType": "Gateway"
+   },
+   "Metadata": {
+    "aws:cdk:path": "monitoring-app-Networking-dev/MonitoringVPC/S3Endpoint/Resource"
+   }
+  },
+  "LambdaSecurityGroup0BD9FC99": {
+   "Type": "AWS::EC2::SecurityGroup",
+   "Properties": {
+    "GroupDescription": "Security group for Lambda functions",
+    "SecurityGroupEgress": [
+     {
+      "CidrIp": "0.0.0.0/0",
+      "Description": "Allow all outbound traffic by default",
+      "IpProtocol": "-1"
+     }
+    ],
+    "Tags": [
+     {
+      "Key": "Environment",
+      "Value": "dev"
+     },
+     {
+      "Key": "Project",
+      "Value": "monitoring-app"
+     },
+     {
+      "Key": "StackType",
+      "Value": "Networking"
+     }
+    ],
+    "VpcId": {
+     "Ref": "MonitoringVPC8FAA53D9"
+    }
+   },
+   "Metadata": {
+    "aws:cdk:path": "monitoring-app-Networking-dev/LambdaSecurityGroup/Resource"
+   }
+  },
+  "CDKMetadata": {
+   "Type": "AWS::CDK::Metadata",
+   "Properties": {
+    "Analytics": "v2:deflate64:H4sIAAAAAAAA/02PwWrDQAxEvyX39db1pb2GEEIurbGLr0WWVarE0S672pgQ8u/FsbF7mpnHIEaFfcttvoEhZtids55be68V8GxgiN+Ehb03Hs3uR5pyZ8rU9ox1aoV0ZKurXFL6granla9sG6NDBmUnS3k0+2M5ygfoAZQGuJky8BWU1sNHUQpCS2FaMqetKuDvhUTNTBqPe+m8Y9G5usSaMAXW2yG45J8r/4OHqSi6FPA57DOpT9NjM30YcR3ZU3y5Frl9fbf55hSZs5BE+UK2mvQPDT8xZ1ABAAA="
+   },
+   "Metadata": {
+    "aws:cdk:path": "monitoring-app-Networking-dev/CDKMetadata/Default"
+   }
+  }
+ },
+ "Outputs": {
+  "VpcId": {
+   "Value": {
+    "Ref": "MonitoringVPC8FAA53D9"
+   },
+   "Export": {
+    "Name": "monitoring-app-vpc-id-dev"
+   }
+  },
+  "PrivateSubnetIds": {
+   "Value": {
+    "Fn::Join": [
+     "",
+     [
+      {
+       "Ref": "MonitoringVPCPrivateSubnet1SubnetC43E6062"
+      },
+      ",",
+      {
+       "Ref": "MonitoringVPCPrivateSubnet2SubnetEF8EC316"
+      },
+      ",",
+      {
+       "Ref": "MonitoringVPCPrivateSubnet3SubnetEDC84B0C"
+      }
+     ]
+    ]
+   },
+   "Export": {
+    "Name": "monitoring-app-private-subnet-ids-dev"
+   }
+  },
+  "ExportsOutputRefMonitoringVPC8FAA53D96DCBBE0C": {
+   "Value": {
+    "Ref": "MonitoringVPC8FAA53D9"
+   },
+   "Export": {
+    "Name": "monitoring-app-networking-dev:ExportsOutputRefMonitoringVPC8FAA53D96DCBBE0C"
+   }
+  },
+  "ExportsOutputRefMonitoringVPCPrivateSubnet1SubnetC43E6062AEB93B2C": {
+   "Value": {
+    "Ref": "MonitoringVPCPrivateSubnet1SubnetC43E6062"
+   },
+   "Export": {
+    "Name": "monitoring-app-networking-dev:ExportsOutputRefMonitoringVPCPrivateSubnet1SubnetC43E6062AEB93B2C"
+   }
+  },
+  "ExportsOutputRefMonitoringVPCPrivateSubnet2SubnetEF8EC316501526F0": {
+   "Value": {
+    "Ref": "MonitoringVPCPrivateSubnet2SubnetEF8EC316"
+   },
+   "Export": {
+    "Name": "monitoring-app-networking-dev:ExportsOutputRefMonitoringVPCPrivateSubnet2SubnetEF8EC316501526F0"
+   }
+  },
+  "ExportsOutputRefMonitoringVPCPrivateSubnet3SubnetEDC84B0CFDBE5EA3": {
+   "Value": {
+    "Ref": "MonitoringVPCPrivateSubnet3SubnetEDC84B0C"
+   },
+   "Export": {
+    "Name": "monitoring-app-networking-dev:ExportsOutputRefMonitoringVPCPrivateSubnet3SubnetEDC84B0CFDBE5EA3"
+   }
+  }
+ },
+ "Parameters": {
+  "BootstrapVersion": {
+   "Type": "AWS::SSM::Parameter::Value<String>",
+   "Default": "/cdk-bootstrap/hnb659fds/version",
+   "Description": "Version of the CDK Bootstrap resources in this environment, automatically retrieved from SSM Parameter Store. [cdk:skip]"
+  }
+ },
+ "Rules": {
+  "CheckBootstrapVersion": {
+   "Assertions": [
+    {
+     "Assert": {
+      "Fn::Not": [
+       {
+        "Fn::Contains": [
+         [
+          "1",
+          "2",
+          "3",
+          "4",
+          "5"
+         ],
+         {
+          "Ref": "BootstrapVersion"
+         }
+        ]
+       }
+      ]
+     },
+     "AssertDescription": "CDK bootstrap stack version 6 required. Please run 'cdk bootstrap' with a recent version of the CDK CLI."
+    }
+   ]
+  }
+ }
+}

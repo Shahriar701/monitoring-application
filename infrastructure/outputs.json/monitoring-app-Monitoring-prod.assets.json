@@ -1,0 +1,20 @@
+{
+  "version": "31.0.0",
+  "files": {
+    "b49027731b7f69dc1e3cb6453f6cd5681a71b1900f5af61e55bb3a09799fc587": {
+      "source": {
+        "path": "monitoring-app-Monitoring-prod.template.json",
+        "packaging": "file"
+      },
+      "destinations": {
+        "084828566306-us-east-1": {
+          "bucketName": "cdk-hnb659fds-assets-084828566306-us-east-1",
+          "objectKey": "b49027731b7f69dc1e3cb6453f6cd5681a71b1900f5af61e55bb3a09799fc587.json",
+          "region": "us-east-1",
+          "assumeRoleArn": "arn:${AWS::Partition}:iam::084828566306:role/cdk-hnb659fds-file-publishing-role-084828566306-us-east-1"
+        }
+      }
+    }
+  },
+  "dockerImages": {}
+}

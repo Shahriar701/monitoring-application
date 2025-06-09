@@ -1,0 +1,2075 @@
+{
+ "Description": "CI/CD pipeline for monitoring application",
+ "Resources": {
+  "PipelineArtifacts4A9B2621": {
+   "Type": "AWS::S3::Bucket",
+   "Properties": {
+    "BucketEncryption": {
+     "ServerSideEncryptionConfiguration": [
+      {
+       "ServerSideEncryptionByDefault": {
+        "SSEAlgorithm": "AES256"
+       }
+      }
+     ]
+    },
+    "LifecycleConfiguration": {
+     "Rules": [
+      {
+       "ExpirationInDays": 30,
+       "Id": "CleanupArtifacts",
+       "Status": "Enabled"
+      }
+     ]
+    },
+    "PublicAccessBlockConfiguration": {
+     "BlockPublicAcls": true,
+     "BlockPublicPolicy": true,
+     "IgnorePublicAcls": true,
+     "RestrictPublicBuckets": true
+    }
+   },
+   "UpdateReplacePolicy": "Retain",
+   "DeletionPolicy": "Retain",
+   "Metadata": {
+    "aws:cdk:path": "monitoring-app-Pipeline/PipelineArtifacts/Resource"
+   }
+  },
+  "TestProjectRole81829D51": {
+   "Type": "AWS::IAM::Role",
+   "Properties": {
+    "AssumeRolePolicyDocument": {
+     "Statement": [
+      {
+       "Action": "sts:AssumeRole",
+       "Effect": "Allow",
+       "Principal": {
+        "Service": "codebuild.amazonaws.com"
+       }
+      }
+     ],
+     "Version": "2012-10-17"
+    }
+   },
+   "Metadata": {
+    "aws:cdk:path": "monitoring-app-Pipeline/TestProject/Role/Resource"
+   }
+  },
+  "TestProjectRoleDefaultPolicy0F91812C": {
+   "Type": "AWS::IAM::Policy",
+   "Properties": {
+    "PolicyDocument": {
+     "Statement": [
+      {
+       "Action": [
+        "logs:CreateLogGroup",
+        "logs:CreateLogStream",
+        "logs:PutLogEvents"
+       ],
+       "Effect": "Allow",
+       "Resource": [
+        {
+         "Fn::Join": [
+          "",
+          [
+           "arn:aws:logs:us-east-1:084828566306:log-group:/aws/codebuild/",
+           {
+            "Ref": "TestProject2F1D5F9F"
+           },
+           ":*"
+          ]
+         ]
+        },
+        {
+         "Fn::Join": [
+          "",
+          [
+           "arn:aws:logs:us-east-1:084828566306:log-group:/aws/codebuild/",
+           {
+            "Ref": "TestProject2F1D5F9F"
+           }
+          ]
+         ]
+        }
+       ]
+      },
+      {
+       "Action": [
+        "codebuild:BatchPutCodeCoverages",
+        "codebuild:BatchPutTestCases",
+        "codebuild:CreateReport",
+        "codebuild:CreateReportGroup",
+        "codebuild:UpdateReport"
+       ],
+       "Effect": "Allow",
+       "Resource": {
+        "Fn::Join": [
+         "",
+         [
+          "arn:aws:codebuild:us-east-1:084828566306:report-group/",
+          {
+           "Ref": "TestProject2F1D5F9F"
+          },
+          "-*"
+         ]
+        ]
+       }
+      },
+      {
+       "Action": [
+        "apigateway:*",
+        "cloudformation:*",
+        "cloudwatch:*",
+        "dynamodb:*",
+        "ec2:*",
+        "events:*",
+        "iam:*",
+        "lambda:*",
+        "logs:*",
+        "s3:*",
+        "sns:*",
+        "sqs:*"
+       ],
+       "Effect": "Allow",
+       "Resource": "*"
+      },
+      {
+       "Action": [
+        "s3:Abort*",
+        "s3:DeleteObject*",
+        "s3:GetBucket*",
+        "s3:GetObject*",
+        "s3:List*",
+        "s3:PutObject",
+        "s3:PutObjectLegalHold",
+        "s3:PutObjectRetention",
+        "s3:PutObjectTagging",
+        "s3:PutObjectVersionTagging"
+       ],
+       "Effect": "Allow",
+       "Resource": [
+        {
+         "Fn::GetAtt": [
+          "PipelineArtifacts4A9B2621",
+          "Arn"
+         ]
+        },
+        {
+         "Fn::Join": [
+          "",
+          [
+           {
+            "Fn::GetAtt": [
+             "PipelineArtifacts4A9B2621",
+             "Arn"
+            ]
+           },
+           "/*"
+          ]
+         ]
+        }
+       ]
+      }
+     ],
+     "Version": "2012-10-17"
+    },
+    "PolicyName": "TestProjectRoleDefaultPolicy0F91812C",
+    "Roles": [
+     {
+      "Ref": "TestProjectRole81829D51"
+     }
+    ]
+   },
+   "Metadata": {
+    "aws:cdk:path": "monitoring-app-Pipeline/TestProject/Role/DefaultPolicy/Resource"
+   }
+  },
+  "TestProject2F1D5F9F": {
+   "Type": "AWS::CodeBuild::Project",
+   "Properties": {
+    "Artifacts": {
+     "Type": "NO_ARTIFACTS"
+    },
+    "Environment": {
+     "ComputeType": "BUILD_GENERAL1_SMALL",
+     "Image": "aws/codebuild/standard:5.0",
+     "ImagePullCredentialsType": "CODEBUILD",
+     "PrivilegedMode": false,
+     "Type": "LINUX_CONTAINER"
+    },
+    "ServiceRole": {
+     "Fn::GetAtt": [
+      "TestProjectRole81829D51",
+      "Arn"
+     ]
+    },
+    "Source": {
+     "BuildSpec": "{\n  \"version\": \"0.2\",\n  \"phases\": {\n    \"install\": {\n      \"runtime-versions\": {\n        \"python\": \"3.9\",\n        \"nodejs\": \"22\"\n      },\n      \"commands\": [\n        \"echo \\\"Installing dependencies...\\\"\",\n        \"pip install --upgrade pip\",\n        \"pip install pytest boto3 moto requests\",\n        \"npm install -g aws-cdk@2.70.0\"\n      ]\n    },\n    \"pre_build\": {\n      \"commands\": [\n        \"echo \\\"Pre-build phase...\\\"\",\n        \"python --version\",\n        \"cdk --version\",\n        \"aws --version\"\n      ]\n    },\n    \"build\": {\n      \"commands\": [\n        \"echo \\\"Running unit tests...\\\"\",\n        \"python -m pytest test/test_circuit_breaker.py -v\",\n        \"python -m pytest test/test_health_checks.py -v\",\n        \"python -m pytest test/test_lambda_functions.py -v\",\n        \"python -m pytest test/test_api_integration.py -v\",\n        \"echo \\\"Validating CDK syntax...\\\"\",\n        \"cd infrastructure && npm install && cdk synth --context environment=dev\"\n      ]\n    },\n    \"post_build\": {\n      \"commands\": [\n        \"echo \\\"All tests passed successfully!\\\"\"\n      ]\n    }\n  },\n  \"reports\": {\n    \"pytest-reports\": {\n      \"files\": [\n        \"test/test-results.xml\"\n      ],\n      \"file-format\": \"JUNITXML\"\n    }\n  }\n}",
+     "Location": "https://github.com/Shahriar701/monitoring-application.git",
+     "ReportBuildStatus": true,
+     "Type": "GITHUB"
+    },
+    "Cache": {
+     "Type": "NO_CACHE"
+    },
+    "EncryptionKey": "alias/aws/s3",
+    "Name": "monitoring-app-tests"
+   },
+   "Metadata": {
+    "aws:cdk:path": "monitoring-app-Pipeline/TestProject/Resource"
+   }
+  },
+  "IntegrationTestProjectRoleB77E3450": {
+   "Type": "AWS::IAM::Role",
+   "Properties": {
+    "AssumeRolePolicyDocument": {
+     "Statement": [
+      {
+       "Action": "sts:AssumeRole",
+       "Effect": "Allow",
+       "Principal": {
+        "Service": "codebuild.amazonaws.com"
+       }
+      }
+     ],
+     "Version": "2012-10-17"
+    }
+   },
+   "Metadata": {
+    "aws:cdk:path": "monitoring-app-Pipeline/IntegrationTestProject/Role/Resource"
+   }
+  },
+  "IntegrationTestProjectRoleDefaultPolicy0283DC5A": {
+   "Type": "AWS::IAM::Policy",
+   "Properties": {
+    "PolicyDocument": {
+     "Statement": [
+      {
+       "Action": [
+        "logs:CreateLogGroup",
+        "logs:CreateLogStream",
+        "logs:PutLogEvents"
+       ],
+       "Effect": "Allow",
+       "Resource": [
+        {
+         "Fn::Join": [
+          "",
+          [
+           "arn:aws:logs:us-east-1:084828566306:log-group:/aws/codebuild/",
+           {
+            "Ref": "IntegrationTestProjectB37FF01A"
+           },
+           ":*"
+          ]
+         ]
+        },
+        {
+         "Fn::Join": [
+          "",
+          [
+           "arn:aws:logs:us-east-1:084828566306:log-group:/aws/codebuild/",
+           {
+            "Ref": "IntegrationTestProjectB37FF01A"
+           }
+          ]
+         ]
+        }
+       ]
+      },
+      {
+       "Action": [
+        "codebuild:BatchPutCodeCoverages",
+        "codebuild:BatchPutTestCases",
+        "codebuild:CreateReport",
+        "codebuild:CreateReportGroup",
+        "codebuild:UpdateReport"
+       ],
+       "Effect": "Allow",
+       "Resource": {
+        "Fn::Join": [
+         "",
+         [
+          "arn:aws:codebuild:us-east-1:084828566306:report-group/",
+          {
+           "Ref": "IntegrationTestProjectB37FF01A"
+          },
+          "-*"
+         ]
+        ]
+       }
+      },
+      {
+       "Action": [
+        "apigateway:*",
+        "cloudformation:*",
+        "cloudwatch:*",
+        "dynamodb:*",
+        "ec2:*",
+        "events:*",
+        "iam:*",
+        "lambda:*",
+        "logs:*",
+        "s3:*",
+        "sns:*",
+        "sqs:*"
+       ],
+       "Effect": "Allow",
+       "Resource": "*"
+      },
+      {
+       "Action": [
+        "s3:GetBucket*",
+        "s3:GetObject*",
+        "s3:List*"
+       ],
+       "Effect": "Allow",
+       "Resource": [
+        {
+         "Fn::GetAtt": [
+          "PipelineArtifacts4A9B2621",
+          "Arn"
+         ]
+        },
+        {
+         "Fn::Join": [
+          "",
+          [
+           {
+            "Fn::GetAtt": [
+             "PipelineArtifacts4A9B2621",
+             "Arn"
+            ]
+           },
+           "/*"
+          ]
+         ]
+        }
+       ]
+      }
+     ],
+     "Version": "2012-10-17"
+    },
+    "PolicyName": "IntegrationTestProjectRoleDefaultPolicy0283DC5A",
+    "Roles": [
+     {
+      "Ref": "IntegrationTestProjectRoleB77E3450"
+     }
+    ]
+   },
+   "Metadata": {
+    "aws:cdk:path": "monitoring-app-Pipeline/IntegrationTestProject/Role/DefaultPolicy/Resource"
+   }
+  },
+  "IntegrationTestProjectB37FF01A": {
+   "Type": "AWS::CodeBuild::Project",
+   "Properties": {
+    "Artifacts": {
+     "Type": "NO_ARTIFACTS"
+    },
+    "Environment": {
+     "ComputeType": "BUILD_GENERAL1_SMALL",
+     "Image": "aws/codebuild/standard:5.0",
+     "ImagePullCredentialsType": "CODEBUILD",
+     "PrivilegedMode": false,
+     "Type": "LINUX_CONTAINER"
+    },
+    "ServiceRole": {
+     "Fn::GetAtt": [
+      "IntegrationTestProjectRoleB77E3450",
+      "Arn"
+     ]
+    },
+    "Source": {
+     "BuildSpec": "{\n  \"version\": \"0.2\",\n  \"phases\": {\n    \"install\": {\n      \"runtime-versions\": {\n        \"python\": \"3.9\"\n      },\n      \"commands\": [\n        \"pip install requests boto3 pytest\"\n      ]\n    },\n    \"build\": {\n      \"commands\": [\n        \"echo \\\"Running integration tests...\\\"\",\n        \"export API_URL=$(aws cloudformation describe-stacks --stack-name monitoring-app-dev --query \\\"Stacks[0].Outputs[?OutputKey=='ApiUrl'].OutputValue\\\" --output text)\",\n        \"echo \\\"Testing API at: $API_URL\\\"\",\n        \"python -m pytest test/test_api_integration.py -v\"\n      ]\n    }\n  }\n}",
+     "Location": "https://github.com/Shahriar701/monitoring-application.git",
+     "ReportBuildStatus": true,
+     "Type": "GITHUB"
+    },
+    "Cache": {
+     "Type": "NO_CACHE"
+    },
+    "EncryptionKey": "alias/aws/s3",
+    "Name": "monitoring-app-integration-tests"
+   },
+   "Metadata": {
+    "aws:cdk:path": "monitoring-app-Pipeline/IntegrationTestProject/Resource"
+   }
+  },
+  "BuildProjectRoleAA92C755": {
+   "Type": "AWS::IAM::Role",
+   "Properties": {
+    "AssumeRolePolicyDocument": {
+     "Statement": [
+      {
+       "Action": "sts:AssumeRole",
+       "Effect": "Allow",
+       "Principal": {
+        "Service": "codebuild.amazonaws.com"
+       }
+      }
+     ],
+     "Version": "2012-10-17"
+    }
+   },
+   "Metadata": {
+    "aws:cdk:path": "monitoring-app-Pipeline/BuildProject/Role/Resource"
+   }
+  },
+  "BuildProjectRoleDefaultPolicy3E9F248C": {
+   "Type": "AWS::IAM::Policy",
+   "Properties": {
+    "PolicyDocument": {
+     "Statement": [
+      {
+       "Action": [
+        "logs:CreateLogGroup",
+        "logs:CreateLogStream",
+        "logs:PutLogEvents"
+       ],
+       "Effect": "Allow",
+       "Resource": [
+        {
+         "Fn::Join": [
+          "",
+          [
+           "arn:aws:logs:us-east-1:084828566306:log-group:/aws/codebuild/",
+           {
+            "Ref": "BuildProject097C5DB7"
+           },
+           ":*"
+          ]
+         ]
+        },
+        {
+         "Fn::Join": [
+          "",
+          [
+           "arn:aws:logs:us-east-1:084828566306:log-group:/aws/codebuild/",
+           {
+            "Ref": "BuildProject097C5DB7"
+           }
+          ]
+         ]
+        }
+       ]
+      },
+      {
+       "Action": [
+        "codebuild:BatchPutCodeCoverages",
+        "codebuild:BatchPutTestCases",
+        "codebuild:CreateReport",
+        "codebuild:CreateReportGroup",
+        "codebuild:UpdateReport"
+       ],
+       "Effect": "Allow",
+       "Resource": {
+        "Fn::Join": [
+         "",
+         [
+          "arn:aws:codebuild:us-east-1:084828566306:report-group/",
+          {
+           "Ref": "BuildProject097C5DB7"
+          },
+          "-*"
+         ]
+        ]
+       }
+      },
+      {
+       "Action": [
+        "apigateway:*",
+        "cloudformation:*",
+        "cloudwatch:*",
+        "dynamodb:*",
+        "ec2:*",
+        "events:*",
+        "iam:*",
+        "lambda:*",
+        "logs:*",
+        "s3:*",
+        "sns:*",
+        "sqs:*"
+       ],
+       "Effect": "Allow",
+       "Resource": "*"
+      },
+      {
+       "Action": [
+        "s3:Abort*",
+        "s3:DeleteObject*",
+        "s3:GetBucket*",
+        "s3:GetObject*",
+        "s3:List*",
+        "s3:PutObject",
+        "s3:PutObjectLegalHold",
+        "s3:PutObjectRetention",
+        "s3:PutObjectTagging",
+        "s3:PutObjectVersionTagging"
+       ],
+       "Effect": "Allow",
+       "Resource": [
+        {
+         "Fn::GetAtt": [
+          "PipelineArtifacts4A9B2621",
+          "Arn"
+         ]
+        },
+        {
+         "Fn::Join": [
+          "",
+          [
+           {
+            "Fn::GetAtt": [
+             "PipelineArtifacts4A9B2621",
+             "Arn"
+            ]
+           },
+           "/*"
+          ]
+         ]
+        }
+       ]
+      }
+     ],
+     "Version": "2012-10-17"
+    },
+    "PolicyName": "BuildProjectRoleDefaultPolicy3E9F248C",
+    "Roles": [
+     {
+      "Ref": "BuildProjectRoleAA92C755"
+     }
+    ]
+   },
+   "Metadata": {
+    "aws:cdk:path": "monitoring-app-Pipeline/BuildProject/Role/DefaultPolicy/Resource"
+   }
+  },
+  "BuildProject097C5DB7": {
+   "Type": "AWS::CodeBuild::Project",
+   "Properties": {
+    "Artifacts": {
+     "Type": "NO_ARTIFACTS"
+    },
+    "Environment": {
+     "ComputeType": "BUILD_GENERAL1_SMALL",
+     "Image": "aws/codebuild/standard:5.0",
+     "ImagePullCredentialsType": "CODEBUILD",
+     "PrivilegedMode": false,
+     "Type": "LINUX_CONTAINER"
+    },
+    "ServiceRole": {
+     "Fn::GetAtt": [
+      "BuildProjectRoleAA92C755",
+      "Arn"
+     ]
+    },
+    "Source": {
+     "BuildSpec": "{\n  \"version\": \"0.2\",\n  \"phases\": {\n    \"install\": {\n      \"runtime-versions\": {\n        \"python\": \"3.9\",\n        \"nodejs\": \"22\"\n      },\n      \"commands\": [\n        \"npm install -g aws-cdk@2.70.0\"\n      ]\n    },\n    \"build\": {\n      \"commands\": [\n        \"echo \\\"Building CDK templates...\\\"\",\n        \"cd infrastructure && npm install\",\n        \"cdk synth --context environment=dev\",\n        \"cdk synth --context environment=prod\",\n        \"echo \\\"Validating Lambda code...\\\"\",\n        \"echo \\\"Current directory: $(pwd)\\\"\",\n        \"echo \\\"Directory contents:\\\"\",\n        \"ls -la\",\n        \"echo \\\"Looking for Lambda files...\\\"\",\n        \"if [ -d \\\"src/lambda\\\" ]; then find src/lambda -name \\\"*.py\\\" -exec python -m py_compile {} \\\\; && echo \\\"Lambda validation successful\\\"; else echo \\\"No src/lambda directory found\\\"; fi\"\n      ]\n    }\n  },\n  \"artifacts\": {\n    \"files\": [\n      \"**/*\"\n    ]\n  }\n}",
+     "Location": "https://github.com/Shahriar701/monitoring-application.git",
+     "ReportBuildStatus": true,
+     "Type": "GITHUB"
+    },
+    "Cache": {
+     "Type": "NO_CACHE"
+    },
+    "EncryptionKey": "alias/aws/s3",
+    "Name": "monitoring-app-build"
+   },
+   "Metadata": {
+    "aws:cdk:path": "monitoring-app-Pipeline/BuildProject/Resource"
+   }
+  },
+  "PipelineNotifications84B145AD": {
+   "Type": "AWS::SNS::Topic",
+   "Properties": {
+    "DisplayName": "Monitoring Pipeline Notifications",
+    "TopicName": "monitoring-pipeline-notifications"
+   },
+   "Metadata": {
+    "aws:cdk:path": "monitoring-app-Pipeline/PipelineNotifications/Resource"
+   }
+  },
+  "PipelineNotificationsyouremailexamplecom063302A1": {
+   "Type": "AWS::SNS::Subscription",
+   "Properties": {
+    "Protocol": "email",
+    "TopicArn": {
+     "Ref": "PipelineNotifications84B145AD"
+    },
+    "Endpoint": "your-email@example.com"
+   },
+   "Metadata": {
+    "aws:cdk:path": "monitoring-app-Pipeline/PipelineNotifications/your-email@example.com/Resource"
+   }
+  },
+  "PipelineNotificationsPolicy8ACE917C": {
+   "Type": "AWS::SNS::TopicPolicy",
+   "Properties": {
+    "PolicyDocument": {
+     "Statement": [
+      {
+       "Action": "sns:Publish",
+       "Effect": "Allow",
+       "Principal": {
+        "Service": "events.amazonaws.com"
+       },
+       "Resource": {
+        "Ref": "PipelineNotifications84B145AD"
+       },
+       "Sid": "0"
+      }
+     ],
+     "Version": "2012-10-17"
+    },
+    "Topics": [
+     {
+      "Ref": "PipelineNotifications84B145AD"
+     }
+    ]
+   },
+   "Metadata": {
+    "aws:cdk:path": "monitoring-app-Pipeline/PipelineNotifications/Policy/Resource"
+   }
+  },
+  "PipelineMonitorServiceRole9EF8353B": {
+   "Type": "AWS::IAM::Role",
+   "Properties": {
+    "AssumeRolePolicyDocument": {
+     "Statement": [
+      {
+       "Action": "sts:AssumeRole",
+       "Effect": "Allow",
+       "Principal": {
+        "Service": "lambda.amazonaws.com"
+       }
+      }
+     ],
+     "Version": "2012-10-17"
+    },
+    "ManagedPolicyArns": [
+     {
+      "Fn::Join": [
+       "",
+       [
+        "arn:",
+        {
+         "Ref": "AWS::Partition"
+        },
+        ":iam::aws:policy/service-role/AWSLambdaBasicExecutionRole"
+       ]
+      ]
+     }
+    ]
+   },
+   "Metadata": {
+    "aws:cdk:path": "monitoring-app-Pipeline/PipelineMonitor/ServiceRole/Resource"
+   }
+  },
+  "PipelineMonitorServiceRoleDefaultPolicyE9D53E86": {
+   "Type": "AWS::IAM::Policy",
+   "Properties": {
+    "PolicyDocument": {
+     "Statement": [
+      {
+       "Action": [
+        "cloudwatch:PutMetricData",
+        "codepipeline:*"
+       ],
+       "Effect": "Allow",
+       "Resource": "*"
+      }
+     ],
+     "Version": "2012-10-17"
+    },
+    "PolicyName": "PipelineMonitorServiceRoleDefaultPolicyE9D53E86",
+    "Roles": [
+     {
+      "Ref": "PipelineMonitorServiceRole9EF8353B"
+     }
+    ]
+   },
+   "Metadata": {
+    "aws:cdk:path": "monitoring-app-Pipeline/PipelineMonitor/ServiceRole/DefaultPolicy/Resource"
+   }
+  },
+  "PipelineMonitor049B13AE": {
+   "Type": "AWS::Lambda::Function",
+   "Properties": {
+    "Code": {
+     "S3Bucket": "cdk-hnb659fds-assets-084828566306-us-east-1",
+     "S3Key": "bf07670da35877c43728c146a51f95e3bf9b04eb4d4bd7754813d1955050df33.zip"
+    },
+    "Role": {
+     "Fn::GetAtt": [
+      "PipelineMonitorServiceRole9EF8353B",
+      "Arn"
+     ]
+    },
+    "FunctionName": "monitoring-pipeline-monitor",
+    "Handler": "lambda_function.lambda_handler",
+    "Runtime": "python3.9",
+    "Timeout": 60
+   },
+   "DependsOn": [
+    "PipelineMonitorServiceRoleDefaultPolicyE9D53E86",
+    "PipelineMonitorServiceRole9EF8353B"
+   ],
+   "Metadata": {
+    "aws:cdk:path": "monitoring-app-Pipeline/PipelineMonitor/Resource",
+    "aws:asset:path": "asset.bf07670da35877c43728c146a51f95e3bf9b04eb4d4bd7754813d1955050df33",
+    "aws:asset:is-bundled": false,
+    "aws:asset:property": "Code"
+   }
+  },
+  "SmokeTestRole434B99C6": {
+   "Type": "AWS::IAM::Role",
+   "Properties": {
+    "AssumeRolePolicyDocument": {
+     "Statement": [
+      {
+       "Action": "sts:AssumeRole",
+       "Effect": "Allow",
+       "Principal": {
+        "Service": "codebuild.amazonaws.com"
+       }
+      }
+     ],
+     "Version": "2012-10-17"
+    },
+    "Policies": [
+     {
+      "PolicyDocument": {
+       "Statement": [
+        {
+         "Action": [
+          "logs:CreateLogGroup",
+          "logs:CreateLogStream",
+          "logs:PutLogEvents"
+         ],
+         "Effect": "Allow",
+         "Resource": "*"
+        }
+       ],
+       "Version": "2012-10-17"
+      },
+      "PolicyName": "SmokeTestPolicy"
+     }
+    ]
+   },
+   "Metadata": {
+    "aws:cdk:path": "monitoring-app-Pipeline/SmokeTestRole/Resource"
+   }
+  },
+  "SmokeTestRoleDefaultPolicy6EA68822": {
+   "Type": "AWS::IAM::Policy",
+   "Properties": {
+    "PolicyDocument": {
+     "Statement": [
+      {
+       "Action": [
+        "logs:CreateLogGroup",
+        "logs:CreateLogStream",
+        "logs:PutLogEvents"
+       ],
+       "Effect": "Allow",
+       "Resource": [
+        {
+         "Fn::Join": [
+          "",
+          [
+           "arn:aws:logs:us-east-1:084828566306:log-group:/aws/codebuild/",
+           {
+            "Ref": "ProdSmokeTestProject27DFB37C"
+           },
+           ":*"
+          ]
+         ]
+        },
+        {
+         "Fn::Join": [
+          "",
+          [
+           "arn:aws:logs:us-east-1:084828566306:log-group:/aws/codebuild/",
+           {
+            "Ref": "ProdSmokeTestProject27DFB37C"
+           }
+          ]
+         ]
+        }
+       ]
+      },
+      {
+       "Action": [
+        "codebuild:BatchPutCodeCoverages",
+        "codebuild:BatchPutTestCases",
+        "codebuild:CreateReport",
+        "codebuild:CreateReportGroup",
+        "codebuild:UpdateReport"
+       ],
+       "Effect": "Allow",
+       "Resource": {
+        "Fn::Join": [
+         "",
+         [
+          "arn:aws:codebuild:us-east-1:084828566306:report-group/",
+          {
+           "Ref": "ProdSmokeTestProject27DFB37C"
+          },
+          "-*"
+         ]
+        ]
+       }
+      },
+      {
+       "Action": [
+        "s3:GetBucket*",
+        "s3:GetObject*",
+        "s3:List*"
+       ],
+       "Effect": "Allow",
+       "Resource": [
+        {
+         "Fn::GetAtt": [
+          "PipelineArtifacts4A9B2621",
+          "Arn"
+         ]
+        },
+        {
+         "Fn::Join": [
+          "",
+          [
+           {
+            "Fn::GetAtt": [
+             "PipelineArtifacts4A9B2621",
+             "Arn"
+            ]
+           },
+           "/*"
+          ]
+         ]
+        }
+       ]
+      }
+     ],
+     "Version": "2012-10-17"
+    },
+    "PolicyName": "SmokeTestRoleDefaultPolicy6EA68822",
+    "Roles": [
+     {
+      "Ref": "SmokeTestRole434B99C6"
+     }
+    ]
+   },
+   "Metadata": {
+    "aws:cdk:path": "monitoring-app-Pipeline/SmokeTestRole/DefaultPolicy/Resource"
+   }
+  },
+  "ProdSmokeTestProject27DFB37C": {
+   "Type": "AWS::CodeBuild::Project",
+   "Properties": {
+    "Artifacts": {
+     "Type": "NO_ARTIFACTS"
+    },
+    "Environment": {
+     "ComputeType": "BUILD_GENERAL1_SMALL",
+     "EnvironmentVariables": [
+      {
+       "Name": "PROD_API_URL",
+       "Type": "PLAINTEXT",
+       "Value": "https://jczqvn5k31.execute-api.us-east-1.amazonaws.com/prod/"
+      }
+     ],
+     "Image": "aws/codebuild/standard:5.0",
+     "ImagePullCredentialsType": "CODEBUILD",
+     "PrivilegedMode": false,
+     "Type": "LINUX_CONTAINER"
+    },
+    "ServiceRole": {
+     "Fn::GetAtt": [
+      "SmokeTestRole434B99C6",
+      "Arn"
+     ]
+    },
+    "Source": {
+     "BuildSpec": "{\n  \"version\": \"0.2\",\n  \"phases\": {\n    \"install\": {\n      \"runtime-versions\": {\n        \"python\": \"3.9\"\n      },\n      \"commands\": [\n        \"pip install requests boto3\"\n      ]\n    },\n    \"build\": {\n      \"commands\": [\n        \"echo \\\"🧪 Running smoke test against production API...\\\"\",\n        \"export API_URL=$PROD_API_URL\",\n        \"echo \\\"Production API URL: $API_URL\\\"\",\n        \"if [ -z \\\"$API_URL\\\" ]; then echo \\\"❌ Production API URL not found, failing smoke test\\\"; exit 1; fi\",\n        \"echo \\\"\\\"\",\n        \"echo \\\"Testing health endpoint: ${API_URL}health\\\"\",\n        \"echo \\\"\\\"\",\n        \"http_code=$(curl -s -o /tmp/response.json -w \\\"%{http_code}\\\" \\\"${API_URL}health\\\")\",\n        \"echo \\\"HTTP Status Code: $http_code\\\"\",\n        \"echo \\\"Response Body:\\\"\",\n        \"cat /tmp/response.json || echo \\\"No response body\\\"\",\n        \"echo \\\"\\\"\",\n        \"if [ \\\"$http_code\\\" = \\\"200\\\" ]; then\",\n        \"  echo \\\"✅ Production health check PASSED - API is responding correctly\\\"\",\n        \"  if grep -q \\\"healthy\\\" /tmp/response.json && grep -q \\\"circuit_breaker\\\" /tmp/response.json; then\",\n        \"    echo \\\"✅ Response content validation PASSED\\\"\",\n        \"  else\",\n        \"    echo \\\"⚠️  Response content validation FAILED - missing expected fields\\\"\",\n        \"    exit 1\",\n        \"  fi\",\n        \"else\",\n        \"  echo \\\"❌ Production health check FAILED with HTTP code: $http_code\\\"\",\n        \"  echo \\\"Debug: Full curl response:\\\"\",\n        \"  curl -v \\\"${API_URL}health\\\" || true\",\n        \"  exit 1\",\n        \"fi\",\n        \"echo \\\"\\\"\",\n        \"echo \\\"🎉 All smoke tests PASSED! Production deployment is healthy.\\\"\"\n      ]\n    }\n  }\n}",
+     "Location": "https://github.com/Shahriar701/monitoring-application.git",
+     "ReportBuildStatus": true,
+     "Type": "GITHUB"
+    },
+    "Cache": {
+     "Type": "NO_CACHE"
+    },
+    "EncryptionKey": "alias/aws/s3",
+    "Name": "monitoring-prod-smoke-tests"
+   },
+   "Metadata": {
+    "aws:cdk:path": "monitoring-app-Pipeline/ProdSmokeTestProject/Resource"
+   }
+  },
+  "MonitoringPipelineRole70506F15": {
+   "Type": "AWS::IAM::Role",
+   "Properties": {
+    "AssumeRolePolicyDocument": {
+     "Statement": [
+      {
+       "Action": "sts:AssumeRole",
+       "Effect": "Allow",
+       "Principal": {
+        "Service": "codepipeline.amazonaws.com"
+       }
+      }
+     ],
+     "Version": "2012-10-17"
+    }
+   },
+   "Metadata": {
+    "aws:cdk:path": "monitoring-app-Pipeline/MonitoringPipeline/Role/Resource"
+   }
+  },
+  "MonitoringPipelineRoleDefaultPolicy32239705": {
+   "Type": "AWS::IAM::Policy",
+   "Properties": {
+    "PolicyDocument": {
+     "Statement": [
+      {
+       "Action": [
+        "s3:Abort*",
+        "s3:DeleteObject*",
+        "s3:GetBucket*",
+        "s3:GetObject*",
+        "s3:List*",
+        "s3:PutObject",
+        "s3:PutObjectLegalHold",
+        "s3:PutObjectRetention",
+        "s3:PutObjectTagging",
+        "s3:PutObjectVersionTagging"
+       ],
+       "Effect": "Allow",
+       "Resource": [
+        {
+         "Fn::GetAtt": [
+          "PipelineArtifacts4A9B2621",
+          "Arn"
+         ]
+        },
+        {
+         "Fn::Join": [
+          "",
+          [
+           {
+            "Fn::GetAtt": [
+             "PipelineArtifacts4A9B2621",
+             "Arn"
+            ]
+           },
+           "/*"
+          ]
+         ]
+        }
+       ]
+      },
+      {
+       "Action": "sts:AssumeRole",
+       "Effect": "Allow",
+       "Resource": [
+        {
+         "Fn::GetAtt": [
+          "MonitoringPipelineApprovalForProdManualApprovalCodePipelineActionRole2356A453",
+          "Arn"
+         ]
+        },
+        {
+         "Fn::GetAtt": [
+          "MonitoringPipelineBuildBuildAndPackageCodePipelineActionRole84517C09",
+          "Arn"
+         ]
+        },
+        {
+         "Fn::GetAtt": [
+          "MonitoringPipelineDeployDevDeployToDevCodePipelineActionRole7F254553",
+          "Arn"
+         ]
+        },
+        {
+         "Fn::GetAtt": [
+          "MonitoringPipelineDeployProdDeployToProdCodePipelineActionRole5EAC41C2",
+          "Arn"
+         ]
+        },
+        {
+         "Fn::GetAtt": [
+          "MonitoringPipelineIntegrationTestIntegrationTestsCodePipelineActionRole3FAF4903",
+          "Arn"
+         ]
+        },
+        {
+         "Fn::GetAtt": [
+          "MonitoringPipelineSmokeTestProdProductionSmokeTestsCodePipelineActionRole268AE596",
+          "Arn"
+         ]
+        },
+        {
+         "Fn::GetAtt": [
+          "MonitoringPipelineTestUnitTestsCodePipelineActionRole40A3B3BC",
+          "Arn"
+         ]
+        }
+       ]
+      }
+     ],
+     "Version": "2012-10-17"
+    },
+    "PolicyName": "MonitoringPipelineRoleDefaultPolicy32239705",
+    "Roles": [
+     {
+      "Ref": "MonitoringPipelineRole70506F15"
+     }
+    ]
+   },
+   "Metadata": {
+    "aws:cdk:path": "monitoring-app-Pipeline/MonitoringPipeline/Role/DefaultPolicy/Resource"
+   }
+  },
+  "MonitoringPipelineB0CAE5A5": {
+   "Type": "AWS::CodePipeline::Pipeline",
+   "Properties": {
+    "RoleArn": {
+     "Fn::GetAtt": [
+      "MonitoringPipelineRole70506F15",
+      "Arn"
+     ]
+    },
+    "Stages": [
+     {
+      "Actions": [
+       {
+        "ActionTypeId": {
+         "Category": "Source",
+         "Owner": "ThirdParty",
+         "Provider": "GitHub",
+         "Version": "1"
+        },
+        "Configuration": {
+         "Owner": "Shahriar701",
+         "Repo": "monitoring-application",
+         "Branch": "master",
+         "OAuthToken": "{{resolve:secretsmanager:github-token:SecretString:::}}",
+         "PollForSourceChanges": false
+        },
+        "Name": "SourceAction",
+        "OutputArtifacts": [
+         {
+          "Name": "SourceOutput"
+         }
+        ],
+        "RunOrder": 1
+       }
+      ],
+      "Name": "Source"
+     },
+     {
+      "Actions": [
+       {
+        "ActionTypeId": {
+         "Category": "Build",
+         "Owner": "AWS",
+         "Provider": "CodeBuild",
+         "Version": "1"
+        },
+        "Configuration": {
+         "ProjectName": {
+          "Ref": "TestProject2F1D5F9F"
+         }
+        },
+        "InputArtifacts": [
+         {
+          "Name": "SourceOutput"
+         }
+        ],
+        "Name": "UnitTests",
+        "OutputArtifacts": [
+         {
+          "Name": "TestOutput"
+         }
+        ],
+        "RoleArn": {
+         "Fn::GetAtt": [
+          "MonitoringPipelineTestUnitTestsCodePipelineActionRole40A3B3BC",
+          "Arn"
+         ]
+        },
+        "RunOrder": 1
+       }
+      ],
+      "Name": "Test"
+     },
+     {
+      "Actions": [
+       {
+        "ActionTypeId": {
+         "Category": "Build",
+         "Owner": "AWS",
+         "Provider": "CodeBuild",
+         "Version": "1"
+        },
+        "Configuration": {
+         "ProjectName": {
+          "Ref": "BuildProject097C5DB7"
+         }
+        },
+        "InputArtifacts": [
+         {
+          "Name": "SourceOutput"
+         }
+        ],
+        "Name": "BuildAndPackage",
+        "OutputArtifacts": [
+         {
+          "Name": "BuildOutput"
+         }
+        ],
+        "RoleArn": {
+         "Fn::GetAtt": [
+          "MonitoringPipelineBuildBuildAndPackageCodePipelineActionRole84517C09",
+          "Arn"
+         ]
+        },
+        "RunOrder": 1
+       }
+      ],
+      "Name": "Build"
+     },
+     {
+      "Actions": [
+       {
+        "ActionTypeId": {
+         "Category": "Deploy",
+         "Owner": "AWS",
+         "Provider": "CloudFormation",
+         "Version": "1"
+        },
+        "Configuration": {
+         "StackName": "monitoring-app-dev",
+         "Capabilities": "CAPABILITY_NAMED_IAM",
+         "RoleArn": {
+          "Fn::GetAtt": [
+           "MonitoringPipelineDeployDevDeployToDevRoleDC758A14",
+           "Arn"
+          ]
+         },
+         "ActionMode": "REPLACE_ON_FAILURE",
+         "TemplatePath": "BuildOutput::infrastructure/cdk.out/MonitoringStack-dev.template.json"
+        },
+        "InputArtifacts": [
+         {
+          "Name": "BuildOutput"
+         }
+        ],
+        "Name": "DeployToDev",
+        "RoleArn": {
+         "Fn::GetAtt": [
+          "MonitoringPipelineDeployDevDeployToDevCodePipelineActionRole7F254553",
+          "Arn"
+         ]
+        },
+        "RunOrder": 1
+       }
+      ],
+      "Name": "DeployDev"
+     },
+     {
+      "Actions": [
+       {
+        "ActionTypeId": {
+         "Category": "Build",
+         "Owner": "AWS",
+         "Provider": "CodeBuild",
+         "Version": "1"
+        },
+        "Configuration": {
+         "ProjectName": {
+          "Ref": "IntegrationTestProjectB37FF01A"
+         }
+        },
+        "InputArtifacts": [
+         {
+          "Name": "SourceOutput"
+         }
+        ],
+        "Name": "IntegrationTests",
+        "RoleArn": {
+         "Fn::GetAtt": [
+          "MonitoringPipelineIntegrationTestIntegrationTestsCodePipelineActionRole3FAF4903",
+          "Arn"
+         ]
+        },
+        "RunOrder": 1
+       }
+      ],
+      "Name": "IntegrationTest"
+     },
+     {
+      "Actions": [
+       {
+        "ActionTypeId": {
+         "Category": "Approval",
+         "Owner": "AWS",
+         "Provider": "Manual",
+         "Version": "1"
+        },
+        "Configuration": {
+         "NotificationArn": {
+          "Ref": "PipelineNotifications84B145AD"
+         },
+         "CustomData": "\n                                🔍 Dev Deployment Complete!\n                                📊 Dashboard: https://console.aws.amazon.com/cloudwatch/home#dashboards:name=monitoring-dashboard-dev\n                                🏥 Health Check: Please verify all systems are operational\n                                📈 SLI/SLO: Check error rates and circuit breaker status\n                                ✅ Approve for production deployment when ready\n                            "
+        },
+        "Name": "ManualApproval",
+        "RoleArn": {
+         "Fn::GetAtt": [
+          "MonitoringPipelineApprovalForProdManualApprovalCodePipelineActionRole2356A453",
+          "Arn"
+         ]
+        },
+        "RunOrder": 1
+       }
+      ],
+      "Name": "ApprovalForProd"
+     },
+     {
+      "Actions": [
+       {
+        "ActionTypeId": {
+         "Category": "Deploy",
+         "Owner": "AWS",
+         "Provider": "CloudFormation",
+         "Version": "1"
+        },
+        "Configuration": {
+         "StackName": "monitoring-app-prod",
+         "Capabilities": "CAPABILITY_NAMED_IAM",
+         "RoleArn": {
+          "Fn::GetAtt": [
+           "MonitoringPipelineDeployProdDeployToProdRole61B69F7D",
+           "Arn"
+          ]
+         },
+         "ActionMode": "CREATE_UPDATE",
+         "TemplatePath": "BuildOutput::infrastructure/cdk.out/MonitoringStack-prod.template.json"
+        },
+        "InputArtifacts": [
+         {
+          "Name": "BuildOutput"
+         }
+        ],
+        "Name": "DeployToProd",
+        "RoleArn": {
+         "Fn::GetAtt": [
+          "MonitoringPipelineDeployProdDeployToProdCodePipelineActionRole5EAC41C2",
+          "Arn"
+         ]
+        },
+        "RunOrder": 1
+       }
+      ],
+      "Name": "DeployProd"
+     },
+     {
+      "Actions": [
+       {
+        "ActionTypeId": {
+         "Category": "Build",
+         "Owner": "AWS",
+         "Provider": "CodeBuild",
+         "Version": "1"
+        },
+        "Configuration": {
+         "ProjectName": {
+          "Ref": "ProdSmokeTestProject27DFB37C"
+         }
+        },
+        "InputArtifacts": [
+         {
+          "Name": "SourceOutput"
+         }
+        ],
+        "Name": "ProductionSmokeTests",
+        "RoleArn": {
+         "Fn::GetAtt": [
+          "MonitoringPipelineSmokeTestProdProductionSmokeTestsCodePipelineActionRole268AE596",
+          "Arn"
+         ]
+        },
+        "RunOrder": 1
+       }
+      ],
+      "Name": "SmokeTestProd"
+     }
+    ],
+    "ArtifactStore": {
+     "Location": {
+      "Ref": "PipelineArtifacts4A9B2621"
+     },
+     "Type": "S3"
+    },
+    "Name": "monitoring-application-pipeline",
+    "RestartExecutionOnUpdate": true
+   },
+   "DependsOn": [
+    "MonitoringPipelineRoleDefaultPolicy32239705",
+    "MonitoringPipelineRole70506F15"
+   ],
+   "Metadata": {
+    "aws:cdk:path": "monitoring-app-Pipeline/MonitoringPipeline/Resource"
+   }
+  },
+  "MonitoringPipelineSourceSourceActionWebhookResourceD39C1C4B": {
+   "Type": "AWS::CodePipeline::Webhook",
+   "Properties": {
+    "Authentication": "GITHUB_HMAC",
+    "AuthenticationConfiguration": {
+     "SecretToken": "{{resolve:secretsmanager:github-token:SecretString:::}}"
+    },
+    "Filters": [
+     {
+      "JsonPath": "$.ref",
+      "MatchEquals": "refs/heads/{Branch}"
+     }
+    ],
+    "TargetAction": "SourceAction",
+    "TargetPipeline": {
+     "Ref": "MonitoringPipelineB0CAE5A5"
+    },
+    "TargetPipelineVersion": 1,
+    "RegisterWithThirdParty": true
+   },
+   "Metadata": {
+    "aws:cdk:path": "monitoring-app-Pipeline/MonitoringPipeline/Source/SourceAction/WebhookResource"
+   }
+  },
+  "MonitoringPipelineTestUnitTestsCodePipelineActionRole40A3B3BC": {
+   "Type": "AWS::IAM::Role",
+   "Properties": {
+    "AssumeRolePolicyDocument": {
+     "Statement": [
+      {
+       "Action": "sts:AssumeRole",
+       "Effect": "Allow",
+       "Principal": {
+        "AWS": "arn:aws:iam::084828566306:root"
+       }
+      }
+     ],
+     "Version": "2012-10-17"
+    }
+   },
+   "Metadata": {
+    "aws:cdk:path": "monitoring-app-Pipeline/MonitoringPipeline/Test/UnitTests/CodePipelineActionRole/Resource"
+   }
+  },
+  "MonitoringPipelineTestUnitTestsCodePipelineActionRoleDefaultPolicyD2FD97A8": {
+   "Type": "AWS::IAM::Policy",
+   "Properties": {
+    "PolicyDocument": {
+     "Statement": [
+      {
+       "Action": [
+        "codebuild:BatchGetBuilds",
+        "codebuild:StartBuild",
+        "codebuild:StopBuild"
+       ],
+       "Effect": "Allow",
+       "Resource": {
+        "Fn::GetAtt": [
+         "TestProject2F1D5F9F",
+         "Arn"
+        ]
+       }
+      }
+     ],
+     "Version": "2012-10-17"
+    },
+    "PolicyName": "MonitoringPipelineTestUnitTestsCodePipelineActionRoleDefaultPolicyD2FD97A8",
+    "Roles": [
+     {
+      "Ref": "MonitoringPipelineTestUnitTestsCodePipelineActionRole40A3B3BC"
+     }
+    ]
+   },
+   "Metadata": {
+    "aws:cdk:path": "monitoring-app-Pipeline/MonitoringPipeline/Test/UnitTests/CodePipelineActionRole/DefaultPolicy/Resource"
+   }
+  },
+  "MonitoringPipelineBuildBuildAndPackageCodePipelineActionRole84517C09": {
+   "Type": "AWS::IAM::Role",
+   "Properties": {
+    "AssumeRolePolicyDocument": {
+     "Statement": [
+      {
+       "Action": "sts:AssumeRole",
+       "Effect": "Allow",
+       "Principal": {
+        "AWS": "arn:aws:iam::084828566306:root"
+       }
+      }
+     ],
+     "Version": "2012-10-17"
+    }
+   },
+   "Metadata": {
+    "aws:cdk:path": "monitoring-app-Pipeline/MonitoringPipeline/Build/BuildAndPackage/CodePipelineActionRole/Resource"
+   }
+  },
+  "MonitoringPipelineBuildBuildAndPackageCodePipelineActionRoleDefaultPolicyF5218417": {
+   "Type": "AWS::IAM::Policy",
+   "Properties": {
+    "PolicyDocument": {
+     "Statement": [
+      {
+       "Action": [
+        "codebuild:BatchGetBuilds",
+        "codebuild:StartBuild",
+        "codebuild:StopBuild"
+       ],
+       "Effect": "Allow",
+       "Resource": {
+        "Fn::GetAtt": [
+         "BuildProject097C5DB7",
+         "Arn"
+        ]
+       }
+      }
+     ],
+     "Version": "2012-10-17"
+    },
+    "PolicyName": "MonitoringPipelineBuildBuildAndPackageCodePipelineActionRoleDefaultPolicyF5218417",
+    "Roles": [
+     {
+      "Ref": "MonitoringPipelineBuildBuildAndPackageCodePipelineActionRole84517C09"
+     }
+    ]
+   },
+   "Metadata": {
+    "aws:cdk:path": "monitoring-app-Pipeline/MonitoringPipeline/Build/BuildAndPackage/CodePipelineActionRole/DefaultPolicy/Resource"
+   }
+  },
+  "MonitoringPipelineDeployDevDeployToDevCodePipelineActionRole7F254553": {
+   "Type": "AWS::IAM::Role",
+   "Properties": {
+    "AssumeRolePolicyDocument": {
+     "Statement": [
+      {
+       "Action": "sts:AssumeRole",
+       "Effect": "Allow",
+       "Principal": {
+        "AWS": "arn:aws:iam::084828566306:root"
+       }
+      }
+     ],
+     "Version": "2012-10-17"
+    }
+   },
+   "Metadata": {
+    "aws:cdk:path": "monitoring-app-Pipeline/MonitoringPipeline/DeployDev/DeployToDev/CodePipelineActionRole/Resource"
+   }
+  },
+  "MonitoringPipelineDeployDevDeployToDevCodePipelineActionRoleDefaultPolicy0EDBDCC8": {
+   "Type": "AWS::IAM::Policy",
+   "Properties": {
+    "PolicyDocument": {
+     "Statement": [
+      {
+       "Action": "iam:PassRole",
+       "Effect": "Allow",
+       "Resource": {
+        "Fn::GetAtt": [
+         "MonitoringPipelineDeployDevDeployToDevRoleDC758A14",
+         "Arn"
+        ]
+       }
+      },
+      {
+       "Action": [
+        "s3:GetBucket*",
+        "s3:GetObject*",
+        "s3:List*"
+       ],
+       "Effect": "Allow",
+       "Resource": [
+        {
+         "Fn::GetAtt": [
+          "PipelineArtifacts4A9B2621",
+          "Arn"
+         ]
+        },
+        {
+         "Fn::Join": [
+          "",
+          [
+           {
+            "Fn::GetAtt": [
+             "PipelineArtifacts4A9B2621",
+             "Arn"
+            ]
+           },
+           "/*"
+          ]
+         ]
+        }
+       ]
+      },
+      {
+       "Action": [
+        "cloudformation:CreateStack",
+        "cloudformation:DeleteStack",
+        "cloudformation:DescribeStack*",
+        "cloudformation:GetStackPolicy",
+        "cloudformation:GetTemplate*",
+        "cloudformation:SetStackPolicy",
+        "cloudformation:UpdateStack",
+        "cloudformation:ValidateTemplate"
+       ],
+       "Effect": "Allow",
+       "Resource": "arn:aws:cloudformation:us-east-1:084828566306:stack/monitoring-app-dev/*"
+      }
+     ],
+     "Version": "2012-10-17"
+    },
+    "PolicyName": "MonitoringPipelineDeployDevDeployToDevCodePipelineActionRoleDefaultPolicy0EDBDCC8",
+    "Roles": [
+     {
+      "Ref": "MonitoringPipelineDeployDevDeployToDevCodePipelineActionRole7F254553"
+     }
+    ]
+   },
+   "Metadata": {
+    "aws:cdk:path": "monitoring-app-Pipeline/MonitoringPipeline/DeployDev/DeployToDev/CodePipelineActionRole/DefaultPolicy/Resource"
+   }
+  },
+  "MonitoringPipelineDeployDevDeployToDevRoleDC758A14": {
+   "Type": "AWS::IAM::Role",
+   "Properties": {
+    "AssumeRolePolicyDocument": {
+     "Statement": [
+      {
+       "Action": "sts:AssumeRole",
+       "Effect": "Allow",
+       "Principal": {
+        "Service": "cloudformation.amazonaws.com"
+       }
+      }
+     ],
+     "Version": "2012-10-17"
+    }
+   },
+   "Metadata": {
+    "aws:cdk:path": "monitoring-app-Pipeline/MonitoringPipeline/DeployDev/DeployToDev/Role/Resource"
+   }
+  },
+  "MonitoringPipelineDeployDevDeployToDevRoleDefaultPolicy66718B1F": {
+   "Type": "AWS::IAM::Policy",
+   "Properties": {
+    "PolicyDocument": {
+     "Statement": [
+      {
+       "Action": [
+        "s3:GetBucket*",
+        "s3:GetObject*",
+        "s3:List*"
+       ],
+       "Effect": "Allow",
+       "Resource": [
+        {
+         "Fn::GetAtt": [
+          "PipelineArtifacts4A9B2621",
+          "Arn"
+         ]
+        },
+        {
+         "Fn::Join": [
+          "",
+          [
+           {
+            "Fn::GetAtt": [
+             "PipelineArtifacts4A9B2621",
+             "Arn"
+            ]
+           },
+           "/*"
+          ]
+         ]
+        }
+       ]
+      },
+      {
+       "Action": "*",
+       "Effect": "Allow",
+       "Resource": "*"
+      }
+     ],
+     "Version": "2012-10-17"
+    },
+    "PolicyName": "MonitoringPipelineDeployDevDeployToDevRoleDefaultPolicy66718B1F",
+    "Roles": [
+     {
+      "Ref": "MonitoringPipelineDeployDevDeployToDevRoleDC758A14"
+     }
+    ]
+   },
+   "Metadata": {
+    "aws:cdk:path": "monitoring-app-Pipeline/MonitoringPipeline/DeployDev/DeployToDev/Role/DefaultPolicy/Resource"
+   }
+  },
+  "MonitoringPipelineIntegrationTestIntegrationTestsCodePipelineActionRole3FAF4903": {
+   "Type": "AWS::IAM::Role",
+   "Properties": {
+    "AssumeRolePolicyDocument": {
+     "Statement": [
+      {
+       "Action": "sts:AssumeRole",
+       "Effect": "Allow",
+       "Principal": {
+        "AWS": "arn:aws:iam::084828566306:root"
+       }
+      }
+     ],
+     "Version": "2012-10-17"
+    }
+   },
+   "Metadata": {
+    "aws:cdk:path": "monitoring-app-Pipeline/MonitoringPipeline/IntegrationTest/IntegrationTests/CodePipelineActionRole/Resource"
+   }
+  },
+  "MonitoringPipelineIntegrationTestIntegrationTestsCodePipelineActionRoleDefaultPolicy904EEB1E": {
+   "Type": "AWS::IAM::Policy",
+   "Properties": {
+    "PolicyDocument": {
+     "Statement": [
+      {
+       "Action": [
+        "codebuild:BatchGetBuilds",
+        "codebuild:StartBuild",
+        "codebuild:StopBuild"
+       ],
+       "Effect": "Allow",
+       "Resource": {
+        "Fn::GetAtt": [
+         "IntegrationTestProjectB37FF01A",
+         "Arn"
+        ]
+       }
+      }
+     ],
+     "Version": "2012-10-17"
+    },
+    "PolicyName": "MonitoringPipelineIntegrationTestIntegrationTestsCodePipelineActionRoleDefaultPolicy904EEB1E",
+    "Roles": [
+     {
+      "Ref": "MonitoringPipelineIntegrationTestIntegrationTestsCodePipelineActionRole3FAF4903"
+     }
+    ]
+   },
+   "Metadata": {
+    "aws:cdk:path": "monitoring-app-Pipeline/MonitoringPipeline/IntegrationTest/IntegrationTests/CodePipelineActionRole/DefaultPolicy/Resource"
+   }
+  },
+  "MonitoringPipelineApprovalForProdManualApprovalCodePipelineActionRole2356A453": {
+   "Type": "AWS::IAM::Role",
+   "Properties": {
+    "AssumeRolePolicyDocument": {
+     "Statement": [
+      {
+       "Action": "sts:AssumeRole",
+       "Effect": "Allow",
+       "Principal": {
+        "AWS": "arn:aws:iam::084828566306:root"
+       }
+      }
+     ],
+     "Version": "2012-10-17"
+    }
+   },
+   "Metadata": {
+    "aws:cdk:path": "monitoring-app-Pipeline/MonitoringPipeline/ApprovalForProd/ManualApproval/CodePipelineActionRole/Resource"
+   }
+  },
+  "MonitoringPipelineApprovalForProdManualApprovalCodePipelineActionRoleDefaultPolicy046F84B8": {
+   "Type": "AWS::IAM::Policy",
+   "Properties": {
+    "PolicyDocument": {
+     "Statement": [
+      {
+       "Action": "sns:Publish",
+       "Effect": "Allow",
+       "Resource": {
+        "Ref": "PipelineNotifications84B145AD"
+       }
+      }
+     ],
+     "Version": "2012-10-17"
+    },
+    "PolicyName": "MonitoringPipelineApprovalForProdManualApprovalCodePipelineActionRoleDefaultPolicy046F84B8",
+    "Roles": [
+     {
+      "Ref": "MonitoringPipelineApprovalForProdManualApprovalCodePipelineActionRole2356A453"
+     }
+    ]
+   },
+   "Metadata": {
+    "aws:cdk:path": "monitoring-app-Pipeline/MonitoringPipeline/ApprovalForProd/ManualApproval/CodePipelineActionRole/DefaultPolicy/Resource"
+   }
+  },
+  "MonitoringPipelineDeployProdDeployToProdCodePipelineActionRole5EAC41C2": {
+   "Type": "AWS::IAM::Role",
+   "Properties": {
+    "AssumeRolePolicyDocument": {
+     "Statement": [
+      {
+       "Action": "sts:AssumeRole",
+       "Effect": "Allow",
+       "Principal": {
+        "AWS": "arn:aws:iam::084828566306:root"
+       }
+      }
+     ],
+     "Version": "2012-10-17"
+    }
+   },
+   "Metadata": {
+    "aws:cdk:path": "monitoring-app-Pipeline/MonitoringPipeline/DeployProd/DeployToProd/CodePipelineActionRole/Resource"
+   }
+  },
+  "MonitoringPipelineDeployProdDeployToProdCodePipelineActionRoleDefaultPolicy163356C2": {
+   "Type": "AWS::IAM::Policy",
+   "Properties": {
+    "PolicyDocument": {
+     "Statement": [
+      {
+       "Action": "iam:PassRole",
+       "Effect": "Allow",
+       "Resource": {
+        "Fn::GetAtt": [
+         "MonitoringPipelineDeployProdDeployToProdRole61B69F7D",
+         "Arn"
+        ]
+       }
+      },
+      {
+       "Action": [
+        "s3:GetBucket*",
+        "s3:GetObject*",
+        "s3:List*"
+       ],
+       "Effect": "Allow",
+       "Resource": [
+        {
+         "Fn::GetAtt": [
+          "PipelineArtifacts4A9B2621",
+          "Arn"
+         ]
+        },
+        {
+         "Fn::Join": [
+          "",
+          [
+           {
+            "Fn::GetAtt": [
+             "PipelineArtifacts4A9B2621",
+             "Arn"
+            ]
+           },
+           "/*"
+          ]
+         ]
+        }
+       ]
+      },
+      {
+       "Action": [
+        "cloudformation:CreateStack",
+        "cloudformation:DescribeStack*",
+        "cloudformation:GetStackPolicy",
+        "cloudformation:GetTemplate*",
+        "cloudformation:SetStackPolicy",
+        "cloudformation:UpdateStack",
+        "cloudformation:ValidateTemplate"
+       ],
+       "Effect": "Allow",
+       "Resource": "arn:aws:cloudformation:us-east-1:084828566306:stack/monitoring-app-prod/*"
+      }
+     ],
+     "Version": "2012-10-17"
+    },
+    "PolicyName": "MonitoringPipelineDeployProdDeployToProdCodePipelineActionRoleDefaultPolicy163356C2",
+    "Roles": [
+     {
+      "Ref": "MonitoringPipelineDeployProdDeployToProdCodePipelineActionRole5EAC41C2"
+     }
+    ]
+   },
+   "Metadata": {
+    "aws:cdk:path": "monitoring-app-Pipeline/MonitoringPipeline/DeployProd/DeployToProd/CodePipelineActionRole/DefaultPolicy/Resource"
+   }
+  },
+  "MonitoringPipelineDeployProdDeployToProdRole61B69F7D": {
+   "Type": "AWS::IAM::Role",
+   "Properties": {
+    "AssumeRolePolicyDocument": {
+     "Statement": [
+      {
+       "Action": "sts:AssumeRole",
+       "Effect": "Allow",
+       "Principal": {
+        "Service": "cloudformation.amazonaws.com"
+       }
+      }
+     ],
+     "Version": "2012-10-17"
+    }
+   },
+   "Metadata": {
+    "aws:cdk:path": "monitoring-app-Pipeline/MonitoringPipeline/DeployProd/DeployToProd/Role/Resource"
+   }
+  },
+  "MonitoringPipelineDeployProdDeployToProdRoleDefaultPolicy95AAD7D4": {
+   "Type": "AWS::IAM::Policy",
+   "Properties": {
+    "PolicyDocument": {
+     "Statement": [
+      {
+       "Action": [
+        "s3:GetBucket*",
+        "s3:GetObject*",
+        "s3:List*"
+       ],
+       "Effect": "Allow",
+       "Resource": [
+        {
+         "Fn::GetAtt": [
+          "PipelineArtifacts4A9B2621",
+          "Arn"
+         ]
+        },
+        {
+         "Fn::Join": [
+          "",
+          [
+           {
+            "Fn::GetAtt": [
+             "PipelineArtifacts4A9B2621",
+             "Arn"
+            ]
+           },
+           "/*"
+          ]
+         ]
+        }
+       ]
+      },
+      {
+       "Action": "*",
+       "Effect": "Allow",
+       "Resource": "*"
+      }
+     ],
+     "Version": "2012-10-17"
+    },
+    "PolicyName": "MonitoringPipelineDeployProdDeployToProdRoleDefaultPolicy95AAD7D4",
+    "Roles": [
+     {
+      "Ref": "MonitoringPipelineDeployProdDeployToProdRole61B69F7D"
+     }
+    ]
+   },
+   "Metadata": {
+    "aws:cdk:path": "monitoring-app-Pipeline/MonitoringPipeline/DeployProd/DeployToProd/Role/DefaultPolicy/Resource"
+   }
+  },
+  "MonitoringPipelineSmokeTestProdProductionSmokeTestsCodePipelineActionRole268AE596": {
+   "Type": "AWS::IAM::Role",
+   "Properties": {
+    "AssumeRolePolicyDocument": {
+     "Statement": [
+      {
+       "Action": "sts:AssumeRole",
+       "Effect": "Allow",
+       "Principal": {
+        "AWS": "arn:aws:iam::084828566306:root"
+       }
+      }
+     ],
+     "Version": "2012-10-17"
+    }
+   },
+   "Metadata": {
+    "aws:cdk:path": "monitoring-app-Pipeline/MonitoringPipeline/SmokeTestProd/ProductionSmokeTests/CodePipelineActionRole/Resource"
+   }
+  },
+  "MonitoringPipelineSmokeTestProdProductionSmokeTestsCodePipelineActionRoleDefaultPolicy2295E892": {
+   "Type": "AWS::IAM::Policy",
+   "Properties": {
+    "PolicyDocument": {
+     "Statement": [
+      {
+       "Action": [
+        "codebuild:BatchGetBuilds",
+        "codebuild:StartBuild",
+        "codebuild:StopBuild"
+       ],
+       "Effect": "Allow",
+       "Resource": {
+        "Fn::GetAtt": [
+         "ProdSmokeTestProject27DFB37C",
+         "Arn"
+        ]
+       }
+      }
+     ],
+     "Version": "2012-10-17"
+    },
+    "PolicyName": "MonitoringPipelineSmokeTestProdProductionSmokeTestsCodePipelineActionRoleDefaultPolicy2295E892",
+    "Roles": [
+     {
+      "Ref": "MonitoringPipelineSmokeTestProdProductionSmokeTestsCodePipelineActionRole268AE596"
+     }
+    ]
+   },
+   "Metadata": {
+    "aws:cdk:path": "monitoring-app-Pipeline/MonitoringPipeline/SmokeTestProd/ProductionSmokeTests/CodePipelineActionRole/DefaultPolicy/Resource"
+   }
+  },
+  "PipelineStateRule186BFD51": {
+   "Type": "AWS::Events::Rule",
+   "Properties": {
+    "EventPattern": {
+     "source": [
+      "aws.codepipeline"
+     ],
+     "detail-type": [
+      "CodePipeline Pipeline Execution State Change"
+     ],
+     "detail": {
+      "pipeline": [
+       {
+        "Ref": "MonitoringPipelineB0CAE5A5"
+       }
+      ]
+     }
+    },
+    "State": "ENABLED",
+    "Targets": [
+     {
+      "Arn": {
+       "Fn::GetAtt": [
+        "PipelineMonitor049B13AE",
+        "Arn"
+       ]
+      },
+      "Id": "Target0"
+     },
+     {
+      "Arn": {
+       "Ref": "PipelineNotifications84B145AD"
+      },
+      "Id": "Target1"
+     }
+    ]
+   },
+   "Metadata": {
+    "aws:cdk:path": "monitoring-app-Pipeline/PipelineStateRule/Resource"
+   }
+  },
+  "PipelineStateRuleAllowEventRulemonitoringappPipelinePipelineMonitor0B96A9F6D30571D7": {
+   "Type": "AWS::Lambda::Permission",
+   "Properties": {
+    "Action": "lambda:InvokeFunction",
+    "FunctionName": {
+     "Fn::GetAtt": [
+      "PipelineMonitor049B13AE",
+      "Arn"
+     ]
+    },
+    "Principal": "events.amazonaws.com",
+    "SourceArn": {
+     "Fn::GetAtt": [
+      "PipelineStateRule186BFD51",
+      "Arn"
+     ]
+    }
+   },
+   "Metadata": {
+    "aws:cdk:path": "monitoring-app-Pipeline/PipelineStateRule/AllowEventRulemonitoringappPipelinePipelineMonitor0B96A9F6"
+   }
+  },
+  "CDKMetadata": {
+   "Type": "AWS::CDK::Metadata",
+   "Properties": {
+    "Analytics": "v2:deflate64:H4sIAAAAAAAA/1WQQU/DMAyFf8vuninbAa4MiStVi8RxSlMz3KZJVSebUJT/jpp2opze5+dnS/YBnwosduome932e8MNxtor3YO6yTnKEeMp6J48vH7ZlRY5KaEE2rXUBDYtxnJyHekcXDEBqwFj5QzNbtbSGdY/OZQpgVjB+OFG1rO7QB0a0ROPnp2d3X91jvzt2ZQJjBqaVmF8C1bfh7dc0jSwCDubQI5nJUJe8GWWfMvIIxm2hLFcKU9t+JOab+f6BHQl6wVjFdbzgqGUoCJxYdIEeWnt1YXtZe6/Bz+G/J57JIF1LWEnD9dDgY/PWOw6Yd5PwXoeCKtFfwELJvYNpAEAAA=="
+   },
+   "Metadata": {
+    "aws:cdk:path": "monitoring-app-Pipeline/CDKMetadata/Default"
+   }
+  }
+ },
+ "Outputs": {
+  "GitHubRepository": {
+   "Description": "GitHub repository URL",
+   "Value": "https://github.com/Shahriar701/monitoring-application"
+  },
+  "PipelineUrl": {
+   "Description": "CodePipeline console URL",
+   "Value": {
+    "Fn::Join": [
+     "",
+     [
+      "https://us-east-1.console.aws.amazon.com/codesuite/codepipeline/pipelines/",
+      {
+       "Ref": "MonitoringPipelineB0CAE5A5"
+      },
+      "/view"
+     ]
+    ]
+   }
+  },
+  "ArtifactsBucket": {
+   "Description": "Pipeline artifacts bucket",
+   "Value": {
+    "Ref": "PipelineArtifacts4A9B2621"
+   }
+  }
+ },
+ "Parameters": {
+  "BootstrapVersion": {
+   "Type": "AWS::SSM::Parameter::Value<String>",
+   "Default": "/cdk-bootstrap/hnb659fds/version",
+   "Description": "Version of the CDK Bootstrap resources in this environment, automatically retrieved from SSM Parameter Store. [cdk:skip]"
+  }
+ },
+ "Rules": {
+  "CheckBootstrapVersion": {
+   "Assertions": [
+    {
+     "Assert": {
+      "Fn::Not": [
+       {
+        "Fn::Contains": [
+         [
+          "1",
+          "2",
+          "3",
+          "4",
+          "5"
+         ],
+         {
+          "Ref": "BootstrapVersion"
+         }
+        ]
+       }
+      ]
+     },
+     "AssertDescription": "CDK bootstrap stack version 6 required. Please run 'cdk bootstrap' with a recent version of the CDK CLI."
+    }
+   ]
+  }
+ }
+}

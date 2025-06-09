@@ -1,0 +1,410 @@
+{
+ "Description": "CloudWatch monitoring and alarms - prod",
+ "Resources": {
+  "MonitoringDashboard96464763": {
+   "Type": "AWS::CloudWatch::Dashboard",
+   "Properties": {
+    "DashboardBody": {
+     "Fn::Join": [
+      "",
+      [
+       "{\"periodOverride\":\"auto\",\"widgets\":[{\"type\":\"metric\",\"width\":12,\"height\":6,\"x\":0,\"y\":0,\"properties\":{\"view\":\"timeSeries\",\"title\":\"API Performance\",\"region\":\"",
+       {
+        "Ref": "AWS::Region"
+       },
+       "\",\"metrics\":[[\"AWS/Lambda\",\"Invocations\",\"FunctionName\",\"",
+       {
+        "Fn::ImportValue": "monitoring-app-compute-prod:ExportsOutputRefApiLambda91D2282D3158688D"
+       },
+       "\",{\"label\":\"API Invocations\",\"stat\":\"Sum\"}],[\"AWS/Lambda\",\"Errors\",\"FunctionName\",\"",
+       {
+        "Fn::ImportValue": "monitoring-app-compute-prod:ExportsOutputRefApiLambda91D2282D3158688D"
+       },
+       "\",{\"label\":\"API Errors\",\"stat\":\"Sum\"}],[\"AWS/Lambda\",\"Duration\",\"FunctionName\",\"",
+       {
+        "Fn::ImportValue": "monitoring-app-compute-prod:ExportsOutputRefApiLambda91D2282D3158688D"
+       },
+       "\",{\"label\":\"API Duration\",\"yAxis\":\"right\"}]],\"yAxis\":{}}},{\"type\":\"metric\",\"width\":12,\"height\":6,\"x\":12,\"y\":0,\"properties\":{\"view\":\"timeSeries\",\"title\":\"Lambda Functions Overview\",\"region\":\"",
+       {
+        "Ref": "AWS::Region"
+       },
+       "\",\"metrics\":[[\"AWS/Lambda\",\"Invocations\",\"FunctionName\",\"",
+       {
+        "Fn::ImportValue": "monitoring-app-compute-prod:ExportsOutputRefApiLambda91D2282D3158688D"
+       },
+       "\",{\"label\":\"",
+       {
+        "Fn::ImportValue": "monitoring-app-compute-prod:ExportsOutputRefApiLambda91D2282D3158688D"
+       },
+       " Invocations\",\"stat\":\"Sum\"}],[\"AWS/Lambda\",\"Invocations\",\"FunctionName\",\"",
+       {
+        "Fn::ImportValue": "monitoring-app-compute-prod:ExportsOutputRefLogProcessorDB773CA752571FE5"
+       },
+       "\",{\"label\":\"",
+       {
+        "Fn::ImportValue": "monitoring-app-compute-prod:ExportsOutputRefLogProcessorDB773CA752571FE5"
+       },
+       " Invocations\",\"stat\":\"Sum\"}],[\"AWS/Lambda\",\"Invocations\",\"FunctionName\",\"",
+       {
+        "Fn::ImportValue": "monitoring-app-compute-prod:ExportsOutputRefHealthMonitor5F3623624578B3D6"
+       },
+       "\",{\"label\":\"",
+       {
+        "Fn::ImportValue": "monitoring-app-compute-prod:ExportsOutputRefHealthMonitor5F3623624578B3D6"
+       },
+       " Invocations\",\"stat\":\"Sum\"}],[\"AWS/Lambda\",\"Invocations\",\"FunctionName\",\"",
+       {
+        "Fn::ImportValue": "monitoring-app-compute-prod:ExportsOutputRefAiAnalysisF7225954B6F3A1D8"
+       },
+       "\",{\"label\":\"",
+       {
+        "Fn::ImportValue": "monitoring-app-compute-prod:ExportsOutputRefAiAnalysisF7225954B6F3A1D8"
+       },
+       " Invocations\",\"stat\":\"Sum\"}],[\"AWS/Lambda\",\"Invocations\",\"FunctionName\",\"",
+       {
+        "Fn::ImportValue": "monitoring-app-compute-prod:ExportsOutputRefBackupProcessor5101C858EF0C2C75"
+       },
+       "\",{\"label\":\"",
+       {
+        "Fn::ImportValue": "monitoring-app-compute-prod:ExportsOutputRefBackupProcessor5101C858EF0C2C75"
+       },
+       " Invocations\",\"stat\":\"Sum\"}],[\"AWS/Lambda\",\"Errors\",\"FunctionName\",\"",
+       {
+        "Fn::ImportValue": "monitoring-app-compute-prod:ExportsOutputRefApiLambda91D2282D3158688D"
+       },
+       "\",{\"label\":\"",
+       {
+        "Fn::ImportValue": "monitoring-app-compute-prod:ExportsOutputRefApiLambda91D2282D3158688D"
+       },
+       " Errors\",\"stat\":\"Sum\",\"yAxis\":\"right\"}],[\"AWS/Lambda\",\"Errors\",\"FunctionName\",\"",
+       {
+        "Fn::ImportValue": "monitoring-app-compute-prod:ExportsOutputRefLogProcessorDB773CA752571FE5"
+       },
+       "\",{\"label\":\"",
+       {
+        "Fn::ImportValue": "monitoring-app-compute-prod:ExportsOutputRefLogProcessorDB773CA752571FE5"
+       },
+       " Errors\",\"stat\":\"Sum\",\"yAxis\":\"right\"}],[\"AWS/Lambda\",\"Errors\",\"FunctionName\",\"",
+       {
+        "Fn::ImportValue": "monitoring-app-compute-prod:ExportsOutputRefHealthMonitor5F3623624578B3D6"
+       },
+       "\",{\"label\":\"",
+       {
+        "Fn::ImportValue": "monitoring-app-compute-prod:ExportsOutputRefHealthMonitor5F3623624578B3D6"
+       },
+       " Errors\",\"stat\":\"Sum\",\"yAxis\":\"right\"}],[\"AWS/Lambda\",\"Errors\",\"FunctionName\",\"",
+       {
+        "Fn::ImportValue": "monitoring-app-compute-prod:ExportsOutputRefAiAnalysisF7225954B6F3A1D8"
+       },
+       "\",{\"label\":\"",
+       {
+        "Fn::ImportValue": "monitoring-app-compute-prod:ExportsOutputRefAiAnalysisF7225954B6F3A1D8"
+       },
+       " Errors\",\"stat\":\"Sum\",\"yAxis\":\"right\"}],[\"AWS/Lambda\",\"Errors\",\"FunctionName\",\"",
+       {
+        "Fn::ImportValue": "monitoring-app-compute-prod:ExportsOutputRefBackupProcessor5101C858EF0C2C75"
+       },
+       "\",{\"label\":\"",
+       {
+        "Fn::ImportValue": "monitoring-app-compute-prod:ExportsOutputRefBackupProcessor5101C858EF0C2C75"
+       },
+       " Errors\",\"stat\":\"Sum\",\"yAxis\":\"right\"}]],\"yAxis\":{}}},{\"type\":\"metric\",\"width\":12,\"height\":6,\"x\":0,\"y\":6,\"properties\":{\"view\":\"timeSeries\",\"title\":\"DynamoDB Performance\",\"region\":\"",
+       {
+        "Ref": "AWS::Region"
+       },
+       "\",\"metrics\":[[\"AWS/DynamoDB\",\"ConsumedReadCapacityUnits\",\"TableName\",\"",
+       {
+        "Fn::ImportValue": "monitoring-app-storage-prod:ExportsOutputRefApplicationMetrics0C795B9259D38ED5"
+       },
+       "\",{\"label\":\"Read Capacity\",\"stat\":\"Sum\"}],[\"AWS/DynamoDB\",\"ConsumedWriteCapacityUnits\",\"TableName\",\"",
+       {
+        "Fn::ImportValue": "monitoring-app-storage-prod:ExportsOutputRefApplicationMetrics0C795B9259D38ED5"
+       },
+       "\",{\"label\":\"Write Capacity\",\"stat\":\"Sum\"}],[\"AWS/DynamoDB\",\"ThrottledRequests\",\"TableName\",\"",
+       {
+        "Fn::ImportValue": "monitoring-app-storage-prod:ExportsOutputRefApplicationMetrics0C795B9259D38ED5"
+       },
+       "\",{\"label\":\"Throttled Requests\",\"stat\":\"Sum\",\"yAxis\":\"right\"}]],\"yAxis\":{}}},{\"type\":\"metric\",\"width\":12,\"height\":6,\"x\":12,\"y\":6,\"properties\":{\"view\":\"timeSeries\",\"title\":\"API Gateway Metrics\",\"region\":\"",
+       {
+        "Ref": "AWS::Region"
+       },
+       "\",\"metrics\":[[\"AWS/ApiGateway\",\"Count\",\"ApiName\",\"monitoring-app-api-prod\",{\"label\":\"Request Count\",\"stat\":\"SampleCount\"}],[\"AWS/ApiGateway\",\"4XXError\",\"ApiName\",\"monitoring-app-api-prod\",{\"label\":\"4xx Errors\",\"stat\":\"Sum\"}],[\"AWS/ApiGateway\",\"5XXError\",\"ApiName\",\"monitoring-app-api-prod\",{\"label\":\"5xx Errors\",\"stat\":\"Sum\"}],[\"AWS/ApiGateway\",\"Latency\",\"ApiName\",\"monitoring-app-api-prod\",{\"label\":\"Latency\",\"yAxis\":\"right\"}],[\"AWS/ApiGateway\",\"IntegrationLatency\",\"ApiName\",\"monitoring-app-api-prod\",{\"label\":\"Integration Latency\",\"yAxis\":\"right\"}]],\"yAxis\":{}}}]}"
+      ]
+     ]
+    },
+    "DashboardName": "monitoring-app-dashboard-prod"
+   },
+   "Metadata": {
+    "aws:cdk:path": "monitoring-app-Monitoring-prod/MonitoringDashboard/Resource"
+   }
+  },
+  "ApiHighErrorRate310DAC9F": {
+   "Type": "AWS::CloudWatch::Alarm",
+   "Properties": {
+    "ComparisonOperator": "GreaterThanOrEqualToThreshold",
+    "EvaluationPeriods": 2,
+    "AlarmActions": [
+     {
+      "Fn::ImportValue": "monitoring-app-messaging-prod:ExportsOutputRefAlertTopic2720D5359ADB6D3E"
+     }
+    ],
+    "AlarmDescription": "High error rate detected in API Lambda",
+    "Dimensions": [
+     {
+      "Name": "FunctionName",
+      "Value": {
+       "Fn::ImportValue": "monitoring-app-compute-prod:ExportsOutputRefApiLambda91D2282D3158688D"
+      }
+     }
+    ],
+    "MetricName": "Errors",
+    "Namespace": "AWS/Lambda",
+    "Period": 300,
+    "Statistic": "Sum",
+    "Threshold": 5,
+    "TreatMissingData": "notBreaching"
+   },
+   "Metadata": {
+    "aws:cdk:path": "monitoring-app-Monitoring-prod/ApiHighErrorRate/Resource"
+   }
+  },
+  "ApiHighDurationD698685F": {
+   "Type": "AWS::CloudWatch::Alarm",
+   "Properties": {
+    "ComparisonOperator": "GreaterThanOrEqualToThreshold",
+    "EvaluationPeriods": 3,
+    "AlarmActions": [
+     {
+      "Fn::ImportValue": "monitoring-app-messaging-prod:ExportsOutputRefAlertTopic2720D5359ADB6D3E"
+     }
+    ],
+    "AlarmDescription": "API Lambda duration too high",
+    "Dimensions": [
+     {
+      "Name": "FunctionName",
+      "Value": {
+       "Fn::ImportValue": "monitoring-app-compute-prod:ExportsOutputRefApiLambda91D2282D3158688D"
+      }
+     }
+    ],
+    "MetricName": "Duration",
+    "Namespace": "AWS/Lambda",
+    "Period": 300,
+    "Statistic": "Average",
+    "Threshold": 10000
+   },
+   "Metadata": {
+    "aws:cdk:path": "monitoring-app-Monitoring-prod/ApiHighDuration/Resource"
+   }
+  },
+  "DynamoThrottling488AA3C1": {
+   "Type": "AWS::CloudWatch::Alarm",
+   "Properties": {
+    "ComparisonOperator": "GreaterThanOrEqualToThreshold",
+    "EvaluationPeriods": 1,
+    "AlarmActions": [
+     {
+      "Fn::ImportValue": "monitoring-app-messaging-prod:ExportsOutputRefAlertTopic2720D5359ADB6D3E"
+     }
+    ],
+    "AlarmDescription": "DynamoDB throttling detected",
+    "Dimensions": [
+     {
+      "Name": "TableName",
+      "Value": {
+       "Fn::ImportValue": "monitoring-app-storage-prod:ExportsOutputRefApplicationMetrics0C795B9259D38ED5"
+      }
+     }
+    ],
+    "MetricName": "ThrottledRequests",
+    "Namespace": "AWS/DynamoDB",
+    "Period": 300,
+    "Statistic": "Sum",
+    "Threshold": 1
+   },
+   "Metadata": {
+    "aws:cdk:path": "monitoring-app-Monitoring-prod/DynamoThrottling/Resource"
+   }
+  },
+  "Api5xxErrors72E4ED50": {
+   "Type": "AWS::CloudWatch::Alarm",
+   "Properties": {
+    "ComparisonOperator": "GreaterThanOrEqualToThreshold",
+    "EvaluationPeriods": 2,
+    "AlarmActions": [
+     {
+      "Fn::ImportValue": "monitoring-app-messaging-prod:ExportsOutputRefAlertTopic2720D5359ADB6D3E"
+     }
+    ],
+    "AlarmDescription": "High 5xx error rate in API Gateway",
+    "Dimensions": [
+     {
+      "Name": "ApiName",
+      "Value": "monitoring-app-api-prod"
+     }
+    ],
+    "MetricName": "5XXError",
+    "Namespace": "AWS/ApiGateway",
+    "Period": 300,
+    "Statistic": "Sum",
+    "Threshold": 10
+   },
+   "Metadata": {
+    "aws:cdk:path": "monitoring-app-Monitoring-prod/Api5xxErrors/Resource"
+   }
+  },
+  "ApiHighLatencyD725070E": {
+   "Type": "AWS::CloudWatch::Alarm",
+   "Properties": {
+    "ComparisonOperator": "GreaterThanOrEqualToThreshold",
+    "EvaluationPeriods": 3,
+    "AlarmActions": [
+     {
+      "Fn::ImportValue": "monitoring-app-messaging-prod:ExportsOutputRefAlertTopic2720D5359ADB6D3E"
+     }
+    ],
+    "AlarmDescription": "API Gateway latency too high",
+    "Dimensions": [
+     {
+      "Name": "ApiName",
+      "Value": "monitoring-app-api-prod"
+     }
+    ],
+    "MetricName": "Latency",
+    "Namespace": "AWS/ApiGateway",
+    "Period": 300,
+    "Statistic": "Average",
+    "Threshold": 5000
+   },
+   "Metadata": {
+    "aws:cdk:path": "monitoring-app-Monitoring-prod/ApiHighLatency/Resource"
+   }
+  },
+  "ErrorBudgetAlarmB0E6444E": {
+   "Type": "AWS::CloudWatch::Alarm",
+   "Properties": {
+    "ComparisonOperator": "GreaterThanOrEqualToThreshold",
+    "EvaluationPeriods": 3,
+    "AlarmActions": [
+     {
+      "Fn::ImportValue": "monitoring-app-messaging-prod:ExportsOutputRefAlertTopic2720D5359ADB6D3E"
+     }
+    ],
+    "AlarmDescription": "Error budget exceeded - SLO at risk",
+    "Metrics": [
+     {
+      "Expression": "(errors/requests) * 100",
+      "Id": "expr_1"
+     },
+     {
+      "Id": "errors",
+      "MetricStat": {
+       "Metric": {
+        "Dimensions": [
+         {
+          "Name": "ApiName",
+          "Value": "monitoring-app-api-prod"
+         }
+        ],
+        "MetricName": "5XXError",
+        "Namespace": "AWS/ApiGateway"
+       },
+       "Period": 300,
+       "Stat": "Sum"
+      },
+      "ReturnData": false
+     },
+     {
+      "Id": "requests",
+      "MetricStat": {
+       "Metric": {
+        "Dimensions": [
+         {
+          "Name": "ApiName",
+          "Value": "monitoring-app-api-prod"
+         }
+        ],
+        "MetricName": "Count",
+        "Namespace": "AWS/ApiGateway"
+       },
+       "Period": 300,
+       "Stat": "Sum"
+      },
+      "ReturnData": false
+     }
+    ],
+    "Threshold": 0.1
+   },
+   "Metadata": {
+    "aws:cdk:path": "monitoring-app-Monitoring-prod/ErrorBudgetAlarm/Resource"
+   }
+  },
+  "CDKMetadata": {
+   "Type": "AWS::CDK::Metadata",
+   "Properties": {
+    "Analytics": "v2:deflate64:H4sIAAAAAAAA/0XIQQ7CIBCF4bN0DyN2o1uje5N6ADMFTGkpNAwji6Z3b6gLV+97fwsXBarBQlKbSXrXw/rKqCeBhd7aRzYFsx5gfSANfcRkxP0T/ufmMc01HdiqnpwXzlWdpchJ202EaCyMdPq2Cs5XUM1IzsnEIbvZQvfbHeZTrPuNAAAA"
+   },
+   "Metadata": {
+    "aws:cdk:path": "monitoring-app-Monitoring-prod/CDKMetadata/Default"
+   }
+  }
+ },
+ "Outputs": {
+  "DashboardUrl": {
+   "Description": "CloudWatch Dashboard URL",
+   "Value": {
+    "Fn::Join": [
+     "",
+     [
+      "https://us-east-1.console.aws.amazon.com/cloudwatch/home?region=us-east-1#dashboards:name=",
+      {
+       "Ref": "MonitoringDashboard96464763"
+      }
+     ]
+    ]
+   }
+  },
+  "DashboardName": {
+   "Value": {
+    "Ref": "MonitoringDashboard96464763"
+   },
+   "Export": {
+    "Name": "monitoring-app-dashboard-name-prod"
+   }
+  }
+ },
+ "Parameters": {
+  "BootstrapVersion": {
+   "Type": "AWS::SSM::Parameter::Value<String>",
+   "Default": "/cdk-bootstrap/hnb659fds/version",
+   "Description": "Version of the CDK Bootstrap resources in this environment, automatically retrieved from SSM Parameter Store. [cdk:skip]"
+  }
+ },
+ "Rules": {
+  "CheckBootstrapVersion": {
+   "Assertions": [
+    {
+     "Assert": {
+      "Fn::Not": [
+       {
+        "Fn::Contains": [
+         [
+          "1",
+          "2",
+          "3",
+          "4",
+          "5"
+         ],
+         {
+          "Ref": "BootstrapVersion"
+         }
+        ]
+       }
+      ]
+     },
+     "AssertDescription": "CDK bootstrap stack version 6 required. Please run 'cdk bootstrap' with a recent version of the CDK CLI."
+    }
+   ]
+  }
+ }
+}

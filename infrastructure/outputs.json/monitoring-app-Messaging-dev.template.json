@@ -1,0 +1,201 @@
+{
+ "Description": "Messaging infrastructure - dev",
+ "Resources": {
+  "DLQ581697C4": {
+   "Type": "AWS::SQS::Queue",
+   "Properties": {
+    "MessageRetentionPeriod": 1209600,
+    "QueueName": "monitoring-app-dlq-dev",
+    "SqsManagedSseEnabled": true,
+    "Tags": [
+     {
+      "Key": "Environment",
+      "Value": "dev"
+     },
+     {
+      "Key": "Project",
+      "Value": "monitoring-app"
+     },
+     {
+      "Key": "StackType",
+      "Value": "Messaging"
+     }
+    ]
+   },
+   "UpdateReplacePolicy": "Delete",
+   "DeletionPolicy": "Delete",
+   "Metadata": {
+    "aws:cdk:path": "monitoring-app-Messaging-dev/DLQ/Resource"
+   }
+  },
+  "ProcessingQueue6DC600C3": {
+   "Type": "AWS::SQS::Queue",
+   "Properties": {
+    "QueueName": "monitoring-app-queue-dev",
+    "RedrivePolicy": {
+     "deadLetterTargetArn": {
+      "Fn::GetAtt": [
+       "DLQ581697C4",
+       "Arn"
+      ]
+     },
+     "maxReceiveCount": 3
+    },
+    "SqsManagedSseEnabled": true,
+    "Tags": [
+     {
+      "Key": "Environment",
+      "Value": "dev"
+     },
+     {
+      "Key": "Project",
+      "Value": "monitoring-app"
+     },
+     {
+      "Key": "StackType",
+      "Value": "Messaging"
+     }
+    ],
+    "VisibilityTimeout": 300
+   },
+   "UpdateReplacePolicy": "Delete",
+   "DeletionPolicy": "Delete",
+   "Metadata": {
+    "aws:cdk:path": "monitoring-app-Messaging-dev/ProcessingQueue/Resource"
+   }
+  },
+  "AlertTopic2720D535": {
+   "Type": "AWS::SNS::Topic",
+   "Properties": {
+    "DisplayName": "monitoring-app Alerts - DEV",
+    "Tags": [
+     {
+      "Key": "Environment",
+      "Value": "dev"
+     },
+     {
+      "Key": "Project",
+      "Value": "monitoring-app"
+     },
+     {
+      "Key": "StackType",
+      "Value": "Messaging"
+     }
+    ],
+    "TopicName": "monitoring-app-alerts-dev"
+   },
+   "Metadata": {
+    "aws:cdk:path": "monitoring-app-Messaging-dev/AlertTopic/Resource"
+   }
+  },
+  "AlertTopicyouremailexamplecom4BAFBCC6": {
+   "Type": "AWS::SNS::Subscription",
+   "Properties": {
+    "Protocol": "email",
+    "TopicArn": {
+     "Ref": "AlertTopic2720D535"
+    },
+    "Endpoint": "your-email@example.com"
+   },
+   "Metadata": {
+    "aws:cdk:path": "monitoring-app-Messaging-dev/AlertTopic/your-email@example.com/Resource"
+   }
+  },
+  "CDKMetadata": {
+   "Type": "AWS::CDK::Metadata",
+   "Properties": {
+    "Analytics": "v2:deflate64:H4sIAAAAAAAA/03IMRLCIBCF4bOkhxXTaO8BHBN7h5B1ZhOFhGVNwXB3B9NYve/9LZwMmMZurN046xcNkPtk3azsxo/MK0O+CQqqy9P/UBR7hnwPC7kad/QysIu0JAq+1v9fSi1XSYukqg45SHRYlA8jwsSHT2vgeAbTTEyko/hEb4Ru3y+VT5A8owAAAA=="
+   },
+   "Metadata": {
+    "aws:cdk:path": "monitoring-app-Messaging-dev/CDKMetadata/Default"
+   }
+  }
+ },
+ "Outputs": {
+  "ProcessingQueueUrl": {
+   "Value": {
+    "Ref": "ProcessingQueue6DC600C3"
+   },
+   "Export": {
+    "Name": "monitoring-app-queue-url-dev"
+   }
+  },
+  "AlertTopicArn": {
+   "Value": {
+    "Ref": "AlertTopic2720D535"
+   },
+   "Export": {
+    "Name": "monitoring-app-alert-topic-arn-dev"
+   }
+  },
+  "ExportsOutputFnGetAttProcessingQueue6DC600C3ArnEF236E7B": {
+   "Value": {
+    "Fn::GetAtt": [
+     "ProcessingQueue6DC600C3",
+     "Arn"
+    ]
+   },
+   "Export": {
+    "Name": "monitoring-app-messaging-dev:ExportsOutputFnGetAttProcessingQueue6DC600C3ArnEF236E7B"
+   }
+  },
+  "ExportsOutputRefProcessingQueue6DC600C3BF6B2149": {
+   "Value": {
+    "Ref": "ProcessingQueue6DC600C3"
+   },
+   "Export": {
+    "Name": "monitoring-app-messaging-dev:ExportsOutputRefProcessingQueue6DC600C3BF6B2149"
+   }
+  },
+  "ExportsOutputRefDLQ581697C4C2809D62": {
+   "Value": {
+    "Ref": "DLQ581697C4"
+   },
+   "Export": {
+    "Name": "monitoring-app-messaging-dev:ExportsOutputRefDLQ581697C4C2809D62"
+   }
+  },
+  "ExportsOutputRefAlertTopic2720D5359ADB6D3E": {
+   "Value": {
+    "Ref": "AlertTopic2720D535"
+   },
+   "Export": {
+    "Name": "monitoring-app-messaging-dev:ExportsOutputRefAlertTopic2720D5359ADB6D3E"
+   }
+  }
+ },
+ "Parameters": {
+  "BootstrapVersion": {
+   "Type": "AWS::SSM::Parameter::Value<String>",
+   "Default": "/cdk-bootstrap/hnb659fds/version",
+   "Description": "Version of the CDK Bootstrap resources in this environment, automatically retrieved from SSM Parameter Store. [cdk:skip]"
+  }
+ },
+ "Rules": {
+  "CheckBootstrapVersion": {
+   "Assertions": [
+    {
+     "Assert": {
+      "Fn::Not": [
+       {
+        "Fn::Contains": [
+         [
+          "1",
+          "2",
+          "3",
+          "4",
+          "5"
+         ],
+         {
+          "Ref": "BootstrapVersion"
+         }
+        ]
+       }
+      ]
+     },
+     "AssertDescription": "CDK bootstrap stack version 6 required. Please run 'cdk bootstrap' with a recent version of the CDK CLI."
+    }
+   ]
+  }
+ }
+}
